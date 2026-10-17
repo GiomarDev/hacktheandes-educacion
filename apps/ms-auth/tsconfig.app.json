@@ -5,14 +5,6 @@
     "rootDir": "../../",
     "outDir": "../../dist/apps/ms-auth"
   },
-  "include": [
-    "src/**/*",
-    "../../libs/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test",
-    "**/*spec.ts"
-  ]
+  "include": ["src/**/*", "prisma/seed.ts", "../../libs/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

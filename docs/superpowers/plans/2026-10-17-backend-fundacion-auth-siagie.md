@@ -1,5 +1,7 @@
 # Fundación del backend: ms-auth + ms-siagie — Plan de implementación
 
+> **Estado del relevo (17/10/2026):** tareas 1–12 implementadas en `feat/backend-fundacion`; implementación y verificación de la tarea 13 completadas con 43 pruebas unitarias y 94 e2e aprobadas. La carga de seeds en schemas reales (13.4) sigue pendiente de confirmación. El detalle está en [continuidad-backend.md](../../continuidad-backend.md). Los comandos vigentes usan Vitest y oxlint; los checklists de las tareas 1–12 conservan el diseño original, mientras la tarea 13 refleja este relevo.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Monorepo NestJS con ms-auth (login, JWT RS256, JWKS, refresh rotativo, usuarios y roles con alcance) y ms-siagie (IE, secciones, estudiantes, matrícula, asistencia por día y por hora, ingreso y salida por QR, notas literales), cada uno con su schema PostgreSQL en la base `school`.
@@ -394,12 +396,12 @@ apps/ms-siagie/
   - Las contraseñas salen de `SEED_PASSWORD`.
   - Los seeds son idempotentes (upsert por los UUID fijos).
 
-- [ ] **Step 1:** e2e `cross-service`: levanta **ambas** apps en el mismo proceso, en puertos aleatorios. ms-siagie usa como `AUTH_JWKS_URL` el puerto de ms-auth. Corre los seeds contra los schemas `_test`. Luego:
+- [x] **Step 1:** e2e `cross-service`: levanta **ambas** apps en el mismo proceso, en puertos aleatorios. ms-siagie usa como `AUTH_JWKS_URL` el puerto de ms-auth. Corre los seeds contra los schemas `_test`. Luego:
   - El director hace login **real** en ms-auth y llama a `GET /sections/:a1/students` en ms-siagie → 30 alumnos.
   - Un director de otra IE (creado en el test) → 403.
   - Se apaga ms-auth y el mismo access token sigue funcionando en ms-siagie.
   - `GET /students/:id/summary` después de un pase de lista → `attendance.present === 1`.
-- [ ] **Step 2:** Ejecutar → FAIL. Implementar el resumen y los seeds. Ejecutar → PASS.
-- [ ] **Step 3:** Correr la suite completa: `npm run lint && npx jest && npx jest --config apps/ms-auth/test/jest-e2e.json && npx jest --config apps/ms-siagie/test/jest-e2e.json` → todo en verde.
+- [x] **Step 2:** Implementación de resumen y seeds completada y verificada. Añadidas regresiones de autorización, matrícula del año actual e idempotencia sin restablecer contraseñas.
+- [x] **Step 3:** Correr la suite completa: `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e`, `npm run build` y `npm run test:smoke` → todo en verde (43 unitarias + 94 e2e).
 - [ ] **Step 4:** **Con confirmación del usuario**, ejecutar `npm run auth:seed && npm run siagie:seed` contra los schemas reales `auth` y `siagie`.
-- [ ] **Step 5:** Documentar en `README.md` (sección "Backend") cómo crear el `.env`, migrar, sembrar y levantar ambas apps. Commit: `feat: seeds sintéticos, resumen del estudiante y prueba entre servicios`.
+- [x] **Step 5:** Documentar en `README.md` (sección "Backend") cómo crear el `.env`, migrar, sembrar y levantar ambas apps. Commit: `feat: seeds sintéticos, resumen del estudiante y prueba entre servicios`.

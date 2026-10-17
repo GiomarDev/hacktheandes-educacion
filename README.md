@@ -4,6 +4,79 @@ Proyecto del equipo **Futuro Agéntico** (KeoIT) para el reto de **Educación Es
 
 El proyecto aborda la problemática de la **deserción escolar y el bajo rendimiento académico** en el sistema educativo peruano, transformando diagnósticos reactivos y burocráticos en un sistema proactivo asistido por agentes de Inteligencia Artificial que conecta a docentes, directivos y decisores gubernamentales con intervenciones tempranas y oportunas.
 
+## Backend
+
+Implementados `ms-auth` y `ms-siagie`: autenticación JWT RS256/JWKS, roles con alcance territorial, matrícula, asistencia, notas, carné QR y resumen auditado del estudiante. Estado del relevo, verificación y próximas fases en [Continuidad del backend](docs/continuidad-backend.md).
+
+### Preparación
+
+Se recomienda Node.js 26 o una versión admitida por las dependencias del CLI de Nest. El entorno inicial usa Node 25.8.1; funciona en las verificaciones, pero npm avisa que algunas herramientas de Angular Devkit no declaran soporte para esa versión.
+
+```sh
+npm ci
+cp .env.example .env
+# Completar las variables del .env antes de continuar.
+npm run auth:generate
+npm run siagie:generate
+```
+
+Cada servicio usa su propio schema en la base PostgreSQL `school`. Las variables `AUTH_DATABASE_URL` y `SIAGIE_DATABASE_URL` apuntan a `auth` y `siagie`; `AUTH_TEST_DATABASE_URL` y `SIAGIE_TEST_DATABASE_URL`, exclusivamente a `auth_test` y `siagie_test`. Configurar `KEY_ENCRYPTION_SECRET` (32 bytes en base64), `INTERNAL_API_KEY` y `SEED_PASSWORD`. Las contraseñas de las URL deben codificarse para URL, por ejemplo `$` como `%24`.
+
+La base `school` debe existir. `npm run db:create` crea ese recurso si falta; requiere autorización sobre el servidor compartido. Para aplicar migraciones existentes:
+
+```sh
+npx prisma migrate deploy --config apps/ms-auth/prisma.config.ts
+npx prisma migrate deploy --config apps/ms-siagie/prisma.config.ts
+```
+
+Para crear una migración durante desarrollo: `npm run auth:migrate -- --name descripcion` o `npm run siagie:migrate -- --name descripcion`.
+
+### Demo sintética
+
+Los seeds crean 10 usuarios, una IE de demostración en Ucayali, dos secciones, cuatro bimestres de **2026**, 60 estudiantes y sus apoderados. Usan UUID compartidos y pueden repetirse sin duplicar filas; el seed de identidad conserva las contraseñas y el estado de cuentas existentes. No se envían mensajes reales a los contactos de demo.
+
+**Ejecutar sobre los schemas reales solo con confirmación explícita del responsable:**
+
+```sh
+npm run auth:seed
+npm run siagie:seed
+```
+
+Los DNI de demo están en `libs/fixtures/src/seed-ids.ts`; dirección usa `70000102`, secretaría `70000103` y auxiliar `70000108`. La contraseña inicial es el valor de `SEED_PASSWORD`. El seed representa el año 2026; al cambiar de año se deben preparar las matrículas del nuevo año para consultar resúmenes y usar el control de acceso.
+
+### Desarrollo y ejecución compilada
+
+En dos terminales:
+
+```sh
+npm run start:auth
+npm run start:siagie
+```
+
+Por defecto escuchan en 3000 y 3001. `AUTH_JWKS_URL=http://localhost:3000/.well-known/jwks.json` y `SIAGIE_URL=http://localhost:3001`. `PORT` permite cambiar el puerto de cada proceso.
+
+```sh
+npm run build
+# En terminales separadas:
+npm run start:auth:prod
+npm run start:siagie:prod
+```
+
+La compilación usa Rspack, el [builder de monorepos de Nest](https://docs.nestjs.com/recipes/swc), para incluir `libs/common` y los clientes Prisma generados. `/health` devuelve `{ "status": "ok", "service": "ms-auth" }` o `ms-siagie`.
+
+### Verificación
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run test:e2e
+npm run build
+npm run test:smoke
+```
+
+La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No ejecutar dos suites e2e simultáneamente, ya que comparten tablas. `npm run test:e2e:auth`, `npm run test:e2e:siagie` y `npm run test:e2e:cross` permiten verificaciones parciales. La prueba entre servicios realiza un login real, comprueba el aislamiento entre IEs, el resumen auditado, la repetición de los seeds y el funcionamiento de JWT en caché cuando `ms-auth` se apaga. La prueba de arranque utiliza también las URL de prueba y detiene los procesos al terminar.
+
 ---
 
 ## 🎯 Problema, Diagnóstico y Oportunidad
@@ -62,6 +135,8 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 ---
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
+
+> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` mencionada a continuación no está en este checkout. Recuperar esos archivos o los diseños de Stitch antes de usar el visor local. El frontend todavía está pendiente de implementación.
 
 Como parte de la fase de prototipado y validación de la solución, se diseñó la primera versión interactiva de **AmautaIA — Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero**. Los prototipos fueron generados e iterados a través de la integración agéntica con **Google Stitch MCP** en el proyecto `Hack The Andes Test` (`projects/1503192843636542264`), bajo el sistema de diseño semántico **AmautaIA Institucional Claro (MINEDU GovTech)** (`assets/764693782689717926`).
 
