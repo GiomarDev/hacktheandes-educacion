@@ -1,0 +1,461 @@
+// ms-siagie: IE, matrícula, asistencia y notas (spec, sección 4.1).
+// Toda columna *_user_id apunta a ms-auth (auth.users): son referencias sin FK.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EducationLevel {
+  INITIAL
+  PRIMARY
+  SECONDARY
+}
+
+enum Management {
+  PUBLIC
+  PRIVATE
+  PUBLIC_BY_AGREEMENT
+}
+
+enum Area {
+  URBAN
+  RURAL
+}
+
+enum DocumentType {
+  DNI
+  CE
+  PASSPORT
+}
+
+enum Sex {
+  F
+  M
+}
+
+enum Channel {
+  WHATSAPP
+  SMS
+  CALL
+}
+
+enum GuardianRelationship {
+  MOTHER
+  FATHER
+  GRANDPARENT
+  SIBLING
+  OTHER
+}
+
+enum PeriodType {
+  BIMESTER
+  TRIMESTER
+}
+
+enum Shift {
+  MORNING
+  AFTERNOON
+}
+
+enum EnrollmentStatus {
+  ENROLLED
+  TRANSFERRED_OUT
+  WITHDRAWN
+  COMPLETED
+  DECEASED
+}
+
+enum FinalResult {
+  PROMOTED
+  PERMANENCE
+  RECOVERY_PENDING
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  JUSTIFIED
+  LEFT_EARLY
+}
+
+enum AttendanceSource {
+  MANUAL
+  QR
+  PHOTO_OCR
+  IMPORT
+}
+
+enum AccessType {
+  ENTRY
+  EXIT
+}
+
+enum AccessMethod {
+  QR
+  CARD
+  MANUAL
+}
+
+enum LiteralGrade {
+  AD
+  A
+  B
+  C
+}
+
+model Dre {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  code       String   @unique @db.VarChar(10)
+  name       String   @db.VarChar(150)
+  department String   @db.VarChar(60)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  ugels Ugel[]
+
+  @@map("dres")
+}
+
+model Ugel {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  code      String   @unique @db.VarChar(10)
+  name      String   @db.VarChar(150)
+  dreId     String   @map("dre_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  dre     Dre      @relation(fields: [dreId], references: [id])
+  schools School[]
+
+  @@map("ugels")
+}
+
+model School {
+  id                      String         @id @default(uuid(7)) @db.Uuid
+  modularCode             String         @unique @map("modular_code") @db.Char(7)
+  localCode               String?        @map("local_code") @db.VarChar(10)
+  name                    String         @db.VarChar(200)
+  level                   EducationLevel
+  management              Management
+  area                    Area
+  ugelId                  String         @map("ugel_id") @db.Uuid
+  ubigeo                  String         @db.Char(6)
+  department              String         @db.VarChar(60)
+  province                String         @db.VarChar(60)
+  district                String         @db.VarChar(60)
+  address                 String?        @db.VarChar(250)
+  attentionGoal           Int            @map("attention_goal")
+  hasPsychologist         Boolean        @map("has_psychologist")
+  directorHasTeachingLoad Boolean        @map("director_has_teaching_load")
+  createdAt               DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  ugel         Ugel             @relation(fields: [ugelId], references: [id])
+  periods      AcademicPeriod[]
+  sections     Section[]
+  accessEvents AccessEvent[]
+
+  @@index([ugelId])
+  @@map("schools")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  action    String   @db.VarChar(60)
+  entity    String   @db.VarChar(60)
+  entityId  String?  @map("entity_id") @db.Uuid
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
+
+model AcademicPeriod {
+  id        String     @id @default(uuid(7)) @db.Uuid
+  schoolId  String     @map("school_id") @db.Uuid
+  year      Int        @db.SmallInt
+  type      PeriodType
+  number    Int        @db.SmallInt
+  startDate DateTime   @map("start_date") @db.Date
+  endDate   DateTime   @map("end_date") @db.Date
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  school       School        @relation(fields: [schoolId], references: [id])
+  gradeEntries GradeEntry[]
+  periodGrades PeriodGrade[]
+
+  @@unique([schoolId, year, type, number])
+  @@map("academic_periods")
+}
+
+model Section {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  schoolId       String   @map("school_id") @db.Uuid
+  year           Int      @db.SmallInt
+  grade          Int      @db.SmallInt
+  name           String   @db.VarChar(5)
+  shift          Shift
+  tutorUserId    String   @map("tutor_user_id") @db.Uuid
+  auxiliarUserId String?  @map("auxiliar_user_id") @db.Uuid
+  capacity       Int      @db.SmallInt
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  school              School               @relation(fields: [schoolId], references: [id])
+  teachingAssignments TeachingAssignment[]
+  enrollments         Enrollment[]
+  classSessions       ClassSession[]
+
+  @@unique([schoolId, year, grade, name, shift])
+  @@map("sections")
+}
+
+model CurricularArea {
+  id        String         @id @default(uuid(7)) @db.Uuid
+  code      String         @unique @db.VarChar(20)
+  name      String         @db.VarChar(100)
+  level     EducationLevel
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  competencies        Competency[]
+  teachingAssignments TeachingAssignment[]
+  classSessions       ClassSession[]
+
+  @@map("curricular_areas")
+}
+
+model Competency {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  areaId    String   @map("area_id") @db.Uuid
+  code      String   @db.VarChar(20)
+  name      String   @db.VarChar(250)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  area         CurricularArea @relation(fields: [areaId], references: [id])
+  gradeEntries GradeEntry[]
+  periodGrades PeriodGrade[]
+
+  @@unique([areaId, code])
+  @@map("competencies")
+}
+
+model TeachingAssignment {
+  id            String   @id @default(uuid(7)) @db.Uuid
+  sectionId     String   @map("section_id") @db.Uuid
+  areaId        String   @map("area_id") @db.Uuid
+  teacherUserId String   @map("teacher_user_id") @db.Uuid
+  weeklyHours   Int      @map("weekly_hours") @db.SmallInt
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  section Section        @relation(fields: [sectionId], references: [id])
+  area    CurricularArea @relation(fields: [areaId], references: [id])
+
+  @@unique([sectionId, areaId, teacherUserId])
+  @@map("teaching_assignments")
+}
+
+model Student {
+  id                String       @id @default(uuid(7)) @db.Uuid
+  studentCode       String       @unique @map("student_code") @db.VarChar(20)
+  documentType      DocumentType @map("document_type")
+  documentNumber    String       @map("document_number") @db.VarChar(15)
+  firstName         String       @map("first_name") @db.VarChar(100)
+  paternalLastName  String       @map("paternal_last_name") @db.VarChar(100)
+  maternalLastName  String       @map("maternal_last_name") @db.VarChar(100)
+  birthDate         DateTime     @map("birth_date") @db.Date
+  sex               Sex
+  motherTongue      String?      @map("mother_tongue") @db.VarChar(50)
+  hasSpecialNeeds   Boolean      @map("has_special_needs")
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  guardians      StudentGuardian[]
+  enrollments    Enrollment[]
+  qrCredentials  QrCredential[]
+  accessEvents   AccessEvent[]
+
+  @@unique([documentType, documentNumber])
+  @@map("students")
+}
+
+model Guardian {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  documentType     DocumentType @map("document_type")
+  documentNumber   String       @map("document_number") @db.VarChar(15)
+  firstName        String       @map("first_name") @db.VarChar(100)
+  lastName         String       @map("last_name") @db.VarChar(100)
+  phone            String       @db.VarChar(20)
+  whatsappOptIn    Boolean      @map("whatsapp_opt_in")
+  optInAt          DateTime?    @map("opt_in_at") @db.Timestamptz(6)
+  preferredChannel Channel      @map("preferred_channel")
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  students StudentGuardian[]
+
+  @@unique([documentType, documentNumber])
+  @@map("guardians")
+}
+
+model StudentGuardian {
+  studentId      String               @map("student_id") @db.Uuid
+  guardianId     String               @map("guardian_id") @db.Uuid
+  relationship   GuardianRelationship
+  isPrimary      Boolean              @map("is_primary")
+  receivesAlerts Boolean              @map("receives_alerts")
+
+  student  Student  @relation(fields: [studentId], references: [id])
+  guardian Guardian @relation(fields: [guardianId], references: [id])
+
+  @@id([studentId, guardianId])
+  @@map("student_guardians")
+}
+
+model Enrollment {
+  id              String           @id @default(uuid(7)) @db.Uuid
+  studentId       String           @map("student_id") @db.Uuid
+  sectionId       String           @map("section_id") @db.Uuid
+  year            Int              @db.SmallInt
+  status          EnrollmentStatus @default(ENROLLED)
+  statusReason    String?          @map("status_reason") @db.VarChar(250)
+  statusChangedAt DateTime?        @map("status_changed_at") @db.Timestamptz(6)
+  enrolledAt      DateTime         @map("enrolled_at") @db.Date
+  isPermanence    Boolean          @default(false) @map("is_permanence")
+  finalResult     FinalResult?     @map("final_result")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student           Student            @relation(fields: [studentId], references: [id])
+  section           Section            @relation(fields: [sectionId], references: [id])
+  attendanceRecords AttendanceRecord[]
+  gradeEntries      GradeEntry[]
+  periodGrades      PeriodGrade[]
+
+  @@unique([studentId, year])
+  @@index([sectionId])
+  @@map("enrollments")
+}
+
+model ClassSession {
+  id            String   @id @default(uuid(7)) @db.Uuid
+  sectionId     String   @map("section_id") @db.Uuid
+  areaId        String?  @map("area_id") @db.Uuid
+  teacherUserId String   @map("teacher_user_id") @db.Uuid
+  date          DateTime @db.Date
+  periodNumber  Int      @map("period_number") @db.SmallInt
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  section           Section            @relation(fields: [sectionId], references: [id])
+  area              CurricularArea?    @relation(fields: [areaId], references: [id])
+  attendanceRecords AttendanceRecord[]
+
+  @@unique([sectionId, date, periodNumber])
+  @@map("class_sessions")
+}
+
+model AttendanceRecord {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  enrollmentId     String           @map("enrollment_id") @db.Uuid
+  date             DateTime         @db.Date
+  classSessionId   String?          @map("class_session_id") @db.Uuid
+  status           AttendanceStatus
+  source           AttendanceSource
+  justification    String?          @db.VarChar(250)
+  recordedByUserId String           @map("recorded_by_user_id") @db.Uuid
+  recordedAt       DateTime         @default(now()) @map("recorded_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  enrollment   Enrollment    @relation(fields: [enrollmentId], references: [id])
+  classSession ClassSession? @relation(fields: [classSessionId], references: [id])
+
+  // NULLS NOT DISTINCT: la asistencia del día (class_session_id nulo) también es única.
+  @@unique([enrollmentId, date, classSessionId])
+  @@map("attendance_records")
+}
+
+model QrCredential {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  studentId String    @map("student_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash") @db.VarChar(255)
+  issuedAt  DateTime  @default(now()) @map("issued_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@map("qr_credentials")
+}
+
+model AccessEvent {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  studentId        String       @map("student_id") @db.Uuid
+  schoolId         String       @map("school_id") @db.Uuid
+  type             AccessType
+  method           AccessMethod
+  occurredAt       DateTime     @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  deviceId         String?      @map("device_id") @db.VarChar(50)
+  recordedByUserId String?      @map("recorded_by_user_id") @db.Uuid
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  student Student @relation(fields: [studentId], references: [id])
+  school  School  @relation(fields: [schoolId], references: [id])
+
+  @@index([schoolId, occurredAt])
+  @@map("access_events")
+}
+
+model GradeEntry {
+  id               String        @id @default(uuid(7)) @db.Uuid
+  enrollmentId     String        @map("enrollment_id") @db.Uuid
+  competencyId     String        @map("competency_id") @db.Uuid
+  periodId         String        @map("period_id") @db.Uuid
+  columnNumber     Int           @map("column_number") @db.SmallInt
+  value            LiteralGrade?
+  isCompensatory   Boolean       @default(false) @map("is_compensatory")
+  recordedByUserId String        @map("recorded_by_user_id") @db.Uuid
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  enrollment Enrollment     @relation(fields: [enrollmentId], references: [id])
+  competency Competency     @relation(fields: [competencyId], references: [id])
+  period     AcademicPeriod @relation(fields: [periodId], references: [id])
+
+  @@unique([enrollmentId, competencyId, periodId, columnNumber])
+  @@map("grade_entries")
+}
+
+model PeriodGrade {
+  id                String       @id @default(uuid(7)) @db.Uuid
+  enrollmentId      String       @map("enrollment_id") @db.Uuid
+  competencyId      String       @map("competency_id") @db.Uuid
+  periodId          String       @map("period_id") @db.Uuid
+  value             LiteralGrade?
+  calculationMethod String       @map("calculation_method") @db.VarChar(30)
+  attendanceRate    Decimal      @map("attendance_rate") @db.Decimal(5, 2)
+  calculatedAt      DateTime     @map("calculated_at") @db.Timestamptz(6)
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  enrollment Enrollment     @relation(fields: [enrollmentId], references: [id])
+  competency Competency     @relation(fields: [competencyId], references: [id])
+  period     AcademicPeriod @relation(fields: [periodId], references: [id])
+
+  @@unique([enrollmentId, competencyId, periodId])
+  @@map("period_grades")
+}
