@@ -39,7 +39,17 @@ export class SchoolAccessService {
   }
 
   currentEnrollment(studentId: string) {
-    return this.prisma.enrollment.findFirst({ where: { studentId }, orderBy: { year: 'desc' } });
+    return this.prisma.enrollment.findFirst({ where: { studentId }, orderBy: [{ year: 'desc' }, { enrolledAt: 'desc' }] });
+  }
+
+  // Para acciones del día a día (carné, ingreso): solo cuenta una matrícula vigente.
+  async assertActiveStudent(user: AuthUser, studentId: string, roles?: Role[]) {
+    const enrollment = await this.prisma.enrollment.findFirst({
+      where: { studentId, status: 'ENROLLED' },
+      orderBy: [{ year: 'desc' }, { enrolledAt: 'desc' }],
+    });
+    if (!enrollment) throw new NotFoundException('El estudiante no tiene matrícula vigente');
+    return this.assertEnrollment(user, enrollment.id, roles);
   }
 
   private check(user: AuthUser, school: { id: string; ugelId: string; dreId: string }, roles?: Role[]): void {

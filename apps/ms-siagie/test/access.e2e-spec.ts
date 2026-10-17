@@ -76,6 +76,18 @@ describe('carné QR e ingreso/salida', () => {
     await access(auxiliarB, { token: body.token, type: 'ENTRY' }).expect(403);
   });
 
+  it('al retirar al estudiante su carné deja de servir', async () => {
+    const { body } = await issueQr().expect(201);
+    const enrollment = await prisma.enrollment.findFirstOrThrow({ where: { studentId } });
+    await http()
+      .patch(`/enrollments/${enrollment.id}/status`)
+      .set(bearer(secretary))
+      .send({ status: 'TRANSFERRED_OUT', statusReason: 'Traslado a otra IE' })
+      .expect(200);
+    await access(auxiliar, { token: body.token, type: 'ENTRY' }).expect(404);
+    await access(auxiliar, { studentId, type: 'ENTRY' }).expect(404);
+  });
+
   it('un docente no emite QR', async () => {
     const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
     await http().post(`/students/${studentId}/qr`).set(bearer(teacher)).expect(403);

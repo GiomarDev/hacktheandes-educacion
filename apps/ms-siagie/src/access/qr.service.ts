@@ -16,7 +16,7 @@ export class QrService {
 
   // El token se entrega una sola vez (para imprimir el carné); se guarda solo su hash.
   async issue(user: AuthUser, studentId: string): Promise<{ token: string }> {
-    await this.access.assertStudent(user, studentId, ['DIRECTOR', 'SECRETARY']);
+    await this.access.assertActiveStudent(user, studentId, ['DIRECTOR', 'SECRETARY']);
     const token = randomBytes(32).toString('base64url');
     await this.prisma.$transaction([
       this.prisma.qrCredential.updateMany({ where: { studentId, revokedAt: null }, data: { revokedAt: new Date() } }),
@@ -33,7 +33,7 @@ export class QrService {
       if (!credential || credential.revokedAt) throw new NotFoundException('Carné no válido');
       studentId = credential.studentId;
     }
-    const enrollment = await this.access.assertStudent(user, studentId!, ['AUXILIAR', 'DIRECTOR', 'SECRETARY']);
+    const enrollment = await this.access.assertActiveStudent(user, studentId!, ['AUXILIAR', 'DIRECTOR', 'SECRETARY']);
     const event = await this.prisma.accessEvent.create({
       data: {
         studentId: studentId!,

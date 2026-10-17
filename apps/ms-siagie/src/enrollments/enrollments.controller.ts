@@ -41,9 +41,21 @@ export class EnrollmentsController {
     if (dto.status !== 'ENROLLED' && !dto.statusReason) {
       throw new BadRequestException('statusReason es obligatorio para dar de baja una matrícula');
     }
-    return this.prisma.enrollment.update({
-      where: { id },
-      data: { status: dto.status, statusReason: dto.statusReason ?? null, statusChangedAt: new Date() },
-    });
+    const [updated] = await this.prisma.$transaction([
+      this.prisma.enrollment.update({
+        where: { id },
+        data: { status: dto.status, statusReason: dto.statusReason ?? null, statusChangedAt: new Date() },
+      }),
+      // Al dejar la IE, su carné deja de abrir la puerta.
+      ...(dto.status !== 'ENROLLED'
+        ? [
+            this.prisma.qrCredential.updateMany({
+              where: { student: { enrollments: { some: { id } } }, revokedAt: null },
+              data: { revokedAt: new Date() },
+            }),
+          ]
+        : []),
+    ]);
+    return updated;
   }
 }
