@@ -54,6 +54,11 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 * **Validación cualitativa:** [`notas_sesión_1.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/notas_sesi%C3%B3n_1.md) (entrevista a docente de primaria y secundaria).
 * **Aspectos clave:** Arquitectura del modelo predictivo de Machine Learning supervisado (Gradient Boosting / Random Forest), fuentes de integración (SIAGIE, Censo, RENIEC, SISFOH), flujos operativos de semaforización y análisis de puntos de quiebre para proponer una alternativa agéntica ágil y preventiva.
 
+### 4. Deserción Escolar por Región y Distrito (SIAGIE 2023 → 2024)
+* **Documentación técnica:** [`docs/desercion_por_region_siagie_2023_2024.md`](docs/desercion_por_region_siagie_2023_2024.md)
+* **Datos:** ranking de las 25 regiones con estudiantes, desertores y tasa por nivel: [`docs/desercion_por_region_siagie_2023_2024.csv`](docs/desercion_por_region_siagie_2023_2024.csv)
+* **Aspectos clave:** promedio nacional de 2,54 % en secundaria (72 282 estudiantes) y 1,73 % en primaria (64 463). El problema se concentra en la Amazonía y la costa norte: Ucayali duplica el promedio nacional y es candidato para el piloto (varios distritos críticos en Coronel Portillo), mientras Lima reúne cerca de 1 de cada 3 desertores de secundaria. Pendiente comprobar cuánto de la cifra en frontera y zonas migrantes corresponde a estudiantes que se fueron del país.
+
 ---
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
@@ -100,6 +105,7 @@ Para más detalles sobre los componentes y sugerencias de iteración devueltas p
 ├── docs/                                   # Documentación técnica, datasets y tableros
 │   ├── alerta_escuela_documentacion.md     # Auditoría integral del sistema Alerta Escuela
 │   ├── reporte_desercion_escale.md         # Informe técnico y réplica de deserción ESCALE
+│   ├── desercion_por_region_siagie_2023_2024.md # Deserción por región y distrito (SIAGIE)
 │   ├── reporte_rendimiento_academico_oficial_peru.md # Informe técnico de rendimiento y UMC
 │   ├── desercion_interactiva.html          # Tablero interactivo de deserción secundaria
 │   ├── rendimiento_interactivo.html        # Tablero interactivo de rendimiento escolar
