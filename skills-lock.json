@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "chofex-hackathon": {
+      "source": "cuevaio/hack-the-andes",
+      "sourceType": "github",
+      "skillPath": "skills/chofex-hackathon/SKILL.md",
+      "computedHash": "0ad3527633cd785c2a3b4a4be7e0a7e9ab5af7fb7a21d54320829a1185806fe9"
+    }
+  }
+}

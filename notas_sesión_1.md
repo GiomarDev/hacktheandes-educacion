@@ -30,3 +30,24 @@ Datos/Artículos analizadoos:
 
 DEFINIMOS:
 1. Enfocarnos en Gobierno central como usuario primario y administrativos /profesores usuarios secundarios de la idea
+
+INICIMOS Preguntas a un posible usuaria (DOCENTE) sobre sus pains y sobre la situación de las soluciones actuales:
+Preguntamos a una profesor tanto secundaria y primaria sobre alerta escuela y encontramos que la plataforma NO incetiva a la proactividad SOLO mide descersión.
+
+Chat:
+"""
+es un sistema al que solo puede acceder los directores
+los docentes en primaria deben subir sus reportes por bimestre de asistencia o inexistencia, tardanzas, eso es un idnicador que se nos pide a los docentes por bimestre
+entonces con este reporte el director deben reportar a la ugel, cuando el estudiante empieza a tener un patron de faltas, tardanzas
+e caso de primaria lo hace el docente, el registro de esas asitencias, en caso de secunaia lo hace el auxiliar
+se supone que es para la prenvencion de disciplina escolar
+pero no sirve, porque no hacen nada si un estudiante se ausenta
+los psicologos tienen plazas, deben cumplir con antender creo que minimo 150 estudiantes en el año
+si n lo hacen la plaza se devuelve al Minedu y el colegio se queda sin psicologo
+entonces la falla es humana, si el psicologo no hace su trabajo, se dedica a otras cosas, no sube sus reportes, el Minedu lo toma como que no es necesario tenr psicologo alli
+ahora, los piscologos deben atender los casos de convivencia escolar, si ellos no suben la denuncia y el dorector no la respalda, pues no pasa mucho tampoco
+el psicologo es quien organiza las ferias vocacionales
+asesora al SAE
+SAEI
+para casos de estudiantes inclusivos
+"""
