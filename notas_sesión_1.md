@@ -6,13 +6,23 @@ Convesara con tu equipo:
 ¿Qué nos bloquea ahora y qué ayuda concreta necesitamos?
 ¿Qué podemos dejar fuera para demostrar una solución que funcione?
 
-Analizado: Grupos de interés
-1. Profesores en las escuelas
-2. Administrativos de las escuelas
-3. Gobierno central (para escuelas públicas o leyes para privado y público)
-4. Alumnos
-5. Padres
+Track del equipo:
+Educación Escolar (education): herramientas docentes, aprendizaje, prevención de la deserción y seguimiento de infraestructura y servicios escolares.
+
+Analizado: Grupos de interés. Quien de todos los ligados a este problema tienen la urgencia, priodidad y dinero para pagar o testear una solución
+1. Profesores en las escuelas (Usario secundario, le permite ser un profesor 10x y dedicarse a mentorear más que hacer papeleo innecesario)
+2. Administrativos de las escuelas (Usario secundario, la plataforma le genera reportes de resultados desagregado por clase y salón)
+3. Gobierno central (para escuelas públicas o leyes para privado y público) (usuario primario, le genera reportes de todos los colegios a nivel nacional y nos paga)
+4. Alumnos (usuario externalida)
+5. Padres (no analizados)
 
 
 Preguntas abiertas:
 1. ¿Cómo medimos la deserción escolar? ¿Cómo se mide los resultados de la educación?
+2. Qué porcentaje de colegios entre públicos y privados. Qué otro porcentaje de alumnos tiene esos síntomas de problemas
+3. ¿Qué causa que un estudiante deserte?
+
+Datos/Artículos analizadoos:
+1. https://care.org.pe/5-cifras-alarmantes-de-la-educacion-en-el-peru/
+2. https://usmp.edu.pe/wp-content/uploads/2026/04/Fuerza-Popular.pdf
+3. Plataforma alerta escuela
