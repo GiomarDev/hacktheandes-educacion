@@ -11,3 +11,10 @@
 
 # Archivos multimedia / imágenes binarias pesadas
 *.png
+
+# Backend
+node_modules/
+dist/
+coverage/
+**/src/generated/
+*.tsbuildinfo
