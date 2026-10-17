@@ -4,7 +4,7 @@
   "sourceRoot": "apps/ms-auth/src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "builder": "swc",
+    "builder": "rspack",
     "tsConfigPath": "apps/ms-auth/tsconfig.app.json",
     "typeCheck": false
   },
