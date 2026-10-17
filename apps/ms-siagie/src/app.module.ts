@@ -12,6 +12,8 @@ import { StudentsController } from './students/students.controller.js';
 import { EnrollmentsController } from './enrollments/enrollments.controller.js';
 import { AttendanceController } from './attendance/attendance.controller.js';
 import { AttendanceService } from './attendance/attendance.service.js';
+import { GradesController } from './grades/grades.controller.js';
+import { GradesService } from './grades/grades.service.js';
 
 @Module({
   controllers: [
@@ -22,12 +24,14 @@ import { AttendanceService } from './attendance/attendance.service.js';
     StudentsController,
     EnrollmentsController,
     AttendanceController,
+    GradesController,
   ],
   providers: [
     PrismaService,
     SchoolAccessService,
     GeoService,
     AttendanceService,
+    GradesService,
     { provide: JwksKeyResolver, useFactory: () => new HttpJwksKeyResolver(requireEnv('AUTH_JWKS_URL')) },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_FILTER, useClass: PrismaErrorFilter },
