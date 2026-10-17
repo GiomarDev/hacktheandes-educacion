@@ -26,3 +26,7 @@ Datos/Artículos analizadoos:
 1. https://care.org.pe/5-cifras-alarmantes-de-la-educacion-en-el-peru/
 2. https://usmp.edu.pe/wp-content/uploads/2026/04/Fuerza-Popular.pdf
 3. Plataforma alerta escuela
+
+
+DEFINIMOS:
+1. Enfocarnos en Gobierno central como usuario primario y administrativos /profesores usuarios secundarios de la idea
