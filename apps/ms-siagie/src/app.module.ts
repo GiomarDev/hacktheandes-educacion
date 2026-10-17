@@ -14,6 +14,8 @@ import { AttendanceController } from './attendance/attendance.controller.js';
 import { AttendanceService } from './attendance/attendance.service.js';
 import { GradesController } from './grades/grades.controller.js';
 import { GradesService } from './grades/grades.service.js';
+import { AccessController } from './access/access.controller.js';
+import { QrService } from './access/qr.service.js';
 
 @Module({
   controllers: [
@@ -25,6 +27,7 @@ import { GradesService } from './grades/grades.service.js';
     EnrollmentsController,
     AttendanceController,
     GradesController,
+    AccessController,
   ],
   providers: [
     PrismaService,
@@ -32,6 +35,7 @@ import { GradesService } from './grades/grades.service.js';
     GeoService,
     AttendanceService,
     GradesService,
+    QrService,
     { provide: JwksKeyResolver, useFactory: () => new HttpJwksKeyResolver(requireEnv('AUTH_JWKS_URL')) },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_FILTER, useClass: PrismaErrorFilter },
