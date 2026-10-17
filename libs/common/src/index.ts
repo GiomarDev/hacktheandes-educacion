@@ -6,3 +6,5 @@ export * from './auth/jwks-key-resolver.js';
 export * from './auth/roles.decorator.js';
 export * from './auth/current-user.decorator.js';
 export * from './auth/jwt-auth.guard.js';
+export * from './internal/internal-key.guard.js';
+export * from './http/prisma-error.filter.js';
