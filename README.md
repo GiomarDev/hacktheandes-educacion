@@ -59,6 +59,15 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 * **Datos:** ranking de las 25 regiones con estudiantes, desertores y tasa por nivel: [`docs/desercion_por_region_siagie_2023_2024.csv`](docs/desercion_por_region_siagie_2023_2024.csv)
 * **Aspectos clave:** promedio nacional de 2,54 % en secundaria (72 282 estudiantes) y 1,73 % en primaria (64 463). El problema se concentra en la Amazonía y la costa norte: Ucayali duplica el promedio nacional y es candidato para el piloto (varios distritos críticos en Coronel Portillo), mientras Lima reúne cerca de 1 de cada 3 desertores de secundaria. Pendiente comprobar cuánto de la cifra en frontera y zonas migrantes corresponde a estudiantes que se fueron del país.
 
+### 5. Validación Cualitativa en Campo y Academia: Entrevistas y Cambio de Gears
+* **Estado de persistencia:** Se ha procesado y persistido el aprendizaje integral de las entrevistas cualitativas (docente de aula Marita y especialista de la academia Saúl) en sus transcripciones completas y verbatim mediante procesamiento agéntico de audio; véase la sesión [`Dividir Y Transcribir Video`](conversation://d9a5f650-9c31-4820-a10e-d7d9ddca77b9).
+* **Documentación y transcripciones:**
+  - Transcripción docente Marita: [`docs/transcripcion_marita.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/transcripcion_marita.md)
+  - Transcripción academia Saúl: [`docs/transcripcion_saul.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/transcripcion_saul.md)
+  - Plan de cambio de gears a implementación: [`Augus_workstation/plan_implementacion_reunion.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/Augus_workstation/plan_implementacion_reunion.md) (minuta ejecutiva con referencia al audio de sincronización del equipo).
+  - Preguntas y soluciones clave consolidadas: [`docs/soluciones_y_preguntas_clave.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/soluciones_y_preguntas_clave.md)
+* **Aspectos clave:** La investigación de campo reveló que las soluciones de escritorio o portales web presentan alta fricción en los docentes ("no usan tecnología burocrática adicional"); por ello, el equipo pivota la interacción diaria a WhatsApp (agente conversacional como CLI para asistencia, bitácora y planes) y la plataforma web a un dashboard gerencial para directivos/UGEL. Asimismo, se fijó como meta inmediata la validación de tracción comercial (*willingness to pay*) con usuarios reales.
+
 ---
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
