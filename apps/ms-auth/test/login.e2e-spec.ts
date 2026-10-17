@@ -66,6 +66,14 @@ describe('POST /auth/login', () => {
     expect(res.body).toMatchObject(INVALID);
   });
 
+  it('intentos fallidos en paralelo cuentan todos y bloquean la cuenta', async () => {
+    const user = await createTestUser(prisma);
+    await Promise.all(Array.from({ length: 8 }, () => login('70000001', 'mala').expect(401)));
+    const updated = await prisma.user.findUniqueOrThrow({ where: { id: user.id } });
+    expect(updated.failedLoginAttempts).toBe(8);
+    expect(updated.status).toBe('LOCKED');
+  });
+
   it('bloqueo vencido: entra y reinicia el contador', async () => {
     const user = await createTestUser(prisma, {
       status: 'LOCKED',

@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import argon2 from 'argon2';
 import { PrismaService } from '../prisma.service.js';
-import { ACCESS_TOKEN_TTL_SECONDS, RequestMeta, TokensService } from './tokens.service.js';
+import { ACCESS_TOKEN_TTL_SECONDS, hashRefreshToken, RequestMeta, TokensService } from './tokens.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import type { AuthEventType } from '../generated/prisma/client.js';
 
@@ -48,24 +48,35 @@ export class AuthService implements OnModuleInit {
       throw invalidCredentials();
     }
     if (!passwordOk) {
-      const attempts = user.failedLoginAttempts + 1;
-      const lock = attempts >= MAX_FAILED_ATTEMPTS;
-      await this.prisma.user.update({
+      // Incremento atómico: los intentos en paralelo se cuentan todos.
+      const { failedLoginAttempts } = await this.prisma.user.update({
         where: { id: user.id },
-        data: {
-          failedLoginAttempts: attempts,
-          ...(lock && { status: 'LOCKED', lockedUntil: new Date(now.getTime() + LOCK_MINUTES * 60000) }),
-        },
+        data: { failedLoginAttempts: { increment: 1 } },
+        select: { failedLoginAttempts: true },
       });
       await this.event(user.id, 'LOGIN_FAILED', meta);
-      if (lock) await this.event(user.id, 'LOCKED', meta);
+      if (failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
+        const locked = await this.prisma.user.updateMany({
+          where: { id: user.id, status: { not: 'LOCKED' } },
+          data: { status: 'LOCKED', lockedUntil: new Date(now.getTime() + LOCK_MINUTES * 60000) },
+        });
+        if (locked.count > 0) await this.event(user.id, 'LOCKED', meta);
+      }
       throw invalidCredentials();
     }
 
-    await this.prisma.user.update({
-      where: { id: user.id },
+    // Solo se reinicia si nadie bloqueó la cuenta mientras tanto.
+    const unlocked = await this.prisma.user.updateMany({
+      where: {
+        id: user.id,
+        OR: [{ status: 'ACTIVE' }, { status: 'LOCKED', lockedUntil: { lte: now } }],
+      },
       data: { failedLoginAttempts: 0, status: 'ACTIVE', lockedUntil: null, lastLoginAt: now },
     });
+    if (unlocked.count === 0) {
+      await this.event(user.id, 'LOGIN_FAILED', meta);
+      throw invalidCredentials();
+    }
     await this.event(user.id, 'LOGIN_OK', meta);
     return {
       accessToken: await this.tokens.issueAccessToken(user),
@@ -78,6 +89,49 @@ export class AuthService implements OnModuleInit {
   async event(userId: string | null, type: AuthEventType, meta: RequestMeta): Promise<void> {
     await this.prisma.authEvent.create({
       data: { userId, type, ip: meta.ip, userAgent: meta.userAgent?.slice(0, 255) },
+    });
+  }
+
+  async refresh(refreshToken: string, meta: RequestMeta): Promise<TokenPair> {
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash: hashRefreshToken(refreshToken) },
+      include: { user: { include: { roles: true } } },
+    });
+    if (!stored) throw invalidCredentials();
+    if (stored.revokedAt) {
+      // Un token ya rotado se volvió a usar: alguien lo copió. Se corta toda la sesión.
+      await this.revokeFamily(stored.familyId);
+      await this.event(stored.userId, 'TOKEN_REUSE_DETECTED', meta);
+      throw invalidCredentials();
+    }
+    if (stored.expiresAt <= new Date() || stored.user.status !== 'ACTIVE') throw invalidCredentials();
+
+    const revoked = await this.prisma.refreshToken.updateMany({
+      where: { id: stored.id, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+    if (revoked.count === 0) throw invalidCredentials();
+    await this.event(stored.userId, 'REFRESH', meta);
+    return {
+      accessToken: await this.tokens.issueAccessToken(stored.user),
+      refreshToken: await this.tokens.issueRefreshToken(stored.userId, stored.familyId, meta),
+      expiresIn: ACCESS_TOKEN_TTL_SECONDS,
+    };
+  }
+
+  async logout(refreshToken: string, meta: RequestMeta): Promise<void> {
+    const stored = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash: hashRefreshToken(refreshToken) },
+    });
+    if (!stored) return;
+    await this.revokeFamily(stored.familyId);
+    await this.event(stored.userId, 'LOGOUT', meta);
+  }
+
+  private async revokeFamily(familyId: string): Promise<void> {
+    await this.prisma.refreshToken.updateMany({
+      where: { familyId, revokedAt: null },
+      data: { revokedAt: new Date() },
     });
   }
 }
