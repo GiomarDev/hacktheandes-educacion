@@ -52,4 +52,9 @@ export class KeysService {
       })),
     };
   }
+
+  async getPublicKeyPem(kid: string): Promise<string | null> {
+    const key = await this.prisma.signingKey.findUnique({ where: { kid } });
+    return key?.publicKey ?? null;
+  }
 }

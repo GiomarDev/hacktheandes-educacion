@@ -86,6 +86,18 @@ describe('POST /auth/login', () => {
     expect(updated.failedLoginAttempts).toBe(0);
   });
 
+  it('un fallo con el bloqueo vencido vuelve a bloquear la cuenta', async () => {
+    const user = await createTestUser(prisma, {
+      status: 'LOCKED',
+      lockedUntil: new Date(Date.now() - 1000),
+      failedLoginAttempts: 5,
+    });
+    await login('70000001', 'mala').expect(401);
+    const updated = await prisma.user.findUniqueOrThrow({ where: { id: user.id } });
+    expect(updated.status).toBe('LOCKED');
+    expect(updated.lockedUntil!.getTime()).toBeGreaterThan(Date.now() + 14 * 60000);
+  });
+
   it('usuario inactivo: 401', async () => {
     await createTestUser(prisma, { status: 'INACTIVE' });
     await login('70000001', TEST_PASSWORD).expect(401);

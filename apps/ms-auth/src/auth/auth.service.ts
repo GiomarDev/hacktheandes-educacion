@@ -56,8 +56,12 @@ export class AuthService implements OnModuleInit {
       });
       await this.event(user.id, 'LOGIN_FAILED', meta);
       if (failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
+        // También se vuelve a bloquear si el bloqueo anterior ya venció.
         const locked = await this.prisma.user.updateMany({
-          where: { id: user.id, status: { not: 'LOCKED' } },
+          where: {
+            id: user.id,
+            OR: [{ status: { not: 'LOCKED' } }, { lockedUntil: null }, { lockedUntil: { lte: now } }],
+          },
           data: { status: 'LOCKED', lockedUntil: new Date(now.getTime() + LOCK_MINUTES * 60000) },
         });
         if (locked.count > 0) await this.event(user.id, 'LOCKED', meta);
@@ -110,7 +114,12 @@ export class AuthService implements OnModuleInit {
       where: { id: stored.id, revokedAt: null },
       data: { revokedAt: new Date() },
     });
-    if (revoked.count === 0) throw invalidCredentials();
+    if (revoked.count === 0) {
+      // Otra petición rotó este mismo token al mismo tiempo: se trata como reutilización.
+      await this.revokeFamily(stored.familyId);
+      await this.event(stored.userId, 'TOKEN_REUSE_DETECTED', meta);
+      throw invalidCredentials();
+    }
     await this.event(stored.userId, 'REFRESH', meta);
     return {
       accessToken: await this.tokens.issueAccessToken(stored.user),
@@ -133,5 +142,18 @@ export class AuthService implements OnModuleInit {
       where: { familyId, revokedAt: null },
       data: { revokedAt: new Date() },
     });
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string, meta: RequestMeta): Promise<void> {
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    if (!(await argon2.verify(user.passwordHash, currentPassword))) throw invalidCredentials();
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: userId },
+        data: { passwordHash: await argon2.hash(newPassword, { type: argon2.argon2id }), mustChangePassword: false },
+      }),
+      this.prisma.refreshToken.updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: new Date() } }),
+    ]);
+    await this.event(userId, 'PASSWORD_CHANGED', meta);
   }
 }

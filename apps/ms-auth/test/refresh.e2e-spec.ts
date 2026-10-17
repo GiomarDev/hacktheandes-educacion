@@ -42,6 +42,15 @@ describe('refresh y logout', () => {
     await refresh(b).expect(401);
   });
 
+  it('dos refresh simultáneos con el mismo token se tratan como reutilización', async () => {
+    const { refreshToken } = await loginTokens();
+    const results = await Promise.all([refresh(refreshToken), refresh(refreshToken)]);
+    const statuses = results.map((r) => r.status).sort();
+    expect(statuses).toEqual([200, 401]);
+    const winner = results.find((r) => r.status === 200)!;
+    await refresh(winner.body.refreshToken).expect(401);
+  });
+
   it('rechaza un token vencido', async () => {
     const { refreshToken } = await loginTokens();
     await prisma.refreshToken.update({
