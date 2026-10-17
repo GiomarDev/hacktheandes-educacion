@@ -1,0 +1,10 @@
+# Entorno
+.env
+.env.*
+!.env.example
+
+# Claude Code (preferencias locales)
+.claude/settings.local.json
+
+# Sistema
+.DS_Store
