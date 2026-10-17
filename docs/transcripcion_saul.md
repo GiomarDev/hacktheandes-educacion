@@ -1,10 +1,15 @@
-# Transcripción de Reunión: Validación de Proyecto Educativo (Sesión 2)
+# Transcripción Completa: Validación Académica y Política Pública con Saúl (IEP)
+
+> **Contexto:** Entrevista de validación académica, política pública y viabilidad institucional con especialista del Instituto de Estudios Peruanos (IEP) para el reto de educación de **Hack the Andes (KeoIT)**.  
+> **Grabación de origen:** Google Meet 	fw-ayqq-vbd (2026-10-17 15 00 GMT-5)  
+> **Duración total:** 00:16:41 | **Total de intervenciones:** Verbatim completo  
+> **Participantes:**
+> - **Saúl:** Investigador del Instituto de Estudios Peruanos (IEP), economista y docente universitario especializado en evaluación de proyectos educativos y economía aplicada.
+> - **Entrevistador (Equipo Hack the Andes):** Presentación del enfoque del producto, discusión sobre incentivos en el ecosistema escolar, revisión de evidencia en Perú (GRADE, PUCP) y viabilidad comercial B2G.
 
 **Archivo de origen:** `session_2_15-00.mp3`  
 **Duración total del audio:** ~16:41 (diálogo activo de 00:00 a 14:38, seguido de silencio al cierre)  
-**Participantes:**
-- **Saúl:** Investigador del Instituto de Estudios Peruanos (IEP) / docente académico.
-- **Estudiante / Entrevistador:** Miembro del equipo participante en la hackatón.
+
 
 ---
 
