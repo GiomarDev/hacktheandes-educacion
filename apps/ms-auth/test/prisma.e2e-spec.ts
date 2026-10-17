@@ -38,6 +38,14 @@ describe('esquema Prisma de ms-auth', () => {
     await expect(prisma.user.create({ data: userData })).rejects.toMatchObject({ code: 'P2002' });
   });
 
+  it('no permite el mismo rol dos veces aunque el alcance tenga nulos', async () => {
+    const user = await prisma.user.create({ data: userData });
+    await prisma.userRole.create({ data: { userId: user.id, role: 'MINEDU_ADMIN' } });
+    await expect(prisma.userRole.create({ data: { userId: user.id, role: 'MINEDU_ADMIN' } })).rejects.toMatchObject({
+      code: 'P2002',
+    });
+  });
+
   it('asocia roles al usuario', async () => {
     const user = await prisma.user.create({ data: userData });
     await prisma.userRole.create({

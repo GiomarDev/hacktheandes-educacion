@@ -34,6 +34,18 @@ describe('rutas autenticadas de ms-auth', () => {
     await http().get('/auth/me').expect(401);
   });
 
+  it('un token firmado con una llave retirada hace tiempo ya no sirve', async () => {
+    const { accessToken } = await loginWith();
+    await prisma.signingKey.updateMany({
+      data: { isActive: false, rotatedAt: new Date(Date.now() - 3600_000) },
+    });
+    try {
+      await http().get('/auth/me').set('Authorization', `Bearer ${accessToken}`).expect(401);
+    } finally {
+      await prisma.signingKey.updateMany({ data: { isActive: true, rotatedAt: null } });
+    }
+  });
+
   it('las rutas públicas siguen sin pedir token', async () => {
     await http().get('/health').expect(200);
     await http().get('/.well-known/jwks.json').expect(200);
@@ -61,6 +73,24 @@ describe('rutas autenticadas de ms-auth', () => {
       expect(await prisma.authEvent.count({ where: { type: 'PASSWORD_CHANGED' } })).toBe(1);
       const user = await prisma.user.findFirstOrThrow();
       expect(user.mustChangePassword).toBe(false);
+    });
+
+    it('5 contraseñas actuales erróneas bloquean la cuenta', async () => {
+      const { accessToken } = await loginWith();
+      for (let i = 0; i < 5; i++) {
+        await http()
+          .post('/auth/change-password')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({ currentPassword: 'adivinando', newPassword: 'Nueva-Clave-2026' })
+          .expect(401);
+      }
+      const user = await prisma.user.findFirstOrThrow();
+      expect(user.status).toBe('LOCKED');
+      await http()
+        .post('/auth/change-password')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ currentPassword: TEST_PASSWORD, newPassword: 'Nueva-Clave-2026' })
+        .expect(401);
     });
 
     it('rechaza una contraseña nueva corta', async () => {

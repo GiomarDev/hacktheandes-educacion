@@ -48,24 +48,7 @@ export class AuthService implements OnModuleInit {
       throw invalidCredentials();
     }
     if (!passwordOk) {
-      // Incremento atómico: los intentos en paralelo se cuentan todos.
-      const { failedLoginAttempts } = await this.prisma.user.update({
-        where: { id: user.id },
-        data: { failedLoginAttempts: { increment: 1 } },
-        select: { failedLoginAttempts: true },
-      });
-      await this.event(user.id, 'LOGIN_FAILED', meta);
-      if (failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
-        // También se vuelve a bloquear si el bloqueo anterior ya venció.
-        const locked = await this.prisma.user.updateMany({
-          where: {
-            id: user.id,
-            OR: [{ status: { not: 'LOCKED' } }, { lockedUntil: null }, { lockedUntil: { lte: now } }],
-          },
-          data: { status: 'LOCKED', lockedUntil: new Date(now.getTime() + LOCK_MINUTES * 60000) },
-        });
-        if (locked.count > 0) await this.event(user.id, 'LOCKED', meta);
-      }
+      await this.registerFailedAttempt(user.id, now, meta);
       throw invalidCredentials();
     }
 
@@ -137,6 +120,26 @@ export class AuthService implements OnModuleInit {
     await this.event(stored.userId, 'LOGOUT', meta);
   }
 
+  private async registerFailedAttempt(userId: string, now: Date, meta: RequestMeta): Promise<void> {
+    // Incremento atómico: los intentos en paralelo se cuentan todos.
+    const { failedLoginAttempts } = await this.prisma.user.update({
+      where: { id: userId },
+      data: { failedLoginAttempts: { increment: 1 } },
+      select: { failedLoginAttempts: true },
+    });
+    await this.event(userId, 'LOGIN_FAILED', meta);
+    if (failedLoginAttempts < MAX_FAILED_ATTEMPTS) return;
+    // También se vuelve a bloquear si el bloqueo anterior ya venció.
+    const locked = await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        OR: [{ status: { not: 'LOCKED' } }, { lockedUntil: null }, { lockedUntil: { lte: now } }],
+      },
+      data: { status: 'LOCKED', lockedUntil: new Date(now.getTime() + LOCK_MINUTES * 60000) },
+    });
+    if (locked.count > 0) await this.event(userId, 'LOCKED', meta);
+  }
+
   private async revokeFamily(familyId: string): Promise<void> {
     await this.prisma.refreshToken.updateMany({
       where: { familyId, revokedAt: null },
@@ -146,7 +149,12 @@ export class AuthService implements OnModuleInit {
 
   async changePassword(userId: string, currentPassword: string, newPassword: string, meta: RequestMeta): Promise<void> {
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId } });
-    if (!(await argon2.verify(user.passwordHash, currentPassword))) throw invalidCredentials();
+    // Mismo límite de intentos que el login: si no, aquí se podría adivinar la contraseña sin bloqueo.
+    if (user.status !== 'ACTIVE') throw invalidCredentials();
+    if (!(await argon2.verify(user.passwordHash, currentPassword))) {
+      await this.registerFailedAttempt(userId, new Date(), meta);
+      throw invalidCredentials();
+    }
     await this.prisma.$transaction([
       this.prisma.user.update({
         where: { id: userId },

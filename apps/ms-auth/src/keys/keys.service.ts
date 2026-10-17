@@ -39,9 +39,8 @@ export class KeysService {
 
   async getJwks(): Promise<{ keys: JsonWebKey[] }> {
     await this.getActiveSigningKey();
-    const rotatedSince = new Date(Date.now() - ACCESS_TOKEN_TTL_SECONDS * 1000);
     const keys = await this.prisma.signingKey.findMany({
-      where: { OR: [{ isActive: true }, { rotatedAt: { gte: rotatedSince } }] },
+      where: { OR: [{ isActive: true }, { rotatedAt: { gte: this.rotationCutoff() } }] },
     });
     return {
       keys: keys.map((k) => ({
@@ -54,7 +53,13 @@ export class KeysService {
   }
 
   async getPublicKeyPem(kid: string): Promise<string | null> {
-    const key = await this.prisma.signingKey.findUnique({ where: { kid } });
+    const key = await this.prisma.signingKey.findFirst({
+      where: { kid, OR: [{ isActive: true }, { rotatedAt: { gte: this.rotationCutoff() } }] },
+    });
     return key?.publicKey ?? null;
+  }
+
+  private rotationCutoff(): Date {
+    return new Date(Date.now() - ACCESS_TOKEN_TTL_SECONDS * 1000);
   }
 }
