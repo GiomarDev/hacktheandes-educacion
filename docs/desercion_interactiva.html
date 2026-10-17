@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tasa de Deserción Interanual en Educación Secundaria - ESCALE MINEDU</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .chart-dot {
+      transition: r 0.2s ease, fill 0.2s ease;
+      cursor: pointer;
+    }
+    .chart-dot:hover {
+      r: 7px;
+    }
+  </style>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-4 font-sans">
+  <div class="max-w-4xl mx-auto bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+    
+    <!-- Encabezado -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[var(--border)] pb-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <span class="text-xs font-semibold tracking-wider uppercase text-[var(--muted-foreground)]">Plataforma ESCALE - MINEDU</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)] mt-1">
+          Tasa de deserción interanual en Educación Secundaria
+        </h1>
+        <p class="text-xs sm:text-sm text-[var(--muted-foreground)] mt-0.5">
+          Replicación y actualización con datos consolidados del SIAGIE (Serie hasta 2024-2025 y proyección a 2026)
+        </p>
+      </div>
+
+      <!-- Selector de vista -->
+      <div class="flex flex-wrap gap-1.5 bg-[var(--background)] p-1 rounded-xl border border-[var(--border)]">
+        <button id="btn-orig" onclick="setMode('orig')" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs">
+          Original (2020-2024)
+        </button>
+        <button id="btn-oficial" onclick="setMode('oficial')" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          Actualizado 2026 (Oficial)
+        </button>
+        <button id="btn-gestion" onclick="setMode('gestion')" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          Pública vs Privada
+        </button>
+        <button id="btn-area" onclick="setMode('area')" class="px-3 py-1.5 text-xs font-medium rounded-lg transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          Urbana vs Rural
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor del Gráfico SVG Interactivo -->
+    <div class="mt-6 relative bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
+      <div id="tooltip" class="absolute hidden pointer-events-none bg-slate-900 text-white text-xs px-2.5 py-1.5 rounded-md shadow-lg z-20 transition-opacity">
+      </div>
+
+      <!-- SVG Canvas -->
+      <svg id="chart-svg" viewBox="0 0 760 360" class="w-full h-auto overflow-visible select-none">
+        <!-- Renderizado dinámico vía JavaScript -->
+      </svg>
+
+      <!-- Leyenda dinámica -->
+      <div id="chart-legend" class="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs text-[var(--muted-foreground)] border-t border-[var(--border)] pt-3">
+      </div>
+    </div>
+
+    <!-- Métricas clave resumen -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+      <div class="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+        <div class="text-[11px] text-[var(--muted-foreground)]">2020-2021 (Pandemia)</div>
+        <div class="text-lg font-bold text-sky-600 mt-0.5">1.9% <span class="text-xs font-normal text-[var(--muted-foreground)]">(0.8% prelim.)</span></div>
+        <div class="text-[11px] text-[var(--muted-foreground)] mt-0.5">Promoción guiada</div>
+      </div>
+      <div class="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+        <div class="text-[11px] text-[var(--muted-foreground)]">2023-2024 (Consolidado)</div>
+        <div class="text-lg font-bold text-amber-600 mt-0.5">2.5%</div>
+        <div class="text-[11px] text-[var(--muted-foreground)] mt-0.5">Retorno a niveles pre-covid</div>
+      </div>
+      <div class="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+        <div class="text-[11px] text-[var(--muted-foreground)]">2024-2025 (Oficial ESCALE)</div>
+        <div class="text-lg font-bold text-rose-600 mt-0.5">2.7%</div>
+        <div class="text-[11px] text-[var(--muted-foreground)] mt-0.5">3.7% en ámbito rural</div>
+      </div>
+      <div class="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+        <div class="text-[11px] text-[var(--muted-foreground)]">2025-2026 (Proyección)</div>
+        <div class="text-lg font-bold text-indigo-600 mt-0.5">2.8% <span class="text-xs font-normal">(estimado)</span></div>
+        <div class="text-[11px] text-[var(--muted-foreground)] mt-0.5">Cierre ciclo lectivo 2026</div>
+      </div>
+    </div>
+
+    <!-- Ficha técnica y metodología -->
+    <div class="mt-5 p-4 rounded-xl border border-[var(--border)] bg-[var(--background)] text-xs text-[var(--muted-foreground)] space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="font-semibold text-[var(--foreground)] text-sm">Ficha Técnica del Indicador (ESCALE Cuadro 321)</span>
+        <a href="https://escale.minedu.gob.pe/ueetendencias2016" target="_blank" class="text-blue-500 hover:underline">Ir a ESCALE MINEDU &rarr;</a>
+      </div>
+      <p>
+        <strong class="text-[var(--foreground)]">Definición oficial:</strong> Porcentaje de estudiantes matriculados en secundaria en el año <em>t</em> que no vuelven a matricularse en Educación Básica Regular (EBR) en el año <em>t+1</em>, excluyendo a los aprobados de 5° grado y fallecidos.
+      </p>
+      <div class="bg-[var(--card)] p-2.5 rounded-lg border border-[var(--border)] font-mono text-[11px] text-[var(--foreground)] overflow-x-auto">
+        Tasa Deserción (t) = [ (Matrícula_t - (Matrícula_t ∩ Matrícula_t+1) - Graduados_5to_t - Fallecidos_t) / Matrícula_t ] × 100
+      </div>
+      <p>
+        <strong class="text-[var(--foreground)]">Fuente primaria:</strong> Registros censales del Sistema de Información de Apoyo a la Gestión de la Institución Educativa (SIAGIE), procesados por la Unidad de Estadística Educativa (UEE).
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // Dataset extraído directamente de la plataforma ESCALE (idCuadro=321)
+    const datasets = {
+      orig: {
+        title: "Gráfico Original (2020-2024)",
+        periods: ["2020-2021", "2021-2022", "2022-2023", "2023-2024"],
+        series: [
+          { name: "Deserción Secundaria (Original)", data: [0.8, 1.3, 1.6, 2.5], color: "#1f6587", dashed: false }
+        ],
+        yMax: 3.0,
+        unit: "%"
+      },
+      oficial: {
+        title: "Serie Oficial Consolidada ESCALE + Proyección 2026",
+        periods: ["2020-2021", "2021-2022", "2022-2023", "2023-2024", "2024-2025", "2025-2026 (e)"],
+        series: [
+          { name: "ESCALE Oficial (SIAGIE)", data: [1.9, 3.0, 2.6, 2.5, 2.7, null], color: "#0d5275", dashed: false },
+          { name: "Proyección Cierre 2026", data: [null, null, null, null, 2.7, 2.8], color: "#e05638", dashed: true },
+          { name: "Referencia Preliminar Original", data: [0.8, 1.3, 1.6, 2.5, null, null], color: "#94a3b8", dashed: true }
+        ],
+        yMax: 3.5,
+        unit: "%"
+      },
+      gestion: {
+        title: "Deserción por Tipo de Gestión (Pública vs Privada)",
+        periods: ["2020-2021", "2021-2022", "2022-2023", "2023-2024", "2024-2025", "2025-2026 (e)"],
+        series: [
+          { name: "Educación Pública", data: [2.1, 3.4, 2.9, 2.9, 3.1, 3.2], color: "#dc2626", dashed: false },
+          { name: "Total Nacional", data: [1.9, 3.0, 2.6, 2.5, 2.7, 2.8], color: "#0284c7", dashed: false },
+          { name: "Educación Privada", data: [1.4, 1.5, 1.6, 1.4, 1.5, 1.5], color: "#16a34a", dashed: false }
+        ],
+        yMax: 4.0,
+        unit: "%"
+      },
+      area: {
+        title: "Deserción por Ámbito Geográfico (Urbana vs Rural)",
+        periods: ["2020-2021", "2021-2022", "2022-2023", "2023-2024", "2024-2025", "2025-2026 (e)"],
+        series: [
+          { name: "Área Rural", data: [2.0, 2.8, 3.0, 2.8, 3.7, 3.9], color: "#ea580c", dashed: false },
+          { name: "Total Nacional", data: [1.9, 3.0, 2.6, 2.5, 2.7, 2.8], color: "#0284c7", dashed: false },
+          { name: "Área Urbana", data: [1.9, 3.0, 2.4, 2.4, 2.4, 2.4], color: "#059669", dashed: false }
+        ],
+        yMax: 4.5,
+        unit: "%"
+      }
+    };
+
+    let currentMode = "oficial";
+
+    function setMode(mode) {
+      currentMode = mode;
+      ['orig', 'oficial', 'gestion', 'area'].forEach(m => {
+        const btn = document.getElementById('btn-' + m);
+        if (m === mode) {
+          btn.className = "px-3 py-1.5 text-xs font-medium rounded-lg transition-all bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs";
+        } else {
+          btn.className = "px-3 py-1.5 text-xs font-medium rounded-lg transition-all text-[var(--muted-foreground)] hover:text-[var(--foreground)]";
+        }
+      });
+      renderChart();
+    }
+
+    function renderChart() {
+      const cfg = datasets[currentMode];
+      const svg = document.getElementById('chart-svg');
+      const legend = document.getElementById('chart-legend');
+      const tooltip = document.getElementById('tooltip');
+
+      const W = 760;
+      const H = 340;
+      const padL = 50;
+      const padR = 40;
+      const padT = 30;
+      const padB = 40;
+
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+
+      const nX = cfg.periods.length;
+      const getX = (i) => padL + (i / (nX - 1)) * innerW;
+      const getY = (val) => padT + innerH - (val / cfg.yMax) * innerH;
+
+      let html = '';
+
+      // Gridlines Y
+      const steps = 6;
+      for (let s = 0; s <= steps; s++) {
+        const val = (cfg.yMax / steps) * s;
+        const yPos = getY(val);
+        html += `<line x1="${padL}" y1="${yPos}" x2="${W - padR}" y2="${yPos}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" />`;
+        html += `<text x="${padL - 10}" y="${yPos + 4}" fill="currentColor" opacity="0.6" font-size="11" text-anchor="end">${val.toFixed(1)}%</text>`;
+      }
+
+      // X Labels
+      cfg.periods.forEach((p, i) => {
+        const xPos = getX(i);
+        html += `<line x1="${xPos}" y1="${H - padB}" x2="${xPos}" y2="${H - padB + 5}" stroke="currentColor" stroke-opacity="0.2" />`;
+        html += `<text x="${xPos}" y="${H - padB + 20}" fill="currentColor" opacity="0.8" font-size="11" text-anchor="middle">${p}</text>`;
+      });
+
+      // Series lines & points
+      cfg.series.forEach((s) => {
+        let pathD = '';
+        const points = [];
+
+        s.data.forEach((val, i) => {
+          if (val !== null && val !== undefined) {
+            const px = getX(i);
+            const py = getY(val);
+            points.push({ x: px, y: py, val: val, period: cfg.periods[i], sName: s.name, color: s.color });
+            if (!pathD) {
+              pathD = `M ${px} ${py}`;
+            } else {
+              pathD += ` L ${px} ${py}`;
+            }
+          }
+        });
+
+        if (pathD) {
+          html += `<path d="${pathD}" fill="none" stroke="${s.color}" stroke-width="${s.dashed ? '2.5' : '3.2'}" stroke-dasharray="${s.dashed ? '6,6' : 'none'}" stroke-linecap="round" stroke-linejoin="round" />`;
+        }
+
+        // Points
+        points.forEach((pt) => {
+          html += `
+            <circle cx="${pt.x}" cy="${pt.y}" r="5" fill="${pt.color}" stroke="#ffffff" stroke-width="2" class="chart-dot"
+                    data-info="${pt.sName}|${pt.period}|${pt.val.toFixed(1)}%" />
+            <text x="${pt.x}" y="${pt.y - 10}" fill="${pt.color}" font-size="10.5" font-weight="bold" text-anchor="middle">${pt.val.toFixed(1)}%</text>
+          `;
+        });
+      });
+
+      svg.innerHTML = html;
+
+      // Update Legend
+      let legHtml = '';
+      cfg.series.forEach(s => {
+        legHtml += `
+          <div class="flex items-center gap-1.5">
+            <span class="w-3.5 h-1 rounded" style="background-color: ${s.color}; ${s.dashed ? 'border-top: 2px dashed ' + s.color + '; background: transparent;' : ''}"></span>
+            <span class="font-medium text-[var(--foreground)]">${s.name}</span>
+          </div>
+        `;
+      });
+      legend.innerHTML = legHtml;
+
+      // Tooltip handling
+      const dots = svg.querySelectorAll('.chart-dot');
+      dots.forEach(dot => {
+        dot.addEventListener('mouseenter', (e) => {
+          const info = e.target.getAttribute('data-info').split('|');
+          tooltip.innerHTML = `<strong>${info[0]}</strong><br/>Periodo: ${info[1]}<br/>Tasa: <span class="text-amber-300 font-bold">${info[2]}</span>`;
+          tooltip.classList.remove('hidden');
+        });
+        dot.addEventListener('mousemove', (e) => {
+          const rect = svg.getBoundingClientRect();
+          tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
+          tooltip.style.top = (e.clientY - rect.top - 20) + 'px';
+        });
+        dot.addEventListener('mouseleave', () => {
+          tooltip.classList.add('hidden');
+        });
+      });
+    }
+
+    // Inicializar
+    setMode('oficial');
+  </script>
+</body>
+</html>

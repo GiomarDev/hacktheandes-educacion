@@ -51,3 +51,9 @@ asesora al SAE
 SAEI
 para casos de estudiantes inclusivos
 """
+
+Otros sistemas conocidos pero sin documentación a detalle:
+- ESCALE
+- SIAGIE: https://siagie.minedu.gob.pe/inicio/
+- SIMON
+- Identicole
