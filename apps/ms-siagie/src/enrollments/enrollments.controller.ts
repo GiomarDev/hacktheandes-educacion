@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, NotFoundException, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { BadRequestException, Body, ConflictException, Controller, NotFoundException, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { CurrentUser, dateOnly } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { PrismaService } from '../prisma.service.js';
@@ -20,6 +20,11 @@ export class EnrollmentsController {
     if (!(await this.prisma.student.findUnique({ where: { id: dto.studentId } }))) {
       throw new NotFoundException('Estudiante no encontrado');
     }
+    // Sin traslado registrado, un estudiante con matrícula vigente en otra IE no se puede matricular aquí.
+    const active = await this.prisma.enrollment.findFirst({
+      where: { studentId: dto.studentId, status: 'ENROLLED', section: { schoolId: { not: section.schoolId } } },
+    });
+    if (active) throw new ConflictException('El estudiante tiene matrícula vigente en otra IE; registre primero el traslado');
     return this.prisma.enrollment.create({
       data: { studentId: dto.studentId, sectionId: section.id, year: section.year, enrolledAt: dateOnly(dto.enrolledAt) },
     });

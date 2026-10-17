@@ -6,6 +6,7 @@ export const USERS = {
   tutorA: '019a0000-0000-7000-8000-0000000000d3',
   teacherA: '019a0000-0000-7000-8000-0000000000d4',
   auxiliarA: '019a0000-0000-7000-8000-0000000000d5',
+  auxiliarA2: '019a0000-0000-7000-8000-0000000000d6',
   directorB: '019a0000-0000-7000-8000-0000000000e1',
   auxiliarB: '019a0000-0000-7000-8000-0000000000e5',
 };
@@ -36,7 +37,7 @@ export async function createSchoolFixture(prisma: PrismaService) {
       data: { schoolId, year: 2026, grade: 1, name, shift: 'MORNING', tutorUserId: USERS.tutorA, auxiliarUserId, capacity: 35 },
     });
   const sectionA = await section(schoolA.id, 'A', USERS.auxiliarA);
-  const sectionA2 = await section(schoolA.id, 'B', USERS.auxiliarA);
+  const sectionA2 = await section(schoolA.id, 'B', USERS.auxiliarA2);
   const sectionB = await section(schoolB.id, 'A', USERS.auxiliarB);
   const area = await prisma.curricularArea.create({ data: { code: 'MAT', name: 'Matemática', level: 'SECONDARY' } });
   const competencies = await Promise.all(

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { dateOnly, todayInLima } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { PrismaService } from '../prisma.service.js';
@@ -13,7 +13,8 @@ export class AttendanceService {
   ) {}
 
   async createClassSession(user: AuthUser, dto: CreateClassSessionDto) {
-    await this.access.assertSection(user, dto.sectionId, ['TEACHER', 'TUTOR', 'AUXILIAR']);
+    const section = await this.access.assertSection(user, dto.sectionId, ['TEACHER', 'TUTOR', 'AUXILIAR']);
+    await this.access.assertSectionStaff(user, section);
     this.assertNotFuture(dto.date);
     return this.prisma.classSession.create({
       data: { ...dto, date: dateOnly(dto.date), teacherUserId: user.id },
@@ -22,7 +23,8 @@ export class AttendanceService {
 
   // Se valida todo antes de escribir: o se guarda la lista completa o nada.
   async bulk(user: AuthUser, dto: BulkAttendanceDto): Promise<{ saved: number }> {
-    await this.access.assertSection(user, dto.sectionId, ['TUTOR', 'TEACHER', 'AUXILIAR', 'DIRECTOR']);
+    const section = await this.access.assertSection(user, dto.sectionId, ['TUTOR', 'TEACHER', 'AUXILIAR', 'DIRECTOR']);
+    await this.access.assertSectionStaff(user, section);
     this.assertNotFuture(dto.date);
     const date = dateOnly(dto.date);
 
@@ -30,6 +32,10 @@ export class AttendanceService {
       const session = await this.prisma.classSession.findUnique({ where: { id: dto.classSessionId } });
       if (!session || session.sectionId !== dto.sectionId || session.date.getTime() !== date.getTime()) {
         throw new BadRequestException('La hora de clase no corresponde a esta sección y fecha');
+      }
+      const isDirector = user.roles.some((r) => r.role === 'DIRECTOR' && r.schoolId === section.schoolId);
+      if (session.teacherUserId !== user.id && !isDirector) {
+        throw new ForbiddenException('Solo el docente de esa hora registra su lista');
       }
     }
 

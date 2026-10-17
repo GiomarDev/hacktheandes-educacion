@@ -45,4 +45,20 @@ export class SchoolAccessService {
   private check(user: AuthUser, school: { id: string; ugelId: string; dreId: string }, roles?: Role[]): void {
     if (!canAccessSchool(user, school, roles)) throw new ForbiddenException('No tiene acceso a esta IE');
   }
+
+  // Dentro de la IE, el personal solo actúa sobre sus secciones: el auxiliar en las que tiene a cargo,
+  // el tutor en la suya y el docente donde dicta. Director y secretaría ven toda la IE.
+  async assertSectionStaff(user: AuthUser, section: { id: string; schoolId: string; tutorUserId: string; auxiliarUserId: string | null }) {
+    const rolesHere = user.roles.filter((r) => r.schoolId === section.schoolId).map((r) => r.role);
+    if (rolesHere.includes('DIRECTOR') || rolesHere.includes('SECRETARY')) return;
+    if (rolesHere.includes('AUXILIAR') && section.auxiliarUserId === user.id) return;
+    if (rolesHere.includes('TUTOR') && section.tutorUserId === user.id) return;
+    if (rolesHere.includes('TEACHER') || rolesHere.includes('TUTOR')) {
+      const assignment = await this.prisma.teachingAssignment.findFirst({
+        where: { sectionId: section.id, teacherUserId: user.id },
+      });
+      if (assignment) return;
+    }
+    throw new ForbiddenException('No tiene a cargo esta sección');
+  }
 }

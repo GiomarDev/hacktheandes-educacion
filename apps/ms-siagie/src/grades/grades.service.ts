@@ -17,7 +17,10 @@ export class GradesService {
     const competency = await this.prisma.competency.findUnique({ where: { id: dto.competencyId } });
     if (!competency) throw new NotFoundException('Competencia no encontrada');
     const period = await this.prisma.academicPeriod.findUnique({ where: { id: dto.periodId } });
-    if (!period || period.schoolId !== enrollment.section.schoolId) throw new BadRequestException('El periodo no es de esta IE');
+    if (!period || period.schoolId !== enrollment.section.schoolId || period.year !== enrollment.year) {
+      throw new BadRequestException('El periodo no corresponde a la IE y al año de la matrícula');
+    }
+    if (enrollment.status !== 'ENROLLED') throw new BadRequestException('La matrícula no está vigente');
 
     // Solo pone notas quien dicta el área en esa sección.
     const assignment = await this.prisma.teachingAssignment.findFirst({

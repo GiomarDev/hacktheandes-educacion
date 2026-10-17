@@ -3,7 +3,7 @@ import request from 'supertest';
 import { PrismaService } from '../src/prisma.service.js';
 import { createSiagieApp } from './helpers/app.js';
 import { cleanSiagieTables } from './helpers/db.js';
-import { createSchoolFixture, USERS } from './helpers/fixtures.js';
+import { createEnrolledStudent, createSchoolFixture, USERS } from './helpers/fixtures.js';
 import { bearer, signTestToken } from './helpers/tokens.js';
 
 describe('secciones, estudiantes y matrícula', () => {
@@ -73,6 +73,33 @@ describe('secciones, estudiantes y matrícula', () => {
       .set(bearer(secretary))
       .send({ studentId: student.body.id, sectionId: fx.sectionA2.id, enrolledAt: '2026-03-02' })
       .expect(409);
+  });
+
+  it('un apoderado ya registrado no se modifica desde otra matrícula', async () => {
+    await http().post('/students').set(bearer(secretary)).send(studentBody('81234567')).expect(201);
+    const hijack = studentBody('81234568');
+    hijack.guardians[0] = { ...hijack.guardians[0], phone: '+51999999999', firstName: 'Otro' };
+    await http().post('/students').set(bearer(secretary)).send(hijack).expect(201);
+    const guardian = await prisma.guardian.findFirstOrThrow({ where: { documentNumber: '40000001' } });
+    expect(guardian.phone).toBe('+51900000001');
+    expect(guardian.firstName).toBe('Elena');
+    expect(await prisma.studentGuardian.count({ where: { guardianId: guardian.id } })).toBe(2);
+  });
+
+  it('no matricula a un estudiante con matrícula vigente en otra IE', async () => {
+    const { student, enrollment } = await createEnrolledStudent(prisma, fx.sectionB.id);
+    await prisma.enrollment.update({ where: { id: enrollment.id }, data: { year: 2025 } });
+    await http()
+      .post('/enrollments')
+      .set(bearer(secretary))
+      .send({ studentId: student.id, sectionId: fx.sectionA.id, enrolledAt: '2026-03-02' })
+      .expect(409);
+    await prisma.enrollment.update({ where: { id: enrollment.id }, data: { status: 'TRANSFERRED_OUT', statusReason: 'Traslado' } });
+    await http()
+      .post('/enrollments')
+      .set(bearer(secretary))
+      .send({ studentId: student.id, sectionId: fx.sectionA.id, enrolledAt: '2026-03-02' })
+      .expect(201);
   });
 
   it('la baja exige justificación y registra la fecha del cambio', async () => {

@@ -77,6 +77,19 @@ describe('registro auxiliar de notas', () => {
     await entry(1, 'A', other).expect(403);
   });
 
+  it('no acepta un periodo de otro año ni una matrícula retirada', async () => {
+    const oldPeriod = await prisma.academicPeriod.create({
+      data: { schoolId: fx.schoolA.id, year: 2025, type: 'BIMESTER', number: 1, startDate: new Date('2025-03-03'), endDate: new Date('2025-05-09') },
+    });
+    await http()
+      .post('/grades/entries')
+      .set(bearer(teacher))
+      .send({ enrollmentId, competencyId: fx.competencies[0].id, periodId: oldPeriod.id, columnNumber: 1, value: 'A' })
+      .expect(400);
+    await prisma.enrollment.update({ where: { id: enrollmentId }, data: { status: 'WITHDRAWN', statusReason: 'Retiro' } });
+    await entry(1, 'A').expect(400);
+  });
+
   it('una nota que no existe: 400', async () => {
     await entry(1, 'D').expect(400);
   });

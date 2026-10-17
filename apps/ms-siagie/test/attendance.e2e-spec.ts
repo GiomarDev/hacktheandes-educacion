@@ -80,8 +80,26 @@ describe('pase de lista', () => {
     await bulk(directorB, { sectionId: fx.sectionA.id, date: DATE, records: records() }).expect(403);
   });
 
+  it('un auxiliar de otra sección de la misma IE: 403', async () => {
+    const auxiliarA2 = signTestToken({ id: USERS.auxiliarA2, roles: [{ role: 'AUXILIAR', schoolId: fx.schoolA.id }] });
+    await bulk(auxiliarA2, { sectionId: fx.sectionA.id, date: DATE, records: records() }).expect(403);
+  });
+
+  it('un docente sin asignación en la sección: 403', async () => {
+    const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
+    await bulk(teacher, { sectionId: fx.sectionA.id, date: DATE, records: records() }).expect(403);
+    await http()
+      .post('/class-sessions')
+      .set(bearer(teacher))
+      .send({ sectionId: fx.sectionA.id, areaId: fx.area.id, date: DATE, periodNumber: 3 })
+      .expect(403);
+  });
+
   it('la lista de una hora convive con la del día', async () => {
     const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
+    await prisma.teachingAssignment.create({
+      data: { sectionId: fx.sectionA.id, areaId: fx.area.id, teacherUserId: USERS.teacherA, weeklyHours: 5 },
+    });
     const session = await http()
       .post('/class-sessions')
       .set(bearer(teacher))
@@ -95,6 +113,9 @@ describe('pase de lista', () => {
 
   it('periodNumber fuera de 1..8: 400', async () => {
     const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
+    await prisma.teachingAssignment.create({
+      data: { sectionId: fx.sectionA.id, areaId: fx.area.id, teacherUserId: USERS.teacherA, weeklyHours: 5 },
+    });
     await http()
       .post('/class-sessions')
       .set(bearer(teacher))
