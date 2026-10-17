@@ -82,7 +82,9 @@ Por qué esta acción y no otra:
 
 ### Evidencia de que esta solución ayuda (débil, por construir)
 
-- **Una docente** confirma que el sistema actual no lleva a la acción. Es necesidad, no validación de nuestra solución. [Entrevista]
+- **Una docente (Marita)** confirma que el sistema actual no lleva a la acción. Es necesidad, no validación de nuestra solución. [Entrevista]
+- **Persistencia en curso:** Se está terminando de procesar y persistir el aprendizaje integral de las entrevistas cualitativas (docente Marita y academia Saúl) en sus transcripciones completas; véase la sesión [`Dividir Y Transcribir Video`](conversation://d9a5f650-9c31-4820-a10e-d7d9ddca77b9) y las transcripciones provisionales en [`docs/Transcripción_provisional_maritta.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/Transcripci%C3%B3n_provisional_maritta.md) y [`docs/Transcripción_provisional_saul.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/Transcripci%C3%B3n_provisional_saul.md).
+- **Evidencia de cambio de gears:** Plan de implementación y acuerdos del equipo documentados en [`Augus_workstation/plan_implementacion_reunion.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/Augus_workstation/plan_implementacion_reunion.md).
 - **Evidencia externa a revisar:** hay estudios conocidos sobre mensajes a padres y ausentismo (Rogers & Feller, 2018, *Nature Human Behaviour*; Bergman & Chan, 2021, *Journal of Human Resources*). Se hicieron en EE. UU. y **nadie del equipo los ha leído todavía**. [Validar — leer y citar con cifras exactas, o no usarlos]
 - **No tenemos** ninguna prueba con un tutor real usando un prototipo.
 
