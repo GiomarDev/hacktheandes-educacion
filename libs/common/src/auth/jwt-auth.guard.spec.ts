@@ -10,7 +10,8 @@ import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { HttpJwksKeyResolver, JwksKeyResolver } from './jwks-key-resolver.js';
 import { CurrentUser } from './current-user.decorator.js';
 import { Public, Roles } from './roles.decorator.js';
-import { AuthUser, JWT_ISSUER } from './roles.js';
+import { JWT_ISSUER } from './roles.js';
+import type { AuthUser } from './roles.js';
 
 @Controller()
 class ProbeController {
