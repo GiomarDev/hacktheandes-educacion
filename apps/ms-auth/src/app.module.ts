@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { JwksKeyResolver, JwtAuthGuard } from '@app/common';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { JwksKeyResolver, JwtAuthGuard, PrismaErrorFilter } from '@app/common';
+import { SiagieClient } from './siagie/siagie.client.js';
+import { UsersController } from './users/users.controller.js';
+import { UsersService } from './users/users.service.js';
 import { LocalJwksKeyResolver } from './keys/local-jwks-key-resolver.js';
 import { HealthController } from './health.controller.js';
 import { PrismaService } from './prisma.service.js';
@@ -11,14 +14,17 @@ import { AuthService } from './auth/auth.service.js';
 import { TokensService } from './auth/tokens.service.js';
 
 @Module({
-  controllers: [HealthController, JwksController, AuthController],
+  controllers: [HealthController, JwksController, AuthController, UsersController],
   providers: [
     PrismaService,
     KeysService,
     TokensService,
     AuthService,
+    UsersService,
+    SiagieClient,
     { provide: JwksKeyResolver, useClass: LocalJwksKeyResolver },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_FILTER, useClass: PrismaErrorFilter },
   ],
 })
 export class AppModule {}
