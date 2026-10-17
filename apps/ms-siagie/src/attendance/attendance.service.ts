@@ -15,6 +15,14 @@ export class AttendanceService {
   async createClassSession(user: AuthUser, dto: CreateClassSessionDto) {
     const section = await this.access.assertSection(user, dto.sectionId, ['TEACHER', 'TUTOR', 'AUXILIAR']);
     await this.access.assertSectionStaff(user, section);
+    // El tutor y el auxiliar de la sección pueden abrir cualquier hora; un docente, solo la del área que dicta.
+    if (section.tutorUserId !== user.id && section.auxiliarUserId !== user.id) {
+      if (!dto.areaId) throw new BadRequestException('Indique el área de la hora de clase');
+      const assignment = await this.prisma.teachingAssignment.findFirst({
+        where: { sectionId: section.id, areaId: dto.areaId, teacherUserId: user.id },
+      });
+      if (!assignment) throw new ForbiddenException('No dicta esta área en la sección');
+    }
     this.assertNotFuture(dto.date);
     return this.prisma.classSession.create({
       data: { ...dto, date: dateOnly(dto.date), teacherUserId: user.id },

@@ -111,6 +111,19 @@ describe('pase de lista', () => {
     expect(await prisma.attendanceRecord.count()).toBe(6);
   });
 
+  it('un docente solo crea horas del área que dicta', async () => {
+    const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
+    await prisma.teachingAssignment.create({
+      data: { sectionId: fx.sectionA.id, areaId: fx.area.id, teacherUserId: USERS.teacherA, weeklyHours: 5 },
+    });
+    const com = await prisma.curricularArea.create({ data: { code: 'COM', name: 'Comunicación', level: 'SECONDARY' } });
+    const session = (areaId?: string) =>
+      http().post('/class-sessions').set(bearer(teacher)).send({ sectionId: fx.sectionA.id, areaId, date: DATE, periodNumber: 4 });
+    await session(com.id).expect(403);
+    await session(undefined).expect(400);
+    await session(fx.area.id).expect(201);
+  });
+
   it('periodNumber fuera de 1..8: 400', async () => {
     const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
     await prisma.teachingAssignment.create({
