@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AmautaIA · Visor Interactivo STICH_ITERATION_1</title>
+  <style>
+    :root {
+      --crimson: #C8102E;
+      --navy: #0F172A;
+      --slate: #475569;
+      --border: #E2E8F0;
+      --bg: #F8FAFC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .badge {
+      background: #FFF1F2;
+      color: var(--crimson);
+      border: 1px solid #FECDD3;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: #F1F5F9;
+      border: 1px solid var(--border);
+      color: var(--slate);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover {
+      background: #E2E8F0;
+      color: var(--navy);
+    }
+    .tab-btn.active {
+      background: var(--crimson);
+      color: #FFFFFF;
+      border-color: var(--crimson);
+    }
+    .viewer-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      background: #E2E8F0;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #FFFFFF;
+      transition: max-width 0.25s ease;
+    }
+    iframe.mobile-frame {
+      max-width: 430px;
+      margin: 16px auto;
+      height: calc(100% - 32px);
+      border-radius: 24px;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+      border: 6px solid var(--navy);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="badge">STICH_ITERATION_1</span>
+      <span>AmautaIA · Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero</span>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="loadScreen('01_landing_b2g_institucional.html', false, this)">
+        1. Landing B2G (#tesis y #piezas)
+      </button>
+      <button class="tab-btn" onclick="loadScreen('02_vista_docente_copiloto.html', false, this)">
+        2. Vista Docente + Copiloto IA
+      </button>
+      <button class="tab-btn" onclick="loadScreen('03_interaccion_whatsapp_agente.html', true, this)">
+        3. WhatsApp Docente (Mobile)
+      </button>
+      <button class="tab-btn" onclick="loadScreen('04_torre_control_ugel_minedu.html', false, this)">
+        4. Torre de Control UGEL / MINEDU
+      </button>
+    </div>
+  </header>
+  <div class="viewer-container">
+    <iframe id="screenFrame" src="01_landing_b2g_institucional.html" title="Visor Stitch"></iframe>
+  </div>
+  <script>
+    function loadScreen(src, isMobile, btn) {
+      const frame = document.getElementById('screenFrame');
+      frame.src = src;
+      if (isMobile) {
+        frame.classList.add('mobile-frame');
+      } else {
+        frame.classList.remove('mobile-frame');
+      }
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

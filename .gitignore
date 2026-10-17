@@ -8,3 +8,6 @@
 
 # Sistema
 .DS_Store
+
+# Archivos multimedia / imágenes binarias pesadas
+*.png

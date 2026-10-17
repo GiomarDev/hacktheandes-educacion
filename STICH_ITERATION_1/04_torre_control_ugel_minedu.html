@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AmautaIA · MINEDU B2G Torre de Control Territorial</title>
+<!-- Google Fonts: Plus Jakarta Sans, Inter, Public Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800;900&amp;family=Public+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with custom configuration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#85f8c4",
+            "on-background": "#191c1e",
+            "surface-container-low": "#f2f4f6",
+            "surface-container-highest": "#e0e3e5",
+            "inverse-primary": "#ffb3b1",
+            "surface-bright": "#f7f9fb",
+            "on-primary-fixed-variant": "#92001c",
+            "secondary-fixed": "#dae2fd",
+            "primary-fixed-dim": "#ffb3b1",
+            "surface-container-lowest": "#ffffff",
+            "background": "#f7f9fb",
+            "on-tertiary-fixed": "#002114",
+            "on-secondary": "#ffffff",
+            "secondary": "#565e74",
+            "secondary-fixed-dim": "#bec6e0",
+            "surface-dim": "#d8dadc",
+            "on-primary": "#ffffff",
+            "outline-variant": "#e5bdbb",
+            "surface-container-high": "#e6e8ea",
+            "on-secondary-container": "#5c647a",
+            "on-primary-fixed": "#410007",
+            "inverse-surface": "#2d3133",
+            "on-error-container": "#93000a",
+            "tertiary-fixed-dim": "#68dba9",
+            "surface-tint": "#bf0229",
+            "inverse-on-surface": "#eff1f3",
+            "primary-container": "#c8102e",
+            "surface-variant": "#e0e3e5",
+            "primary-fixed": "#ffdad8",
+            "on-secondary-fixed": "#131b2e",
+            "secondary-container": "#dae2fd",
+            "on-tertiary-fixed-variant": "#005137",
+            "error-container": "#ffdad6",
+            "tertiary-container": "#00734f",
+            "on-surface": "#191c1e",
+            "surface": "#f7f9fb",
+            "on-error": "#ffffff",
+            "on-tertiary-container": "#85f8c3",
+            "tertiary": "#00583c",
+            "surface-container": "#eceef0",
+            "outline": "#906f6e",
+            "on-surface-variant": "#5c403f",
+            "error": "#ba1a1a",
+            "on-primary-container": "#ffdad8",
+            "primary": "#9e001f",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#3f465c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Plus Jakarta Sans", "sans-serif"],
+            "display": ["Plus Jakarta Sans", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-body text-on-surface bg-background antialiased selection:bg-primary selection:text-white">
+<!-- TOP APP BAR -->
+<header class="w-full px-6 py-2.5 flex justify-between items-center bg-surface-container-lowest border-b border-surface-container-highest shadow-sm shrink-0 sticky top-0 z-50">
+<!-- Brand / Title / Live Status -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-white flex items-center justify-center font-headline font-black text-lg shadow-sm">
+<span class="material-symbols-outlined text-2xl" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline text-lg font-extrabold text-primary tracking-tight">AmautaIA · MINEDU B2G Torre de Control</span>
+<span class="bg-primary-fixed text-primary text-[10px] font-label font-bold px-2 py-0.5 rounded uppercase tracking-wider">PLATAFORMA TERRITORIAL GESTIÓN B2G</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span>
+</span>
+<p class="font-body text-xs font-semibold text-tertiary">Datos en tiempo real capturados desde el aula — Sin pedir reportes manuales al docente</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Global Top Nav Links from Shared JSON -->
+<nav class="hidden xl:flex items-center gap-6 text-sm font-label">
+<a class="text-primary border-b-2 border-primary font-bold pb-2 transition-colors" href="#">Tablero Territorial</a>
+<a class="text-secondary hover:text-on-surface font-medium pb-2 transition-colors" href="#">Compromisos CdD</a>
+<a class="text-secondary hover:text-on-surface font-medium pb-2 transition-colors" href="#">Sinceramiento Curricular</a>
+<a class="text-secondary hover:text-on-surface font-medium pb-2 transition-colors" href="#">Supervisión IIEE</a>
+<a class="text-secondary hover:text-on-surface font-medium pb-2 transition-colors" href="#">Alertas Tempranas</a>
+</nav>
+<!-- Trailing Actions from Shared JSON -->
+<div class="flex items-center gap-2.5">
+<div class="flex items-center gap-1 border-r border-surface-container-highest pr-2 mr-1">
+<button class="p-2 text-secondary hover:text-on-surface hover:bg-surface-container rounded-lg transition-colors" title="Sincronizar">
+<span class="material-symbols-outlined text-[20px]" data-icon="sync">sync</span>
+</button>
+<button class="p-2 text-secondary hover:text-on-surface hover:bg-surface-container rounded-lg transition-colors relative" title="Notificaciones">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="p-2 text-secondary hover:text-on-surface hover:bg-surface-container rounded-lg transition-colors" title="Entidad MINEDU">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance">account_balance</span>
+</button>
+</div>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-surface-container-highest bg-surface-container-lowest text-secondary hover:bg-surface-container hover:text-on-surface text-xs font-label font-bold transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+        Filtros Territoriales
+      </button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary-container text-white text-xs font-label font-bold hover:bg-primary transition-all shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+        Exportar Reporte CdD
+      </button>
+</div>
+</header>
+<!-- MAIN WRAPPER (SIDE NAV + DASHBOARD CANVAS) -->
+<div class="flex flex-1 overflow-hidden">
+<!-- SIDE NAV (Shared Component Docked Left) -->
+<aside class="w-64 h-full p-4 flex flex-col justify-between shrink-0 bg-surface-container-low border-r border-surface-container-highest hidden lg:flex">
+<div>
+<!-- Institutional Header -->
+<div class="flex items-center gap-3 px-2 py-3 border-b border-surface-container-highest mb-4">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-primary font-bold">
+<span class="material-symbols-outlined text-xl" data-icon="school">school</span>
+</div>
+<div>
+<h2 class="font-headline text-base font-black text-primary leading-tight">MINEDU Perú</h2>
+<p class="font-label text-xs uppercase text-secondary font-medium tracking-tight">DRE / UGEL Inteligencia Territorial</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="space-y-1">
+<a class="bg-surface-container-highest text-primary font-bold rounded-lg px-3 py-2.5 flex items-center gap-3 font-body text-sm transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px] text-primary" data-icon="dashboard">dashboard</span>
+<span>Resumen Nacional</span>
+</a>
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2.5 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified">verified</span>
+<span>Compromisos de Desempeño</span>
+</a>
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2.5 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="stacked_bar_chart">stacked_bar_chart</span>
+<span>Sinceramiento y Brechas</span>
+</a>
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2.5 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="warning">warning</span>
+<span>Riesgo y Deserción</span>
+</a>
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2.5 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="psychology">psychology</span>
+<span>Plazas de Psicología</span>
+</a>
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2.5 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span>Burocracia Cero</span>
+</a>
+</nav>
+<div class="mt-6 pt-4 border-t border-surface-container-highest">
+<button class="w-full bg-primary-container text-white hover:bg-primary font-label text-xs uppercase font-bold py-2.5 px-3 rounded-lg flex items-center justify-center gap-2 shadow-sm transition-transform active:scale-95">
+<span class="material-symbols-outlined text-base" data-icon="cloud_sync">cloud_sync</span>
+            Sincronizar Datos
+          </button>
+</div>
+</div>
+<!-- Footer Side Tabs -->
+<div class="pt-4 border-t border-surface-container-highest space-y-1">
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span>Configuración B2G</span>
+</a>
+<a class="text-secondary hover:bg-surface-container hover:text-on-surface rounded-lg px-3 py-2 flex items-center gap-3 font-body text-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="support_agent">support_agent</span>
+<span>Mesa de Ayuda</span>
+</a>
+<div class="px-3 pt-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[11px] text-secondary font-mono">Nodo B2G: LIMA-SRV-04</span>
+</div>
+</div>
+</aside>
+<!-- DASHBOARD MAIN CONTENT CANVAS -->
+<main class="flex-1 overflow-y-auto bg-surface-bright px-6 py-5">
+<!-- SUB-HEADER / TERRITORIAL FILTERS STRIP -->
+<section class="bg-surface-container-lowest p-4 rounded-xl border border-surface-container-highest shadow-sm mb-6">
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-1.5 text-xs font-label uppercase font-bold text-secondary">
+<span class="material-symbols-outlined text-base text-primary" data-icon="travel_explore">travel_explore</span>
+              Filtro Activo:
+            </div>
+<!-- Selector 1: Región -->
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border border-surface-container-highest text-on-surface text-xs font-semibold rounded-lg pl-3 pr-8 py-2 focus:ring-1 focus:ring-primary focus:outline-none cursor-pointer">
+<option selected="">Región: Nacional / Foco Loreto, Huánuco y Ucayali</option>
+<option>Región: Loreto (Alta Prioridad)</option>
+<option>Región: Huánuco</option>
+<option>Región: Ucayali</option>
+<option>Región: Puno</option>
+<option>Región: Tacna (Benchmark)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-sm pointer-events-none text-secondary" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Selector 2: UGEL -->
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border border-surface-container-highest text-on-surface text-xs font-semibold rounded-lg pl-3 pr-8 py-2 focus:ring-1 focus:ring-primary focus:outline-none cursor-pointer">
+<option selected="">UGEL: Todas (14 UGELs monitoreadas)</option>
+<option>UGEL Maynas (Loreto)</option>
+<option>UGEL Coronel Portillo (Ucayali)</option>
+<option>UGEL Huánuco</option>
+<option>UGEL San Román (Puno)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-sm pointer-events-none text-secondary" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Tag: Ámbito -->
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container text-xs font-medium text-on-surface border border-surface-container-highest">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="location_city">location_city</span>
+<span>Ámbito: <strong class="text-on-surface">Urbano 2.4%</strong> vs. <strong class="text-primary">Rural 3.7%</strong></span>
+</div>
+<!-- Tag: Nivel -->
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container text-xs font-medium text-on-surface border border-surface-container-highest">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="menu_book">menu_book</span>
+<span>Nivel: <strong>Secundaria (CNEB Ciclo VI y VII)</strong></span>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="flex items-center gap-2 shrink-0">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-secondary hover:text-on-surface text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="tune">tune</span>
+              Filtros Avanzados
+            </button>
+<button class="px-3.5 py-1.5 bg-primary-container text-white text-xs font-bold rounded-lg hover:bg-primary transition-colors flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="assignment_add">assignment_add</span>
+              Exportar Compromisos de Desempeño (CdD)
+            </button>
+</div>
+</div>
+</section>
+<!-- HERO SECTION: 4 KPIS NACIONALES / REGIONALES EJECUTIVOS -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+<!-- KPI 1: Deserción Escolar -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-surface-container-highest shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-xs font-label uppercase font-bold text-secondary tracking-wider">Tasa de Deserción Activa</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline text-3xl font-black text-on-surface tracking-tight">2.1%</span>
+<span class="inline-flex items-center text-xs font-bold text-tertiary bg-tertiary-container/10 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-xs mr-0.5" data-icon="arrow_downward">arrow_downward</span> -0.6 pts
+                </span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="person_check">person_check</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container">
+<p class="text-xs text-secondary leading-relaxed">
+              Frente al <strong class="text-on-surface">2.7%</strong> oficial ESCALE · <span class="text-tertiary font-bold">1,420 abandonos evitados</span> este trimestre mediante alertas nominales tempranas.
+            </p>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-tertiary"></div>
+</div>
+<!-- KPI 2: Sinceramiento Académico -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-surface-container-highest shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-xs font-label uppercase font-bold text-secondary tracking-wider">Brecha SIAGIE vs. Aprendizaje</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline text-2xl font-black text-primary tracking-tight">93.9% <span class="text-sm font-normal text-secondary">vs.</span> 24.8%</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="policy">policy</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container">
+<p class="text-xs text-secondary leading-relaxed">
+<strong class="text-on-surface">93.9% Aprobación formal</strong> en Actas vs. <strong class="text-primary font-bold">24.8% Logro Real</strong> (+12.1 pts sobre línea base ENLA 12.7%).
+            </p>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-primary"></div>
+</div>
+<!-- KPI 3: Plazas de Psicología -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-surface-container-highest shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-xs font-label uppercase font-bold text-secondary tracking-wider">Protección Plazas Psicología</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline text-3xl font-black text-on-surface tracking-tight">94.2%</span>
+<span class="inline-flex items-center text-xs font-semibold text-secondary bg-surface-container px-2 py-0.5 rounded-full">
+                  Meta ≥150/año
+                </span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="psychology">psychology</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container">
+<p class="text-xs text-error font-medium leading-relaxed flex items-center gap-1">
+<span class="material-symbols-outlined text-sm shrink-0" data-icon="error">error</span>
+              8 colegios en riesgo de perder plaza por sub-registro ante el Ministerio.
+            </p>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-surface-tint"></div>
+</div>
+<!-- KPI 4: Burocracia Eliminada -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-surface-container-highest shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-xs font-label uppercase font-bold text-secondary tracking-wider">Burocracia Cero Docente</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline text-3xl font-black text-tertiary tracking-tight">14.2 <span class="text-sm font-medium text-secondary">hrs/sem</span></span>
+<span class="text-xs font-bold text-tertiary">Recuperadas</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="timer">timer</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container">
+<p class="text-xs text-secondary leading-relaxed">
+              100% Sesiones CNEB y Conclusiones Descriptivas SIAGIE generadas por IA sin digitación manual.
+            </p>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-tertiary"></div>
+</div>
+</section>
+<!-- PRIMARY CONTENT: 2 ANALYTICAL MODULES (50% / 50%) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+<!-- MODULE LEFT: EMBUDO DE INTERVENCIÓN Y NIVELACIÓN -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-highest shadow-sm p-6 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between border-b border-surface-container-highest pb-4 mb-5">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="filter_alt">filter_alt</span>
+<h3 class="font-headline text-base font-bold text-on-surface">Embudo de Intervención y Nivelación en Tiempo Real</h3>
+</div>
+<p class="font-body text-xs text-secondary mt-1">Sin pedir informes · Comparable entre UGELs y meses · Trazabilidad nominal continua</p>
+</div>
+<span class="text-xs font-mono font-semibold bg-surface-container px-2.5 py-1 rounded text-secondary">CNEB 2024-II</span>
+</div>
+<!-- Funnel Stages -->
+<div class="space-y-4">
+<!-- Stage 1 -->
+<div class="p-3.5 bg-surface-container-low rounded-lg border border-surface-container-high transition-all hover:border-outline-variant">
+<div class="flex justify-between items-center text-xs mb-1.5">
+<span class="font-label font-bold text-on-surface flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] text-secondary">1</span>
+                    Estudiantes Diagnosticados en Aula (Cobertura Censal)
+                  </span>
+<span class="font-mono font-bold text-on-surface">48,500 <span class="text-secondary font-normal">(100%)</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-full"></div>
+</div>
+<p class="text-[11px] text-secondary mt-1.5">Análisis continuo de evidencias de aula, fotos de cuadernos y evaluaciones formativas.</p>
+</div>
+<!-- Stage 2 -->
+<div class="p-3.5 bg-surface-container-low rounded-lg border border-surface-container-high transition-all hover:border-outline-variant">
+<div class="flex justify-between items-center text-xs mb-1.5">
+<span class="font-label font-bold text-on-surface flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-error-container text-primary flex items-center justify-center text-[10px]">2</span>
+                    Con Brecha Cognitiva Específica o Riesgo de Deserción
+                  </span>
+<span class="font-mono font-bold text-primary">14,200 <span class="text-secondary font-normal">(29.2%)</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 29.2%;"></div>
+</div>
+<p class="text-[11px] text-secondary mt-1.5">Detección preventiva por patrones de inasistencia, desconexión y déficit en competencias clave.</p>
+</div>
+<!-- Stage 3 -->
+<div class="p-3.5 bg-surface-container-low rounded-lg border border-surface-container-high transition-all hover:border-outline-variant">
+<div class="flex justify-between items-center text-xs mb-1.5">
+<span class="font-label font-bold text-on-surface flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-surface-container-highest text-secondary flex items-center justify-center text-[10px]">3</span>
+                    Mentoría Docente 10 min o Atención Psicológica Ejecutada
+                  </span>
+<span class="font-mono font-bold text-secondary">11,640 <span class="text-tertiary font-bold">(82.0% del riesgo)</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 82%;"></div>
+</div>
+<p class="text-[11px] text-secondary mt-1.5">Micro-intervenciones activadas directamente durante la sesión pedagógica regular.</p>
+</div>
+<!-- Stage 4 -->
+<div class="p-3.5 bg-surface-container-low rounded-lg border border-surface-container-high transition-all hover:border-outline-variant">
+<div class="flex justify-between items-center text-xs mb-1.5">
+<span class="font-label font-bold text-on-surface flex items-center gap-1.5">
+<span class="w-5 h-5 rounded-full bg-tertiary/20 text-tertiary flex items-center justify-center text-[10px] font-bold">4</span>
+                    Brecha Cerrada y Permanencia Escolar Asegurada
+                  </span>
+<span class="font-mono font-bold text-tertiary">8,950 <span class="text-tertiary font-bold">(76.8% rescate)</span></span>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 76.8%;"></div>
+</div>
+<p class="text-[11px] text-secondary mt-1.5">Éxito comprobado en evaluaciones de seguimiento formativo sin inflar calificaciones.</p>
+</div>
+</div>
+</div>
+<!-- Actionable Alert Banner -->
+<div class="mt-5 p-3.5 rounded-lg bg-error-container/40 border border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary text-xl shrink-0" data-icon="notification_important">notification_important</span>
+<p class="text-xs text-on-surface leading-tight">
+<strong>Alerta UGEL:</strong> 12 colegios rurales acumulan alertas rojas con &gt;5 días sin mentoría registrada.
+              </p>
+</div>
+<button class="shrink-0 px-3 py-1.5 bg-primary text-white text-xs font-bold rounded hover:bg-primary-container transition-colors shadow-sm">
+              Notificar Directores y Especialistas
+            </button>
+</div>
+</div>
+<!-- MODULE RIGHT: SINCERAMIENTO CURRICULAR POR TERRITORIO -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-container-highest shadow-sm p-6 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between border-b border-surface-container-highest pb-4 mb-5">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="compare_arrows">compare_arrows</span>
+<h3 class="font-headline text-base font-bold text-on-surface">Sinceramiento Curricular (SIAGIE vs. Dominio Real)</h3>
+</div>
+<p class="font-body text-xs text-secondary mt-1">Detector de notas infladas por región: Aprobación formal vs. Aprendizaje en aula</p>
+</div>
+<div class="flex items-center gap-3 text-xs">
+<span class="flex items-center gap-1 font-semibold text-secondary">
+<span class="w-2.5 h-2.5 rounded-sm bg-secondary"></span> Actas SIAGIE
+                </span>
+<span class="flex items-center gap-1 font-semibold text-primary">
+<span class="w-2.5 h-2.5 rounded-sm bg-primary-container"></span> Dominio Real
+                </span>
+</div>
+</div>
+<!-- Comparative Bars for Territories -->
+<div class="space-y-3.5">
+<!-- Loreto -->
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="font-semibold text-on-surface">Loreto (Foco Crítico)</span>
+<span class="font-mono text-xs"><strong class="text-secondary">SIAGIE 93.0%</strong> | <strong class="text-primary">Real 6.2%</strong> <span class="text-error font-bold text-[10px]">(-86.8 pts)</span></span>
+</div>
+<div class="grid grid-cols-2 gap-2 h-4">
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 93%;"></div>
+</div>
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 6.2%;"></div>
+</div>
+</div>
+</div>
+<!-- Huánuco -->
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="font-semibold text-on-surface">Huánuco</span>
+<span class="font-mono text-xs"><strong class="text-secondary">SIAGIE 94.2%</strong> | <strong class="text-primary">Real 8.5%</strong> <span class="text-error font-bold text-[10px]">(-85.7 pts)</span></span>
+</div>
+<div class="grid grid-cols-2 gap-2 h-4">
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 94.2%;"></div>
+</div>
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 8.5%;"></div>
+</div>
+</div>
+</div>
+<!-- Ucayali -->
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="font-semibold text-on-surface">Ucayali</span>
+<span class="font-mono text-xs"><strong class="text-secondary">SIAGIE 93.5%</strong> | <strong class="text-primary">Real 9.1%</strong> <span class="text-error font-bold text-[10px]">(-84.4 pts)</span></span>
+</div>
+<div class="grid grid-cols-2 gap-2 h-4">
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 93.5%;"></div>
+</div>
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 9.1%;"></div>
+</div>
+</div>
+</div>
+<!-- Puno -->
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="font-semibold text-on-surface">Puno</span>
+<span class="font-mono text-xs"><strong class="text-secondary">SIAGIE 92.8%</strong> | <strong class="text-primary">Real 14.3%</strong> <span class="text-error font-bold text-[10px]">(-78.5 pts)</span></span>
+</div>
+<div class="grid grid-cols-2 gap-2 h-4">
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 92.8%;"></div>
+</div>
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-primary-container h-full rounded" style="width: 14.3%;"></div>
+</div>
+</div>
+</div>
+<!-- Tacna (Referente) -->
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="font-semibold text-on-surface">Tacna (Referente Nacional)</span>
+<span class="font-mono text-xs"><strong class="text-secondary">SIAGIE 95.1%</strong> | <strong class="text-tertiary">Real 31.4%</strong> <span class="text-tertiary font-bold text-[10px]">(Mayor Consistencia)</span></span>
+</div>
+<div class="grid grid-cols-2 gap-2 h-4">
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 95.1%;"></div>
+</div>
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-tertiary h-full rounded" style="width: 31.4%;"></div>
+</div>
+</div>
+</div>
+<!-- Moquegua (Referente) -->
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="font-semibold text-on-surface">Moquegua (Referente Nacional)</span>
+<span class="font-mono text-xs"><strong class="text-secondary">SIAGIE 96.0%</strong> | <strong class="text-tertiary">Real 34.2%</strong> <span class="text-tertiary font-bold text-[10px]">(Estándar ECE)</span></span>
+</div>
+<div class="grid grid-cols-2 gap-2 h-4">
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-secondary h-full rounded" style="width: 96%;"></div>
+</div>
+<div class="bg-surface-container-highest rounded overflow-hidden">
+<div class="bg-tertiary h-full rounded" style="width: 34.2%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Context Note -->
+<div class="mt-5 p-3 rounded-lg bg-surface-container-low border border-surface-container-high">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-base text-secondary shrink-0 mt-0.5" data-icon="info">info</span>
+<p class="text-xs text-secondary leading-relaxed">
+<strong>Propósito de Gestión:</strong> Identifica automáticamente colegios con aprobación administrativa ficticia para focalizar acompañamiento pedagógico antes de la evaluación nacional censal <strong>ENLA / UMC</strong>.
+              </p>
+</div>
+</div>
+</div>
+</section>
+<!-- BOTTOM SECTION: TABLA MAESTRA DE INSTITUCIONES EDUCATIVAS -->
+<section class="bg-surface-container-lowest rounded-xl border border-surface-container-highest shadow-sm overflow-hidden">
+<!-- Table Toolbar -->
+<div class="p-4 border-b border-surface-container-highest flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+<div>
+<h3 class="font-headline text-base font-bold text-on-surface">Tabla Maestra de Instituciones Educativas, Desempeño y Plazas</h3>
+<p class="font-body text-xs text-secondary">Trazabilidad nominal por II.EE. con alertas de riesgo y cuotas de Ley de Salud Mental</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative w-64 md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-secondary text-sm pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-surface-container-highest rounded-lg pl-9 pr-3 py-1.5 text-xs text-on-surface placeholder:text-secondary focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Buscar por código modular o nombre de I.E..." type="text"/>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container hover:bg-surface-container-high rounded-lg text-xs font-semibold text-secondary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="sort">sort</span>
+<span>Ordenar: Mayor Riesgo</span>
+</button>
+</div>
+</div>
+<!-- Master Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-[11px] font-label font-bold uppercase tracking-wider text-secondary border-b border-surface-container-highest">
+<th class="py-3 px-4">Institución Educativa</th>
+<th class="py-3 px-4">Riesgo Deserción</th>
+<th class="py-3 px-4">Brecha SIAGIE vs. Real</th>
+<th class="py-3 px-4">Mentorías Docentes</th>
+<th class="py-3 px-4">Cuota Plaza Psicología</th>
+<th class="py-3 px-4">Estado Burocrático</th>
+<th class="py-3 px-4 text-right">Acción</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-highest text-xs font-body">
+<!-- Row 1: Crítica Loreto Rural -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-error-container text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                      IE
+                    </div>
+<div>
+<div class="font-bold text-on-surface">I.E. 60014 Rural Loreto</div>
+<div class="text-[11px] text-secondary flex items-center gap-2">
+<span>Cód: 0348193</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest text-secondary text-[10px] font-semibold">Rural 3</span>
+<span>UGEL Maynas</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-error-container text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> Crítico 4.8%
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-mono font-bold text-secondary">93%</span> <span class="text-secondary text-[11px]">vs</span> <span class="font-mono font-bold text-primary">6.1%</span>
+<div class="text-[10px] text-error font-medium">Inflación +86.9 pts</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-20 bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 41%;"></div>
+</div>
+<span class="font-mono font-bold text-secondary">41%</span>
+</div>
+<span class="text-[10px] text-secondary">18/44 micro-grupos</span>
+</td>
+<td class="py-3.5 px-4">
+<div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-error-container text-primary">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span> 48/150 (32%)
+                    </span>
+<p class="text-[10px] text-error font-medium mt-0.5">Riesgo de devolución MINEDU</p>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span> 100% Automático (0h)
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1.5 bg-primary-container text-white text-xs font-bold rounded hover:bg-primary transition-colors">
+                    Intervenir
+                  </button>
+</td>
+</tr>
+<!-- Row 2: Huánuco Urbano/Marginal -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container-highest text-secondary flex items-center justify-center font-bold text-xs shrink-0">
+                      IE
+                    </div>
+<div>
+<div class="font-bold text-on-surface">I.E. Illathupa de Huánuco</div>
+<div class="text-[11px] text-secondary flex items-center gap-2">
+<span>Cód: 0219485</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest text-secondary text-[10px] font-semibold">Urbano</span>
+<span>UGEL Huánuco</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-surface-container-highest text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Moderado 2.6%
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-mono font-bold text-secondary">94%</span> <span class="text-secondary text-[11px]">vs</span> <span class="font-mono font-bold text-secondary">11.4%</span>
+<div class="text-[10px] text-secondary">Inflación +82.6 pts</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-20 bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 74%;"></div>
+</div>
+<span class="font-mono font-bold text-secondary">74%</span>
+</div>
+<span class="text-[10px] text-secondary">62/84 micro-grupos</span>
+</td>
+<td class="py-3.5 px-4">
+<div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-surface-container-highest text-secondary">
+                      112/150 (74.6%)
+                    </span>
+<p class="text-[10px] text-secondary mt-0.5">En progreso regular</p>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span> 100% Automático (0h)
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold rounded transition-colors">
+                    Ver Detalle
+                  </button>
+</td>
+</tr>
+<!-- Row 3: Ucayali Rural Bilingüe -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-error-container text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                      IE
+                    </div>
+<div>
+<div class="font-bold text-on-surface">I.E. Agropecuario N° 08 San Fernando</div>
+<div class="text-[11px] text-secondary flex items-center gap-2">
+<span>Cód: 0451992</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest text-secondary text-[10px] font-semibold">Rural 2 (EIB)</span>
+<span>UGEL Coronel Portillo</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-error-container text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> Crítico 3.9%
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-mono font-bold text-secondary">92%</span> <span class="text-secondary text-[11px]">vs</span> <span class="font-mono font-bold text-primary">8.8%</span>
+<div class="text-[10px] text-error font-medium">Inflación +83.2 pts</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-20 bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 52%;"></div>
+</div>
+<span class="font-mono font-bold text-secondary">52%</span>
+</div>
+<span class="text-[10px] text-secondary">26/50 micro-grupos</span>
+</td>
+<td class="py-3.5 px-4">
+<div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-error-container text-primary">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span> 62/150 (41%)
+                    </span>
+<p class="text-[10px] text-error font-medium mt-0.5">Alerta Cuota en Riesgo</p>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span> 100% Automático (0h)
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1.5 bg-primary-container text-white text-xs font-bold rounded hover:bg-primary transition-colors">
+                    Intervenir
+                  </button>
+</td>
+</tr>
+<!-- Row 4: Emblemática Gran Mariscal Castilla (Urbano Positivo) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-tertiary/10 text-tertiary flex items-center justify-center font-bold text-xs shrink-0">
+                      IE
+                    </div>
+<div>
+<div class="font-bold text-on-surface">I.E. Emblemática Gran Mariscal Ramón Castilla</div>
+<div class="text-[11px] text-secondary flex items-center gap-2">
+<span>Cód: 0102981</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest text-secondary text-[10px] font-semibold">Urbano Mayor</span>
+<span>UGEL 03 Lima / Provincias</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-tertiary/10 text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Controlado 0.9%
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-mono font-bold text-secondary">95%</span> <span class="text-secondary text-[11px]">vs</span> <span class="font-mono font-bold text-tertiary">28.5%</span>
+<div class="text-[10px] text-tertiary font-medium">Mayor convergencia CNEB</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-20 bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 92%;"></div>
+</div>
+<span class="font-mono font-bold text-tertiary">92%</span>
+</div>
+<span class="text-[10px] text-secondary">115/125 micro-grupos</span>
+</td>
+<td class="py-3.5 px-4">
+<div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-tertiary/10 text-tertiary">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span> 144/150 (96%)
+                    </span>
+<p class="text-[10px] text-tertiary font-medium mt-0.5">Plaza Segura 2025</p>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span> 100% Automático (0h)
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold rounded transition-colors">
+                    Ver Detalle
+                  </button>
+</td>
+</tr>
+<!-- Row 5: Lima Provincias Rural/Vía Acceso -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container-highest text-secondary flex items-center justify-center font-bold text-xs shrink-0">
+                      IE
+                    </div>
+<div>
+<div class="font-bold text-on-surface">I.E. 20188 Virgen del Carmen</div>
+<div class="text-[11px] text-secondary flex items-center gap-2">
+<span>Cód: 0588219</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest text-secondary text-[10px] font-semibold">Rural 1</span>
+<span>UGEL Cañete / Yauyos</span>
+</div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-surface-container-highest text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Moderado 1.8%
+                  </span>
+</td>
+<td class="py-3.5 px-4">
+<span class="font-mono font-bold text-secondary">91%</span> <span class="text-secondary text-[11px]">vs</span> <span class="font-mono font-bold text-secondary">19.2%</span>
+<div class="text-[10px] text-secondary">Sincerando brecha (+71 pts)</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-20 bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 80%;"></div>
+</div>
+<span class="font-mono font-bold text-secondary">80%</span>
+</div>
+<span class="text-[10px] text-secondary">32/40 micro-grupos</span>
+</td>
+<td class="py-3.5 px-4">
+<div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold bg-tertiary/10 text-tertiary">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span> 138/150 (92%)
+                    </span>
+<p class="text-[10px] text-tertiary font-medium mt-0.5">Plaza Segura 2025</p>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span> 100% Automático (0h)
+                  </span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold rounded transition-colors">
+                    Ver Detalle
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer Pagination -->
+<div class="p-3 border-t border-surface-container-highest flex items-center justify-between text-xs text-secondary bg-surface-container-low">
+<span>Mostrando <strong>5 de 1,482 Instituciones Educativas</strong> monitoreadas en tiempo real</span>
+<div class="flex items-center gap-1 font-label">
+<button class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high disabled:opacity-50" disabled="">Anterior</button>
+<button class="px-2.5 py-1 rounded bg-primary text-white font-bold">1</button>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high">2</button>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high">3</button>
+<span class="px-1">...</span>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high">296</button>
+<button class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high">Siguiente</button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- INSTITUTIONAL FOOTER -->
+<footer class="w-full px-8 py-3 flex flex-col md:flex-row justify-between items-center text-xs bg-surface-container-lowest border-t border-surface-container-highest shrink-0 z-40">
+<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 text-secondary mb-2 md:mb-0">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono text-[11px]">
+          Estado de Conexión en Vivo: <strong>SIAGIE [Conectado]</strong> · <strong>ESCALE [Conectado]</strong> · <strong>UMC [En Línea]</strong> · <strong>Censo Escolar [Sincronizado]</strong> · <strong>RENIEC [Validado]</strong> · <strong>SISFOH [Actualizado]</strong>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-4 text-secondary">
+<div class="flex items-center gap-3 text-[11px] font-label">
+<a class="hover:text-primary transition-colors" href="#">Directiva 2024 MINEDU</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#">Normativa Compromisos CdD</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#">Protocolo Alerta Temprana</a>
+<span>·</span>
+<a class="hover:text-primary transition-colors" href="#">Seguridad y Cifrado B2G</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,203 @@
+{
+  "id": 1792264262120,
+  "jsonrpc": "2.0",
+  "result": {
+    "content": [
+      {
+        "text": "{\"projectId\":\"1503192843636542264\",\"sessionId\":\"16400515137933041809\",\"outputComponents\":[{\"design\":{\"screens\":[{\"screenshot\":{\"name\":\"projects/1503192843636542264/files/a22b1f6afe034094a3226ffdd3ebff33\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1Vte_IE8az6mFlIIorwCwAUmNZZsCYd-bgGl5XHuk6g35mbptUGLm_gtls4FaY8N9m8ZUVENrv-CouhAUv0_Ve2Y6bWgj9Zpj_j_N1tddVzgMtRdOUVcyu67jbH-68eScwP3ruYHgLLGfW7qGhNt64L7XdrNyVHUZf_f-JLAep0PwC4N0pTdc997yzhpmh1w5RnQKAulbwJ-qaqyysqkih-n1Qp8AIOhQsb9gwF5WSdguTUh2J7KFXUh1o\"},\"htmlCode\":{\"name\":\"projects/1503192843636542264/files/71b91e0ea41c4932b14a50b7c29d2134\",\"downloadUrl\":\"https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzhjN2I1ODkzNGI3MTQxZjFhYzljZDFhNzQwMDkwNTI1EgsSBxD9m7nnuBgYAZIBIwoKcHJvamVjdF9pZBIVQhMxNTAzMTkyODQzNjM2NTQyMjY0&filename=&opi=96797242\",\"mimeType\":\"text/html\"},\"id\":\"38e7bd2903a4485bb9dc396029042af1\",\"generatedBy\":\"figaro_agent\",\"width\":\"2560\",\"height\":\"2048\",\"title\":\"AmautaIA · Espacio del Docente (Mentoría Quirúrgica y Copiloto Anti-Burocracia)\",\"prompt\":\"Diseño completo y de alta fidelidad para el panel de aplicación web \\\"AmautaIA — Espacio del Docente\\\" para colegios públicos peruanos (MINEDU / CNEB / SIAGIE / UGEL).\\n\\nTema visual: AmautaIA Institucional Claro (#F8FAFC canvas, #FFFFFF cards nítidas, acento guinda/carmesí institucional #C8102E, azul técnico #1E3A8A, verde pedagógico #0D9488 / #16A34A, bordes limpios #E2E8F0, tipografía Plus Jakarta Sans).\\n\\nEstructura de la pantalla:\\n\\n1. TOP BAR / HEADER DE TRABAJO:\\n- Logo \\\"AmautaIA\\\" con badge \\\"Espacio del Docente · I.E. Emblemática\\\".\\n- Selector de aula activo destacado: \\\"Salón: 2.° B Secundaria (34 estudiantes) · Turno Mañana\\\".\\n- Píldora de estado en vivo: punto verde pulsante \\\"Sincronizado con tu WhatsApp hace 3 min\\\".\\n- Métrica de impacto clave: badge con icono de reloj \\\"Tiempo devuelto al aula esta semana: 6.5 horas ahorradas en papeleo\\\".\\n- Perfil del docente a la derecha: \\\"Prof. Carmen Quispe · Matemática y Tutoría\\\" con avatar y accesos rápidos de notificaciones y ayuda docente.\\n\\n2. HERO SECTION DE ALERTAS PRIORITARIAS EN AULA (2 tarjetas horizontales de acción inmediata):\\n- Tarjeta 1: \\\"Alerta Temprana de Deserción y Ausentismo Hoy (Alerta Escuela)\\\"\\n  Contenido: \\\"2 Estudiantes en Riesgo Crítico Hoy: Mateo Huamán (Extraedad + 3ra falta del mes + caída en Matemática) y Lucía Rojas (2 faltas consecutivas)\\\".\\n  Acciones directas en 1 clic: Botón primario verde oscuro con icono \\\"Notificar a padres por WhatsApp\\\", botón secundario con borde \\\"Derivar a Psicología (Suma a cuota 150)\\\".\\n- Tarjeta 2: \\\"Resumen de Diagnóstico de Práctica Calificada (CNEB)\\\"\\n  Contenido: \\\"Radiografía Cognitiva Lista (32 prácticas leídas por foto en WhatsApp). 25 alumnos dominan el tema actual; 9 alumnos presentan bloqueos en prerrequisitos de primaria y han sido agrupados en 2 micro-grupos de mentoría de 10 minutos.\\\"\\n  Indicadores visuales de porcentaje de logro rápido.\\n\\n3. ÁREA PRINCIPAL DIVIDIDA EN 2 COLUMNAS (68% Área Pedagógica Central + 32% Panel Lateral Agente Anti-Burocracia):\\n\\nCOLUMNA CENTRAL PEDAGÓGICA (68%):\\nA) MÓDULO DE GRUPOS DE MENTORÍA DIRECTA PARA HOY (10 min por grupo en aula):\\nTres tarjetas ordenadas con micro-estrategia exacta:\\n- Grupo 1 (Badge rojo: \\\"Prioridad Alta · 5 alumnos: Mateo H., Diego P., Valeria M., Jorge T., Ana C.\\\"):\\n  Diagnóstico exacto: \\\"Fallo detectado en Paso 2: Suman denominadores directamente (1/2 + 1/3 = 2/5). Vacío raíz: Mínimo Común Múltiplo (5.° Primaria)\\\".\\n  Acciones: Botón \\\"Abrir dinámica guiada de 10 min\\\", botón \\\"Imprimir 5 fichas de nivelación\\\".\\n- Grupo 2 (Badge ámbar: \\\"Prioridad Media · 4 alumnos: Luis R., Sofía G., Carlos V., Elena B.\\\"):\\n  Diagnóstico exacto: \\\"Fallo detectado en Paso 3: Error en ley de signos al despejar la incógnita negativa (-x)\\\".\\n  Acción: Botón \\\"Abrir dinámica guiada de 10 min\\\".\\n- Grupo 3 (Badge verde: \\\"Autónomo · 25 alumnos\\\"):\\n  Diagnóstico: \\\"Dominan la competencia esperada 'Resuelve problemas de cantidad' — Asignar reto grupal autónomo de aplicación mientras mentoreas a los Grupos 1 y 2\\\".\\n\\nB) TABLA NOMINAL DETALLADA DEL SALÓN (2.° B Secundaria):\\nTabla con diseño institucional limpio:\\n- Columnas: \\\"Estudiante\\\", \\\"Asistencia Semanal (L-M-M-J-V)\\\", \\\"Nota Formal SIAGIE\\\", \\\"Nivel Real Detectado\\\", \\\"Paso Exacto / Brecha Específica\\\", \\\"Estado de Mentoría\\\", \\\"Acción Rápida\\\".\\n- Filas con nombres peruanos reales y estados claros:\\n  1. Mateo Huamán Gómez | L: Asistió, M: Falta, M: Falta, J: Falta, V: Hoy | Formal: 11 (B) | Real: Inicio (C) | Paso 2: MCM en fracciones | Requiere Mentoría Hoy (G1) | Botón \\\"Ver cuaderno\\\"\\n  2. Lucía Rojas Pari | L: Falta, M: Falta, J: Asistió | Formal: 14 (A) | Real: Proceso (B) | Paso 3: Ley de signos | Derivada a Tutoría | Botón \\\"Ver ficha\\\"\\n  3. Diego Palomino Quispe | Completa | Formal: 12 (B) | Real: Inicio (C) | Paso 2: Denominadores | En Mentoría G1 | Botón \\\"Ver cuaderno\\\"\\n  4. Valeria Mamani Choque | Completa | Formal: 13 (B) | Real: Inicio (C) | Paso 2: Denominadores | En Mentoría G1 | Botón \\\"Ver cuaderno\\\"\\n  5. Sofía Gutiérrez Mendoza | Completa | Formal: 16 (A) | Real: Proceso (B) | Paso 3: Ecuación lineal | En Mentoría G2 | Botón \\\"Ver ficha\\\"\\n  6. Alejandro Tello Ramos | Completa | Formal: 18 (AD) | Real: Logro Destacado (AD) | Sin brechas de prerrequisito | Guía de Grupo Autónomo | Botón \\\"Ver reporte\\\"\\n\\nPANEL LATERAL DERECHO (32% - Agente Copiloto Anti-Burocracia MINEDU):\\nA) SECCIÓN SUPERIOR: \\\"Burocracia Estatal Autogenerada — 0 Clics\\\"\\nTarjetas de documentos normativos oficiales listos en tiempo real:\\n- Documento 1: \\\"Sesión de Aprendizaje CNEB #14 (Para SIMON)\\\"\\n  Badge \\\"100% Autoredactada con desempeños y brechas de hoy\\\". Botón primario: \\\"Aprobar y enviar al Director\\\".\\n- Documento 2: \\\"Conclusiones Descriptivas SIAGIE (RVM 094-2020)\\\"\\n  Estado: \\\"34 de 34 conclusiones personalizadas listas para exportar\\\". Botón secundario: \\\"Exportar Excel Oficial SIAGIE\\\".\\n- Documento 3: \\\"Reporte Mensual Alerta Escuela y Ficha TOE\\\"\\n  Estado: \\\"Sincronizado con Dirección y Psicología (125/150 casos atendidos)\\\".\\n\\nB) SECCIÓN INFERIOR: \\\"Conversación en Vivo con el Agente (Vía WhatsApp)\\\"\\nWidget con estilo de chat institucional de WhatsApp:\\n- Burbuja de audio de la Prof. Carmen: Reproductor de nota de voz (\\\"Audio 0:16 seg: 'Agente, ya trabajé 10 minutos con el grupo de Mateo y entendieron el MCM; actualízame su estado y genera el informe para el director'\\\").\\n- Burbuja de respuesta inmediata del Agente IA (con badge de verificado MINEDU):\\n  \\\"¡Entendido, Prof. Carmen! He actualizado el estado de Mateo, Diego y Valeria a 'En Progreso hacia Logro'. Ya incluí la evidencia de la intervención de 10 min en la Sesión CNEB #14 y el borrador para el Director está listo para envío con 1 toque.\\\"\\n- Input de chat rápido con botón de micrófono y adjuntar foto de cuaderno.\",\"name\":\"projects/1503192843636542264/screens/38e7bd2903a4485bb9dc396029042af1\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"PLUS_JAKARTA_SANS\",\"roundness\":\"ROUND_EIGHT\",\"customColor\":\"#C8102E\",\"headlineFont\":\"PLUS_JAKARTA_SANS\",\"bodyFont\":\"INTER\",\"labelFont\":\"PUBLIC_SANS\",\"namedColors\":{\"primary_fixed\":\"#ffdad8\",\"on_secondary_container\":\"#5c647a\",\"surface_variant\":\"#e0e3e5\",\"on_surface\":\"#191c1e\",\"on_surface_variant\":\"#5c403f\",\"on_tertiary_container\":\"#85f8c3\",\"surface_container_highest\":\"#e0e3e5\",\"on_secondary\":\"#ffffff\",\"inverse_primary\":\"#ffb3b1\",\"on_primary\":\"#ffffff\",\"tertiary_fixed\":\"#85f8c4\",\"error_container\":\"#ffdad6\",\"surface_container\":\"#eceef0\",\"background\":\"#f7f9fb\",\"inverse_surface\":\"#2d3133\",\"surface_container_high\":\"#e6e8ea\",\"secondary\":\"#565e74\",\"surface\":\"#f7f9fb\",\"on_primary_fixed\":\"#410007\",\"on_primary_container\":\"#ffdad8\",\"error\":\"#ba1a1a\",\"on_primary_fixed_variant\":\"#92001c\",\"surface_container_low\":\"#f2f4f6\",\"on_tertiary_fixed_variant\":\"#005137\",\"secondary_fixed_dim\":\"#bec6e0\",\"on_tertiary\":\"#ffffff\",\"outline\":\"#906f6e\",\"on_background\":\"#191c1e\",\"surface_tint\":\"#bf0229\",\"primary_container\":\"#c8102e\",\"tertiary\":\"#00583c\",\"on_tertiary_fixed\":\"#002114\",\"tertiary_fixed_dim\":\"#68dba9\",\"on_error_container\":\"#93000a\",\"on_secondary_fixed_variant\":\"#3f465c\",\"on_secondary_fixed\":\"#131b2e\",\"surface_bright\":\"#f7f9fb\",\"primary\":\"#9e001f\",\"outline_variant\":\"#e5bdbb\",\"secondary_fixed\":\"#dae2fd\",\"tertiary_container\":\"#00734f\",\"on_error\":\"#ffffff\",\"primary_fixed_dim\":\"#ffb3b1\",\"inverse_on_surface\":\"#eff1f3\",\"secondary_container\":\"#dae2fd\",\"surface_dim\":\"#d8dadc\",\"surface_container_lowest\":\"#ffffff\"},\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#C8102E\",\"overrideSecondaryColor\":\"#0F172A\",\"overrideTertiaryColor\":\"#059669\",\"overrideNeutralColor\":\"#F8FAFC\",\"spacingScale\":2,\"headlineFontFamily\":\"Plus Jakarta Sans\",\"bodyFontFamily\":\"Inter\",\"labelFontFamily\":\"Public Sans\"},\"deviceType\":\"DESKTOP\",\"screenType\":\"DESIGN\",\"screenMetadata\":{\"agentType\":\"PRO_AGENT\",\"status\":\"COMPLETE\"},\"designSystem\":{\"name\":\"assets/764693782689717926\",\"designSystem\":{\"displayName\":\"AmautaIA Institucional Claro (MINEDU GovTech)\",\"theme\":{\"colorMode\":\"LIGHT\",\"font\":\"PLUS_JAKARTA_SANS\",\"roundness\":\"ROUND_EIGHT\",\"customColor\":\"#C8102E\",\"headlineFont\":\"PLUS_JAKARTA_SANS\",\"bodyFont\":\"INTER\",\"labelFont\":\"PUBLIC_SANS\",\"namedColors\":{\"on_background\":\"#191c1e\",\"surface_container\":\"#eceef0\",\"surface_variant\":\"#e0e3e5\",\"surface_bright\":\"#f7f9fb\",\"surface_tint\":\"#bf0229\",\"surface_container_lowest\":\"#ffffff\",\"error_container\":\"#ffdad6\",\"inverse_primary\":\"#ffb3b1\",\"on_secondary_fixed_variant\":\"#3f465c\",\"on_surface_variant\":\"#5c403f\",\"on_tertiary\":\"#ffffff\",\"surface_container_low\":\"#f2f4f6\",\"surface_dim\":\"#d8dadc\",\"inverse_surface\":\"#2d3133\",\"surface\":\"#f7f9fb\",\"on_primary_fixed_variant\":\"#92001c\",\"error\":\"#ba1a1a\",\"on_tertiary_fixed_variant\":\"#005137\",\"secondary\":\"#565e74\",\"on_secondary_container\":\"#5c647a\",\"primary_fixed\":\"#ffdad8\",\"secondary_fixed_dim\":\"#bec6e0\",\"on_secondary\":\"#ffffff\",\"tertiary\":\"#00583c\",\"primary_fixed_dim\":\"#ffb3b1\",\"outline\":\"#906f6e\",\"background\":\"#f7f9fb\",\"tertiary_container\":\"#00734f\",\"on_primary\":\"#ffffff\",\"inverse_on_surface\":\"#eff1f3\",\"surface_container_highest\":\"#e0e3e5\",\"on_tertiary_container\":\"#85f8c3\",\"outline_variant\":\"#e5bdbb\",\"tertiary_fixed_dim\":\"#68dba9\",\"primary\":\"#9e001f\",\"surface_container_high\":\"#e6e8ea\",\"secondary_fixed\":\"#dae2fd\",\"primary_container\":\"#c8102e\",\"on_surface\":\"#191c1e\",\"on_error_container\":\"#93000a\",\"on_secondary_fixed\":\"#131b2e\",\"on_primary_fixed\":\"#410007\",\"on_primary_container\":\"#ffdad8\",\"on_error\":\"#ffffff\",\"secondary_container\":\"#dae2fd\",\"tertiary_fixed\":\"#85f8c4\",\"on_tertiary_fixed\":\"#002114\"},\"designMd\":\"# AmautaIA GovTech Peru Institutional Light Theme\\n- Clean institutional light mode (#F8FAFC canvas, #FFFFFF cards, #E2E8F0 borders).\\n- Primary accent: Peruvian Institutional Crimson (#C8102E) and Deep Executive Navy (#0F172A, #1E3A8A).\\n- Semantic indicators: Emerald (#059669) for learning recovery/mastery, Amber (#D97706) for learning gap in progress, Rose Red (#E11D48) for critical dropout risk.\\n- High-contrast data typography inspired by executive B2B/B2G analytics platforms.\",\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#C8102E\",\"overrideSecondaryColor\":\"#0F172A\",\"overrideTertiaryColor\":\"#059669\",\"overrideNeutralColor\":\"#F8FAFC\",\"spacingScale\":2,\"headlineFontFamily\":\"Plus Jakarta Sans\",\"bodyFontFamily\":\"Inter\",\"labelFontFamily\":\"Public Sans\"}},\"version\":\"2\"}}],\"theme\":{}}},{\"text\":\"He diseñado el panel web completo para el docente de colegio público peruano: **«AmautaIA — Espacio del Docente (Mentoría Quirúrgica y Copiloto Anti-Burocracia)»** (AmautaIA · Espacio del Docente (Mentoría Quirúrgica y Copiloto Anti-Burocracia)), diseñado con la identidad institucional clara (#F8FAFC, acento carmesí MINEDU #C8102E, azul técnico y verde pedagógico).\\n\\n### Resumen de la Estructura Diseñada:\\n\\n1. **Header Institucional de Trabajo:**\\n   - Perfil activo de la docente: *«Prof. Carmen Quispe · Matemática y Tutoría · I.E. Emblemática»*.\\n   - Selector de aula en tiempo real: *«Salón: 2.° B Secundaria (34 estudiantes) · Turno Mañana»*.\\n   - Indicador de estado en vivo: *«Sincronizado con tu WhatsApp hace 3 min»*.\\n   - Métrica de impacto directo en aula: *«Ahorro: 6.5h burocracia devueltas al aula esta semana»*.\\n\\n2. **Hero Section de Alertas Prioritarias Inmediatas:**\\n   - **Tarjeta 1 (Alerta Escuela & Deserción):** 2 estudiantes en riesgo crítico hoy (*Mateo Huamán* por extraedad + 3.ª falta del mes + caída de nota, y *Lucía Rojas* con 2 faltas consecutivas). Acciones en 1 clic: *«Notificar a padres por WhatsApp»* y *«Derivar a Psicología (Suma a cuota 150)»*.\\n   - **Tarjeta 2 (Radiografía Cognitiva de Prácticas Calificadas):** 32 prácticas analizadas mediante fotos de WhatsApp; resumen claro de 25 alumnos dominando la competencia y 9 alumnos con vacíos de primaria agrupados en micro-grupos de 10 min.\\n\\n3. **Área Pedagógica Central (68% del ancho):**\\n   - **Módulo de Micro-Grupos de Mentoría Directa:**\\n     - **Grupo 1 (Prioridad Alta · 5 alumnos):** Identificación exacta del *Paso 2: Suma directa de denominadores (1/2 + 1/3 = 2/5)* con diagnóstico de vacío raíz en Mínimo Común Múltiplo (5.° Primaria). Acciones para *«Abrir dinámica guiada (10 min)»* e *«Imprimir 5 fichas de nivelación»*.\\n     - **Grupo 2 (Prioridad Media · 4 alumnos):** Identificación del *Paso 3: Ley de signos al despejar incógnitas negativas (-x)* con su dinámica de 10 min.\\n     - **Grupo 3 (Autónomo · 25 alumnos):** Reto grupal autónomo de consolidación de la competencia CNEB activado para trabajar de forma independiente mientras el profesor atiende los grupos 1 y 2.\\n   - **Tabla Nominal del Salón (2.° B):** Detalle nominal con asistencia semanal (L-M-M-J-V), nota formal SIAGIE vs. nivel de logro real detectado por IA, identificación del paso/brecha cognitiva exacta, estado de la intervención y botón para ver la evidencia del cuaderno.\\n\\n4. **Panel Lateral del Agente Copiloto Anti-Burocracia (32% del ancho):**\\n   - **Burocracia Estatal Autogenerada (0 clics):**\\n     - *Sesión de Aprendizaje CNEB #14 (Para supervisión SIMON)*: Redactada automáticamente con las evidencias y micro-intervenciones del día, lista para aprobar y enviar al Director.\\n     - *Conclusiones Descriptivas SIAGIE (RVM 094-2020)*: 34 de 34 conclusiones personalizadas listas para exportar en el formato oficial de Excel.\\n     - *Reporte Mensual Alerta Escuela y TOE*: Sincronizado con Dirección y Psicología (125/150 casos atendidos).\\n   - **Conversación en Vivo por WhatsApp con el Agente:**\\n     - Reproductor de audio de la Prof. Carmen (0:16 seg) reportando la intervención de 10 min con el grupo de Mateo.\\n     - Respuesta confirmatoria inmediata del Agente IA actualizando el estado de los estudiantes y preparando el informe institucional para el directivo.\\n     - Barra de interacción rápida con dictado por voz y subida de fotos de cuadernos.\"},{\"suggestion\":\"Ver el modal interactivo de la 'Dinámica Guiada de 10 minutos' para el Grupo 1\"},{\"suggestion\":\"Generar la vista móvil de WhatsApp que usa la docente en el aula\"},{\"suggestion\":\"Diseñar la vista de exportación y rúbrica oficial de Conclusiones SIAGIE\"}]}",
+        "type": "text"
+      }
+    ],
+    "structuredContent": {
+      "outputComponents": [
+        {
+          "design": {
+            "screens": [
+              {
+                "designSystem": {
+                  "designSystem": {
+                    "displayName": "AmautaIA Institucional Claro (MINEDU GovTech)",
+                    "theme": {
+                      "bodyFont": "INTER",
+                      "bodyFontFamily": "Inter",
+                      "colorMode": "LIGHT",
+                      "colorVariant": "FIDELITY",
+                      "customColor": "#C8102E",
+                      "designMd": "# AmautaIA GovTech Peru Institutional Light Theme\n- Clean institutional light mode (#F8FAFC canvas, #FFFFFF cards, #E2E8F0 borders).\n- Primary accent: Peruvian Institutional Crimson (#C8102E) and Deep Executive Navy (#0F172A, #1E3A8A).\n- Semantic indicators: Emerald (#059669) for learning recovery/mastery, Amber (#D97706) for learning gap in progress, Rose Red (#E11D48) for critical dropout risk.\n- High-contrast data typography inspired by executive B2B/B2G analytics platforms.",
+                      "font": "PLUS_JAKARTA_SANS",
+                      "headlineFont": "PLUS_JAKARTA_SANS",
+                      "headlineFontFamily": "Plus Jakarta Sans",
+                      "labelFont": "PUBLIC_SANS",
+                      "labelFontFamily": "Public Sans",
+                      "namedColors": {
+                        "background": "#f7f9fb",
+                        "error": "#ba1a1a",
+                        "error_container": "#ffdad6",
+                        "inverse_on_surface": "#eff1f3",
+                        "inverse_primary": "#ffb3b1",
+                        "inverse_surface": "#2d3133",
+                        "on_background": "#191c1e",
+                        "on_error": "#ffffff",
+                        "on_error_container": "#93000a",
+                        "on_primary": "#ffffff",
+                        "on_primary_container": "#ffdad8",
+                        "on_primary_fixed": "#410007",
+                        "on_primary_fixed_variant": "#92001c",
+                        "on_secondary": "#ffffff",
+                        "on_secondary_container": "#5c647a",
+                        "on_secondary_fixed": "#131b2e",
+                        "on_secondary_fixed_variant": "#3f465c",
+                        "on_surface": "#191c1e",
+                        "on_surface_variant": "#5c403f",
+                        "on_tertiary": "#ffffff",
+                        "on_tertiary_container": "#85f8c3",
+                        "on_tertiary_fixed": "#002114",
+                        "on_tertiary_fixed_variant": "#005137",
+                        "outline": "#906f6e",
+                        "outline_variant": "#e5bdbb",
+                        "primary": "#9e001f",
+                        "primary_container": "#c8102e",
+                        "primary_fixed": "#ffdad8",
+                        "primary_fixed_dim": "#ffb3b1",
+                        "secondary": "#565e74",
+                        "secondary_container": "#dae2fd",
+                        "secondary_fixed": "#dae2fd",
+                        "secondary_fixed_dim": "#bec6e0",
+                        "surface": "#f7f9fb",
+                        "surface_bright": "#f7f9fb",
+                        "surface_container": "#eceef0",
+                        "surface_container_high": "#e6e8ea",
+                        "surface_container_highest": "#e0e3e5",
+                        "surface_container_low": "#f2f4f6",
+                        "surface_container_lowest": "#ffffff",
+                        "surface_dim": "#d8dadc",
+                        "surface_tint": "#bf0229",
+                        "surface_variant": "#e0e3e5",
+                        "tertiary": "#00583c",
+                        "tertiary_container": "#00734f",
+                        "tertiary_fixed": "#85f8c4",
+                        "tertiary_fixed_dim": "#68dba9"
+                      },
+                      "overrideNeutralColor": "#F8FAFC",
+                      "overridePrimaryColor": "#C8102E",
+                      "overrideSecondaryColor": "#0F172A",
+                      "overrideTertiaryColor": "#059669",
+                      "roundness": "ROUND_EIGHT",
+                      "spacingScale": 2
+                    }
+                  },
+                  "name": "assets/764693782689717926",
+                  "version": "2"
+                },
+                "deviceType": "DESKTOP",
+                "generatedBy": "figaro_agent",
+                "height": "2048",
+                "htmlCode": {
+                  "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzhjN2I1ODkzNGI3MTQxZjFhYzljZDFhNzQwMDkwNTI1EgsSBxD9m7nnuBgYAZIBIwoKcHJvamVjdF9pZBIVQhMxNTAzMTkyODQzNjM2NTQyMjY0&filename=&opi=96797242",
+                  "mimeType": "text/html",
+                  "name": "projects/1503192843636542264/files/71b91e0ea41c4932b14a50b7c29d2134"
+                },
+                "id": "38e7bd2903a4485bb9dc396029042af1",
+                "name": "projects/1503192843636542264/screens/38e7bd2903a4485bb9dc396029042af1",
+                "prompt": "Diseño completo y de alta fidelidad para el panel de aplicación web \"AmautaIA — Espacio del Docente\" para colegios públicos peruanos (MINEDU / CNEB / SIAGIE / UGEL).\n\nTema visual: AmautaIA Institucional Claro (#F8FAFC canvas, #FFFFFF cards nítidas, acento guinda/carmesí institucional #C8102E, azul técnico #1E3A8A, verde pedagógico #0D9488 / #16A34A, bordes limpios #E2E8F0, tipografía Plus Jakarta Sans).\n\nEstructura de la pantalla:\n\n1. TOP BAR / HEADER DE TRABAJO:\n- Logo \"AmautaIA\" con badge \"Espacio del Docente · I.E. Emblemática\".\n- Selector de aula activo destacado: \"Salón: 2.° B Secundaria (34 estudiantes) · Turno Mañana\".\n- Píldora de estado en vivo: punto verde pulsante \"Sincronizado con tu WhatsApp hace 3 min\".\n- Métrica de impacto clave: badge con icono de reloj \"Tiempo devuelto al aula esta semana: 6.5 horas ahorradas en papeleo\".\n- Perfil del docente a la derecha: \"Prof. Carmen Quispe · Matemática y Tutoría\" con avatar y accesos rápidos de notificaciones y ayuda docente.\n\n2. HERO SECTION DE ALERTAS PRIORITARIAS EN AULA (2 tarjetas horizontales de acción inmediata):\n- Tarjeta 1: \"Alerta Temprana de Deserción y Ausentismo Hoy (Alerta Escuela)\"\n  Contenido: \"2 Estudiantes en Riesgo Crítico Hoy: Mateo Huamán (Extraedad + 3ra falta del mes + caída en Matemática) y Lucía Rojas (2 faltas consecutivas)\".\n  Acciones directas en 1 clic: Botón primario verde oscuro con icono \"Notificar a padres por WhatsApp\", botón secundario con borde \"Derivar a Psicología (Suma a cuota 150)\".\n- Tarjeta 2: \"Resumen de Diagnóstico de Práctica Calificada (CNEB)\"\n  Contenido: \"Radiografía Cognitiva Lista (32 prácticas leídas por foto en WhatsApp). 25 alumnos dominan el tema actual; 9 alumnos presentan bloqueos en prerrequisitos de primaria y han sido agrupados en 2 micro-grupos de mentoría de 10 minutos.\"\n  Indicadores visuales de porcentaje de logro rápido.\n\n3. ÁREA PRINCIPAL DIVIDIDA EN 2 COLUMNAS (68% Área Pedagógica Central + 32% Panel Lateral Agente Anti-Burocracia):\n\nCOLUMNA CENTRAL PEDAGÓGICA (68%):\nA) MÓDULO DE GRUPOS DE MENTORÍA DIRECTA PARA HOY (10 min por grupo en aula):\nTres tarjetas ordenadas con micro-estrategia exacta:\n- Grupo 1 (Badge rojo: \"Prioridad Alta · 5 alumnos: Mateo H., Diego P., Valeria M., Jorge T., Ana C.\"):\n  Diagnóstico exacto: \"Fallo detectado en Paso 2: Suman denominadores directamente (1/2 + 1/3 = 2/5). Vacío raíz: Mínimo Común Múltiplo (5.° Primaria)\".\n  Acciones: Botón \"Abrir dinámica guiada de 10 min\", botón \"Imprimir 5 fichas de nivelación\".\n- Grupo 2 (Badge ámbar: \"Prioridad Media · 4 alumnos: Luis R., Sofía G., Carlos V., Elena B.\"):\n  Diagnóstico exacto: \"Fallo detectado en Paso 3: Error en ley de signos al despejar la incógnita negativa (-x)\".\n  Acción: Botón \"Abrir dinámica guiada de 10 min\".\n- Grupo 3 (Badge verde: \"Autónomo · 25 alumnos\"):\n  Diagnóstico: \"Dominan la competencia esperada 'Resuelve problemas de cantidad' — Asignar reto grupal autónomo de aplicación mientras mentoreas a los Grupos 1 y 2\".\n\nB) TABLA NOMINAL DETALLADA DEL SALÓN (2.° B Secundaria):\nTabla con diseño institucional limpio:\n- Columnas: \"Estudiante\", \"Asistencia Semanal (L-M-M-J-V)\", \"Nota Formal SIAGIE\", \"Nivel Real Detectado\", \"Paso Exacto / Brecha Específica\", \"Estado de Mentoría\", \"Acción Rápida\".\n- Filas con nombres peruanos reales y estados claros:\n  1. Mateo Huamán Gómez | L: Asistió, M: Falta, M: Falta, J: Falta, V: Hoy | Formal: 11 (B) | Real: Inicio (C) | Paso 2: MCM en fracciones | Requiere Mentoría Hoy (G1) | Botón \"Ver cuaderno\"\n  2. Lucía Rojas Pari | L: Falta, M: Falta, J: Asistió | Formal: 14 (A) | Real: Proceso (B) | Paso 3: Ley de signos | Derivada a Tutoría | Botón \"Ver ficha\"\n  3. Diego Palomino Quispe | Completa | Formal: 12 (B) | Real: Inicio (C) | Paso 2: Denominadores | En Mentoría G1 | Botón \"Ver cuaderno\"\n  4. Valeria Mamani Choque | Completa | Formal: 13 (B) | Real: Inicio (C) | Paso 2: Denominadores | En Mentoría G1 | Botón \"Ver cuaderno\"\n  5. Sofía Gutiérrez Mendoza | Completa | Formal: 16 (A) | Real: Proceso (B) | Paso 3: Ecuación lineal | En Mentoría G2 | Botón \"Ver ficha\"\n  6. Alejandro Tello Ramos | Completa | Formal: 18 (AD) | Real: Logro Destacado (AD) | Sin brechas de prerrequisito | Guía de Grupo Autónomo | Botón \"Ver reporte\"\n\nPANEL LATERAL DERECHO (32% - Agente Copiloto Anti-Burocracia MINEDU):\nA) SECCIÓN SUPERIOR: \"Burocracia Estatal Autogenerada — 0 Clics\"\nTarjetas de documentos normativos oficiales listos en tiempo real:\n- Documento 1: \"Sesión de Aprendizaje CNEB #14 (Para SIMON)\"\n  Badge \"100% Autoredactada con desempeños y brechas de hoy\". Botón primario: \"Aprobar y enviar al Director\".\n- Documento 2: \"Conclusiones Descriptivas SIAGIE (RVM 094-2020)\"\n  Estado: \"34 de 34 conclusiones personalizadas listas para exportar\". Botón secundario: \"Exportar Excel Oficial SIAGIE\".\n- Documento 3: \"Reporte Mensual Alerta Escuela y Ficha TOE\"\n  Estado: \"Sincronizado con Dirección y Psicología (125/150 casos atendidos)\".\n\nB) SECCIÓN INFERIOR: \"Conversación en Vivo con el Agente (Vía WhatsApp)\"\nWidget con estilo de chat institucional de WhatsApp:\n- Burbuja de audio de la Prof. Carmen: Reproductor de nota de voz (\"Audio 0:16 seg: 'Agente, ya trabajé 10 minutos con el grupo de Mateo y entendieron el MCM; actualízame su estado y genera el informe para el director'\").\n- Burbuja de respuesta inmediata del Agente IA (con badge de verificado MINEDU):\n  \"¡Entendido, Prof. Carmen! He actualizado el estado de Mateo, Diego y Valeria a 'En Progreso hacia Logro'. Ya incluí la evidencia de la intervención de 10 min en la Sesión CNEB #14 y el borrador para el Director está listo para envío con 1 toque.\"\n- Input de chat rápido con botón de micrófono y adjuntar foto de cuaderno.",
+                "screenMetadata": {
+                  "agentType": "PRO_AGENT",
+                  "status": "COMPLETE"
+                },
+                "screenType": "DESIGN",
+                "screenshot": {
+                  "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Vte_IE8az6mFlIIorwCwAUmNZZsCYd-bgGl5XHuk6g35mbptUGLm_gtls4FaY8N9m8ZUVENrv-CouhAUv0_Ve2Y6bWgj9Zpj_j_N1tddVzgMtRdOUVcyu67jbH-68eScwP3ruYHgLLGfW7qGhNt64L7XdrNyVHUZf_f-JLAep0PwC4N0pTdc997yzhpmh1w5RnQKAulbwJ-qaqyysqkih-n1Qp8AIOhQsb9gwF5WSdguTUh2J7KFXUh1o",
+                  "name": "projects/1503192843636542264/files/a22b1f6afe034094a3226ffdd3ebff33"
+                },
+                "theme": {
+                  "bodyFont": "INTER",
+                  "bodyFontFamily": "Inter",
+                  "colorMode": "LIGHT",
+                  "colorVariant": "FIDELITY",
+                  "customColor": "#C8102E",
+                  "font": "PLUS_JAKARTA_SANS",
+                  "headlineFont": "PLUS_JAKARTA_SANS",
+                  "headlineFontFamily": "Plus Jakarta Sans",
+                  "labelFont": "PUBLIC_SANS",
+                  "labelFontFamily": "Public Sans",
+                  "namedColors": {
+                    "background": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "error_container": "#ffdad6",
+                    "inverse_on_surface": "#eff1f3",
+                    "inverse_primary": "#ffb3b1",
+                    "inverse_surface": "#2d3133",
+                    "on_background": "#191c1e",
+                    "on_error": "#ffffff",
+                    "on_error_container": "#93000a",
+                    "on_primary": "#ffffff",
+                    "on_primary_container": "#ffdad8",
+                    "on_primary_fixed": "#410007",
+                    "on_primary_fixed_variant": "#92001c",
+                    "on_secondary": "#ffffff",
+                    "on_secondary_container": "#5c647a",
+                    "on_secondary_fixed": "#131b2e",
+                    "on_secondary_fixed_variant": "#3f465c",
+                    "on_surface": "#191c1e",
+                    "on_surface_variant": "#5c403f",
+                    "on_tertiary": "#ffffff",
+                    "on_tertiary_container": "#85f8c3",
+                    "on_tertiary_fixed": "#002114",
+                    "on_tertiary_fixed_variant": "#005137",
+                    "outline": "#906f6e",
+                    "outline_variant": "#e5bdbb",
+                    "primary": "#9e001f",
+                    "primary_container": "#c8102e",
+                    "primary_fixed": "#ffdad8",
+                    "primary_fixed_dim": "#ffb3b1",
+                    "secondary": "#565e74",
+                    "secondary_container": "#dae2fd",
+                    "secondary_fixed": "#dae2fd",
+                    "secondary_fixed_dim": "#bec6e0",
+                    "surface": "#f7f9fb",
+                    "surface_bright": "#f7f9fb",
+                    "surface_container": "#eceef0",
+                    "surface_container_high": "#e6e8ea",
+                    "surface_container_highest": "#e0e3e5",
+                    "surface_container_low": "#f2f4f6",
+                    "surface_container_lowest": "#ffffff",
+                    "surface_dim": "#d8dadc",
+                    "surface_tint": "#bf0229",
+                    "surface_variant": "#e0e3e5",
+                    "tertiary": "#00583c",
+                    "tertiary_container": "#00734f",
+                    "tertiary_fixed": "#85f8c4",
+                    "tertiary_fixed_dim": "#68dba9"
+                  },
+                  "overrideNeutralColor": "#F8FAFC",
+                  "overridePrimaryColor": "#C8102E",
+                  "overrideSecondaryColor": "#0F172A",
+                  "overrideTertiaryColor": "#059669",
+                  "roundness": "ROUND_EIGHT",
+                  "spacingScale": 2
+                },
+                "title": "AmautaIA · Espacio del Docente (Mentoría Quirúrgica y Copiloto Anti-Burocracia)",
+                "width": "2560"
+              }
+            ],
+            "theme": {}
+          }
+        },
+        {
+          "text": "He diseñado el panel web completo para el docente de colegio público peruano: **«AmautaIA — Espacio del Docente (Mentoría Quirúrgica y Copiloto Anti-Burocracia)»** (AmautaIA · Espacio del Docente (Mentoría Quirúrgica y Copiloto Anti-Burocracia)), diseñado con la identidad institucional clara (#F8FAFC, acento carmesí MINEDU #C8102E, azul técnico y verde pedagógico).\n\n### Resumen de la Estructura Diseñada:\n\n1. **Header Institucional de Trabajo:**\n   - Perfil activo de la docente: *«Prof. Carmen Quispe · Matemática y Tutoría · I.E. Emblemática»*.\n   - Selector de aula en tiempo real: *«Salón: 2.° B Secundaria (34 estudiantes) · Turno Mañana»*.\n   - Indicador de estado en vivo: *«Sincronizado con tu WhatsApp hace 3 min»*.\n   - Métrica de impacto directo en aula: *«Ahorro: 6.5h burocracia devueltas al aula esta semana»*.\n\n2. **Hero Section de Alertas Prioritarias Inmediatas:**\n   - **Tarjeta 1 (Alerta Escuela & Deserción):** 2 estudiantes en riesgo crítico hoy (*Mateo Huamán* por extraedad + 3.ª falta del mes + caída de nota, y *Lucía Rojas* con 2 faltas consecutivas). Acciones en 1 clic: *«Notificar a padres por WhatsApp»* y *«Derivar a Psicología (Suma a cuota 150)»*.\n   - **Tarjeta 2 (Radiografía Cognitiva de Prácticas Calificadas):** 32 prácticas analizadas mediante fotos de WhatsApp; resumen claro de 25 alumnos dominando la competencia y 9 alumnos con vacíos de primaria agrupados en micro-grupos de 10 min.\n\n3. **Área Pedagógica Central (68% del ancho):**\n   - **Módulo de Micro-Grupos de Mentoría Directa:**\n     - **Grupo 1 (Prioridad Alta · 5 alumnos):** Identificación exacta del *Paso 2: Suma directa de denominadores (1/2 + 1/3 = 2/5)* con diagnóstico de vacío raíz en Mínimo Común Múltiplo (5.° Primaria). Acciones para *«Abrir dinámica guiada (10 min)»* e *«Imprimir 5 fichas de nivelación»*.\n     - **Grupo 2 (Prioridad Media · 4 alumnos):** Identificación del *Paso 3: Ley de signos al despejar incógnitas negativas (-x)* con su dinámica de 10 min.\n     - **Grupo 3 (Autónomo · 25 alumnos):** Reto grupal autónomo de consolidación de la competencia CNEB activado para trabajar de forma independiente mientras el profesor atiende los grupos 1 y 2.\n   - **Tabla Nominal del Salón (2.° B):** Detalle nominal con asistencia semanal (L-M-M-J-V), nota formal SIAGIE vs. nivel de logro real detectado por IA, identificación del paso/brecha cognitiva exacta, estado de la intervención y botón para ver la evidencia del cuaderno.\n\n4. **Panel Lateral del Agente Copiloto Anti-Burocracia (32% del ancho):**\n   - **Burocracia Estatal Autogenerada (0 clics):**\n     - *Sesión de Aprendizaje CNEB #14 (Para supervisión SIMON)*: Redactada automáticamente con las evidencias y micro-intervenciones del día, lista para aprobar y enviar al Director.\n     - *Conclusiones Descriptivas SIAGIE (RVM 094-2020)*: 34 de 34 conclusiones personalizadas listas para exportar en el formato oficial de Excel.\n     - *Reporte Mensual Alerta Escuela y TOE*: Sincronizado con Dirección y Psicología (125/150 casos atendidos).\n   - **Conversación en Vivo por WhatsApp con el Agente:**\n     - Reproductor de audio de la Prof. Carmen (0:16 seg) reportando la intervención de 10 min con el grupo de Mateo.\n     - Respuesta confirmatoria inmediata del Agente IA actualizando el estado de los estudiantes y preparando el informe institucional para el directivo.\n     - Barra de interacción rápida con dictado por voz y subida de fotos de cuadernos."
+        },
+        {
+          "suggestion": "Ver el modal interactivo de la 'Dinámica Guiada de 10 minutos' para el Grupo 1"
+        },
+        {
+          "suggestion": "Generar la vista móvil de WhatsApp que usa la docente en el aula"
+        },
+        {
+          "suggestion": "Diseñar la vista de exportación y rúbrica oficial de Conclusiones SIAGIE"
+        }
+      ],
+      "projectId": "1503192843636542264",
+      "sessionId": "16400515137933041809"
+    }
+  }
+}

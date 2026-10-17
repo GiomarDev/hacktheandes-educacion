@@ -56,6 +56,23 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 
 ---
 
+## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
+
+Como parte de la fase de prototipado y validación de la solución, se diseñó la primera versión interactiva de **AmautaIA — Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero**. Los prototipos fueron generados e iterados a través de la integración agéntica con **Google Stitch MCP** en el proyecto `Hack The Andes Test` (`projects/1503192843636542264`), bajo el sistema de diseño semántico **AmautaIA Institucional Claro (MINEDU GovTech)** (`assets/764693782689717926`).
+
+> 🚀 **Visor Interactivo Central:** Abre [`STICH_ITERATION_1/index.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/index.html) en tu navegador para interactuar con las 4 pantallas completas en un solo panel navegable con pestañas.
+
+| # | Vista / Rol | Formato | Screen ID en Stitch | Archivo HTML / Prototipo | Propuesta de Valor y Funcionalidad Clave |
+| :-: | :--- | :---: | :--- | :--- | :--- |
+| **01** | **Landing B2G Institucional** | `Desktop` | `72360752c9d04f0891b7b25dfa6512bf` | [`01_landing_b2g_institucional.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/01_landing_b2g_institucional.html) | Presentación ejecutiva para MINEDU/DRE/UGEL: tesis de rescate escolar, pilares de mentoría quirúrgica y retorno de inversión en retención escolar. |
+| **02** | **Espacio del Docente + Copiloto Anti-Burocracia** | `Desktop` | `38e7bd2903a4485bb9dc396029042af1` | [`02_vista_docente_copiloto.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/02_vista_docente_copiloto.html) | Agrupación automática de alumnos por micro-paso fallado, guías de mentoría de 10 min y generación automática de sesiones CNEB y conclusiones SIAGIE. |
+| **03** | **Interacción WhatsApp del Docente con el Agente** | `Mobile` | `73981077ba2c49c4a3c3d11b4c201c9b` | [`03_interaccion_whatsapp_agente.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/03_interaccion_whatsapp_agente.html) | Interfaz móvil cero fricción: el docente envía una foto del registro o nota de voz y el agente actualiza asistencia, detecta riesgo y redacta los informes. |
+| **04** | **Torre de Control Territorial UGEL / MINEDU** | `Desktop` | `271be7b380054fba8bfafc2747b9b73a` | [`04_torre_control_ugel_minedu.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/04_torre_control_ugel_minedu.html) | Visor geoespacial en tiempo real sin pedir reportes manuales, auditoría SIAGIE vs. Aprendizaje Real y fiscalización del despliegue de psicólogos. |
+
+Para más detalles sobre los componentes y sugerencias de iteración devueltas por Stitch, consulta el reporte en [`STICH_ITERATION_1/README.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/README.md).
+
+---
+
 ## 👥 Público Objetivo y Usuarios
 
 1. **Usuario Primario (Impacto a Escala y Decisión):**
@@ -75,9 +92,9 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 ├── .agents/                                # Agentes y skills compartidos
 │   ├── code-reviewer.md                    # Subagente de revisión de código
 │   ├── planner.md                          # Subagente de planificación
-│   └── skills/chofex-hackathon/            # Skill oficial Hack the Andes (CLI andes)
-│       ├── SKILL.md
-│       └── references/
+│   └── skills/                             # Skills agénticas (Stitch, CLI andes, frontend)
+│       ├── chofex-hackathon/               # Skill oficial Hack the Andes (CLI andes)
+│       └── stitch-*/                       # Skills especializadas para Google Stitch
 ├── .claude/                                # Configuración de Claude Code
 ├── .commands/                              # Comandos reutilizables (/commit, /review)
 ├── docs/                                   # Documentación técnica, datasets y tableros
@@ -88,6 +105,13 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 │   ├── rendimiento_interactivo.html        # Tablero interactivo de rendimiento escolar
 │   ├── rendimiento_academico_escale.json   # Datasets agregados MINEDU/ESCALE
 │   └── *.csv                               # Datasets limpios por cuadros estadísticos
+├── STICH_ITERATION_1/                      # Mockups y prototipos interactivos generados en Google Stitch
+│   ├── index.html                          # Visor interactivo centralizado con pestañas de las 4 pantallas
+│   ├── 01_landing_b2g_institucional.html   # Landing B2G MINEDU/UGEL
+│   ├── 02_vista_docente_copiloto.html      # Copiloto docente anti-burocracia
+│   ├── 03_interaccion_whatsapp_agente.html # Flujo conversacional WhatsApp
+│   ├── 04_torre_control_ugel_minedu.html   # Torre de control territorial UGEL/MINEDU
+│   └── README.md                           # Detalle de pantallas y sugerencias de iteración Stitch
 ├── notas_sesión_1.md                       # Notas de ideación y user research a docente
 ├── AGENTS.md                               # Guía para agentes de IA (convenciones y workflow)
 ├── CLAUDE.md                               # Instrucciones específicas para Claude Code
