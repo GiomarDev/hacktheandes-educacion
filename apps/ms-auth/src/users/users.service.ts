@@ -3,8 +3,8 @@ import argon2 from 'argon2';
 import type { AuthUser } from '@app/common';
 import { PrismaService } from '../prisma.service.js';
 import { SiagieClient } from '../siagie/siagie.client.js';
-import { canGrant, scopeError } from './role-grant.policy.js';
-import { CreateUserDto, GrantRoleDto } from './dto/users.dto.js';
+import { canGrant, canViewScope, scopeError } from './role-grant.policy.js';
+import { CreateUserDto, GrantRoleDto, ListUsersQuery } from './dto/users.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +24,32 @@ export class UsersService {
       select: { id: true },
     });
     return user;
+  }
+
+  // Cuentas con algún rol activo en el ámbito pedido; cada una trae solo sus roles de ese ámbito.
+  async list(viewer: AuthUser, scope: ListUsersQuery) {
+    const given = (['schoolId', 'ugelId', 'dreId'] as const).filter((k) => scope[k]);
+    if (given.length !== 1) throw new BadRequestException('Indique solo uno: schoolId, ugelId o dreId');
+    const key = given[0];
+    if (!canViewScope(viewer, scope, await this.resolveTarget(scope))) throw new ForbiddenException('No puede ver las cuentas de este ámbito');
+    const where = { isActive: true, [key]: scope[key] };
+    const users = await this.prisma.user.findMany({
+      where: { roles: { some: where } },
+      select: {
+        id: true,
+        documentType: true,
+        documentNumber: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        status: true,
+        mustChangePassword: true,
+        lastLoginAt: true,
+        roles: { where, select: { id: true, role: true, schoolId: true, ugelId: true, dreId: true }, orderBy: { role: 'asc' } },
+      },
+      orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    });
+    return users;
   }
 
   async grantRole(granter: AuthUser, userId: string, grant: GrantRoleDto) {

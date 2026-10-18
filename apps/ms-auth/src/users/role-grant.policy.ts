@@ -27,3 +27,25 @@ export function scopeError(grant: RoleClaim): string | null {
   if (grant.role === 'DRE_SPECIALIST') return has.dre && !has.school && !has.ugel ? null : 'El rol requiere solo dreId';
   return !has.school && !has.ugel && !has.dre ? null : 'MINEDU_ADMIN no lleva alcance';
 }
+
+// Quién puede ver las cuentas de un ámbito: MINEDU todo, DRE y UGEL su territorio, dirección su IE.
+export function canViewScope(
+  viewer: AuthUser,
+  scope: { schoolId?: string; ugelId?: string; dreId?: string },
+  target: { ugelId?: string; dreId?: string },
+): boolean {
+  return viewer.roles.some((claim) => {
+    switch (claim.role) {
+      case 'MINEDU_ADMIN':
+        return true;
+      case 'DRE_SPECIALIST':
+        return !!target.dreId && target.dreId === claim.dreId;
+      case 'UGEL_SPECIALIST':
+        return !scope.dreId && !!target.ugelId && target.ugelId === claim.ugelId;
+      case 'DIRECTOR':
+        return !!scope.schoolId && scope.schoolId === claim.schoolId;
+      default:
+        return false;
+    }
+  });
+}

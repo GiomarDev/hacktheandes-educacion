@@ -19,3 +19,10 @@ export class GrantRoleDto {
   @IsOptional() @IsUUID() ugelId?: string;
   @IsOptional() @IsUUID() dreId?: string;
 }
+
+// Exactamente uno: la IE, la UGEL o la DRE cuyas cuentas se listan.
+export class ListUsersQuery {
+  @IsOptional() @IsUUID() schoolId?: string;
+  @IsOptional() @IsUUID() ugelId?: string;
+  @IsOptional() @IsUUID() dreId?: string;
+}

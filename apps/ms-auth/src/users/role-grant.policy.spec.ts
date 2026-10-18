@@ -1,5 +1,5 @@
 import type { AuthUser, RoleClaim } from '@app/common';
-import { canGrant } from './role-grant.policy.js';
+import { canGrant, canViewScope } from './role-grant.policy.js';
 
 const as = (roles: RoleClaim[]): AuthUser => ({ id: 'granter', name: 'G', roles });
 const inUgel1 = { ugelId: 'ugel-1', dreId: 'dre-1' };
@@ -35,5 +35,26 @@ describe('canGrant', () => {
 
   it('un docente no otorga nada', () => {
     expect(canGrant(as([{ role: 'TEACHER', schoolId: 's1' }]), { role: 'TEACHER', schoolId: 's1' }, inUgel1)).toBe(false);
+  });
+});
+
+describe('canViewScope', () => {
+  it('la DRE ve IEs y UGELs de su región', () => {
+    const dre = as([{ role: 'DRE_SPECIALIST', dreId: 'dre-1' }]);
+    expect(canViewScope(dre, { schoolId: 's1' }, inUgel1)).toBe(true);
+    expect(canViewScope(dre, { ugelId: 'ugel-1' }, inUgel1)).toBe(true);
+    expect(canViewScope(dre, { dreId: 'dre-2' }, { dreId: 'dre-2' })).toBe(false);
+  });
+
+  it('la UGEL no ve la DRE aunque sea la suya', () => {
+    const ugel = as([{ role: 'UGEL_SPECIALIST', ugelId: 'ugel-1' }]);
+    expect(canViewScope(ugel, { dreId: 'dre-1' }, { dreId: 'dre-1' })).toBe(false);
+  });
+
+  it('la dirección solo ve su IE', () => {
+    const director = as([{ role: 'DIRECTOR', schoolId: 's1' }]);
+    expect(canViewScope(director, { schoolId: 's1' }, inUgel1)).toBe(true);
+    expect(canViewScope(director, { schoolId: 's2' }, inUgel1)).toBe(false);
+    expect(canViewScope(director, { ugelId: 'ugel-1' }, inUgel1)).toBe(false);
   });
 });

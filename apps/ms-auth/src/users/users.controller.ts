@@ -1,13 +1,19 @@
-import { Body, Controller, Delete, HttpCode, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
 import { CurrentUser, Roles } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { UsersService } from './users.service.js';
-import { CreateUserDto, GrantRoleDto } from './dto/users.dto.js';
+import { CreateUserDto, GrantRoleDto, ListUsersQuery } from './dto/users.dto.js';
 
 @Controller('users')
 @Roles('MINEDU_ADMIN', 'UGEL_SPECIALIST', 'DIRECTOR')
 export class UsersController {
   constructor(private readonly users: UsersService) {}
+
+  @Get()
+  @Roles('MINEDU_ADMIN', 'DRE_SPECIALIST', 'UGEL_SPECIALIST', 'DIRECTOR')
+  list(@CurrentUser() user: AuthUser, @Query() query: ListUsersQuery) {
+    return this.users.list(user, query);
+  }
 
   @Post()
   create(@Body() dto: CreateUserDto) {
