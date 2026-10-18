@@ -51,3 +51,6 @@ coverage/
 
 # Capturas de verificación del navegador
 .playwright-mcp/
+
+# Recursos del frontend que sí se versionan
+!apps/web/src/**/assets/*.png
