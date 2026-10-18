@@ -122,3 +122,11 @@ export async function apiFetch<T = unknown>(
   const text = await response.text();
   return (text ? JSON.parse(text) : undefined) as T;
 }
+
+// Segmento de ruta desde parámetros de URL: solo UUID, para que un enlace manipulado (../, ?, #)
+// no redirija una petición autenticada a otra ruta del servicio.
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export function seg(id: string | undefined | null): string {
+  if (!id || !UUID.test(id)) throw new ApiError(400, 'Identificador inválido');
+  return encodeURIComponent(id);
+}

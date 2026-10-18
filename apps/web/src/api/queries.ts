@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiFetch } from './client';
+import { apiFetch, seg } from './client';
 import type {
   Alert,
   AlertStatus,
@@ -32,7 +32,7 @@ export const useSchools = (ugelId?: string) =>
 export const useSchool = (id?: string) =>
   useQuery({
     queryKey: ['school', id],
-    queryFn: () => apiFetch<School>('siagie', `/schools/${id}`),
+    queryFn: () => apiFetch<School>('siagie', `/schools/${seg(id)}`),
     enabled: !!id,
   });
 export const useSections = (
@@ -46,14 +46,14 @@ export const useSectionStudents = (sectionId?: string) =>
   useQuery({
     queryKey: ['section-students', sectionId],
     queryFn: () =>
-      apiFetch<Enrollment[]>('siagie', `/sections/${sectionId}/students`),
+      apiFetch<Enrollment[]>('siagie', `/sections/${seg(sectionId)}/students`),
     enabled: !!sectionId,
   });
 export const useStudentSummary = (id?: string) =>
   useQuery({
     queryKey: ['student-summary', id],
     queryFn: () =>
-      apiFetch<StudentSummary>('siagie', `/students/${id}/summary`),
+      apiFetch<StudentSummary>('siagie', `/students/${seg(id)}/summary`),
     enabled: !!id,
   });
 export function useSaveAttendance() {
@@ -93,14 +93,14 @@ export const useCases = (params: { schoolId?: string; status?: string } = {}) =>
 export const useCase = (id?: string) =>
   useQuery({
     queryKey: ['case', id],
-    queryFn: () => apiFetch<CaseDetail>('alerta', `/cases/${id}`),
+    queryFn: () => apiFetch<CaseDetail>('alerta', `/cases/${seg(id)}`),
     enabled: !!id,
   });
 export function useUpdateAlert() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: AlertStatus }) =>
-      apiFetch<Alert>('alerta', `/alerts/${id}`, {
+      apiFetch<Alert>('alerta', `/alerts/${seg(id)}`, {
         method: 'PATCH',
         body: { status },
       }),
@@ -111,7 +111,7 @@ export function useCaseAction(caseId: string) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (body: { type: string; notes: string; status?: string }) =>
-      apiFetch('alerta', `/cases/${caseId}/actions`, { method: 'POST', body }),
+      apiFetch('alerta', `/cases/${seg(caseId)}/actions`, { method: 'POST', body }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['case', caseId] });
       void client.invalidateQueries({ queryKey: ['cases'] });
@@ -123,7 +123,7 @@ export function useSendMessage(caseId: string) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (body: { requestId: string; body?: string }) =>
-      apiFetch('alerta', `/cases/${caseId}/send-message`, {
+      apiFetch('alerta', `/cases/${seg(caseId)}/send-message`, {
         method: 'POST',
         body,
       }),
@@ -181,7 +181,7 @@ export function useReportTransition() {
       status?: 'REVIEWED' | 'OBSERVED';
       notes?: string;
     }) =>
-      apiFetch<Report>('simon', `/reports/${id}/${action}`, {
+      apiFetch<Report>('simon', `/reports/${seg(id)}/${action}`, {
         method: 'POST',
         body,
       }),

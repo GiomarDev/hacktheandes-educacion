@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from '@tanstack/react-query';
-import { apiFetch } from './client';
+import { apiFetch, seg } from './client';
 import type { AttendanceStatus, Enrollment, Section } from './types';
 
 export interface AttendanceMark {
@@ -27,7 +27,7 @@ export function useSectionsData(sections: Section[], from: string, to: string) {
     queries: sections.map((s) => ({
       queryKey: ['section-students', s.id],
       queryFn: () =>
-        apiFetch<Enrollment[]>('siagie', `/sections/${s.id}/students`),
+        apiFetch<Enrollment[]>('siagie', `/sections/${seg(s.id)}/students`),
     })),
   });
   const attendance = useQueries({
@@ -62,7 +62,7 @@ export function useStudentNames(): Map<string, Enrollment> {
     queries: (sections.data ?? []).map((s) => ({
       queryKey: ['section-students', s.id],
       queryFn: () =>
-        apiFetch<Enrollment[]>('siagie', `/sections/${s.id}/students`),
+        apiFetch<Enrollment[]>('siagie', `/sections/${seg(s.id)}/students`),
     })),
   });
   const names = new Map<string, Enrollment>();

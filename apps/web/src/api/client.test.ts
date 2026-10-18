@@ -116,3 +116,12 @@ describe('apiFetch', () => {
     expect(JSON.stringify({ ...sessionStorage })).not.toContain('"a"');
   });
 });
+
+describe('seg', () => {
+  it('acepta un UUID y rechaza segmentos que cambian la ruta', async () => {
+    const { seg } = await import('./client');
+    expect(seg('01920000-0000-7000-8000-000000000010')).toBe('01920000-0000-7000-8000-000000000010');
+    for (const bad of ['../users', '..%2F..%2Fauth', 'abc?x=1', 'a#b', '', undefined])
+      expect(() => seg(bad)).toThrow(ApiError);
+  });
+});
