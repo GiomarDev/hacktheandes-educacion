@@ -365,6 +365,50 @@ describe('F2: SIAGIE → alertas → caso → familia', () => {
       .expect(403);
   });
 
+  it('el personal de aula solo ve los casos y alertas de sus secciones', async () => {
+    const record = await openCase();
+    const teacher = await login('70000004');
+    const visible = async (path: string, token: string) =>
+      (await request(alerta.url).get(path).set(as(token)).expect(200)).body
+        .length;
+    // Docente de la IE sin carga en la sección del estudiante.
+    expect(await visible('/cases', teacher)).toBe(0);
+    expect(await visible('/alerts', teacher)).toBe(0);
+    await request(alerta.url)
+      .get(`/cases/${record.id}`)
+      .set(as(teacher))
+      .expect(403);
+    // El auxiliar responsable y la dirección sí lo ven.
+    expect(await visible('/cases', auxiliar)).toBe(1);
+    expect(await visible('/alerts', director)).toBeGreaterThan(0);
+    await request(alerta.url)
+      .get(`/cases/${record.id}`)
+      .set(as(auxiliar))
+      .expect(200);
+    // Con carga docente en la sección, el docente pasa a verlo.
+    const area = await siagiePrisma.curricularArea.findFirstOrThrow();
+    await siagiePrisma.teachingAssignment.create({
+      data: {
+        sectionId: fx.sectionA.id,
+        areaId: area.id,
+        teacherUserId: USERS.teacherA,
+        weeklyHours: 4,
+      },
+    });
+    try {
+      expect(await visible('/cases', teacher)).toBe(1);
+      expect(await visible('/alerts', teacher)).toBeGreaterThan(0);
+      await request(alerta.url)
+        .get(`/cases/${record.id}`)
+        .set(as(teacher))
+        .expect(200);
+    } finally {
+      await siagiePrisma.teachingAssignment.deleteMany({
+        where: { teacherUserId: USERS.teacherA },
+      });
+    }
+  });
+
   it('el especialista UGEL ve solo su ámbito y el propietario registra una acción', async () => {
     const record = await openCase();
     const specialist = await login('70000005');

@@ -132,6 +132,19 @@ describe('resumen del estudiante', () => {
     expect(await prisma.auditLog.count()).toBe(0);
   });
 
+  it('el personal de aula solo ve la ficha de estudiantes de sus secciones', async () => {
+    const token = (
+      id: string,
+      role: 'TEACHER' | 'AUXILIAR' | 'TUTOR' | 'PSYCHOLOGIST',
+    ) => signTestToken({ id, roles: [{ role, schoolId: fx.schoolA.id }] });
+    await summary(token(USERS.teacherA, 'TEACHER')).expect(403);
+    await summary(token(USERS.auxiliarA2, 'AUXILIAR')).expect(403);
+    expect(await prisma.auditLog.count()).toBe(0);
+    await summary(token(USERS.tutorA, 'TUTOR')).expect(200);
+    await summary(token(USERS.auxiliarA, 'AUXILIAR')).expect(200);
+    await summary(token(USERS.secretaryA, 'PSYCHOLOGIST')).expect(200);
+  });
+
   it('no devuelve una matrícula de otro año como resumen actual', async () => {
     for (const otherYear of [year - 1, year + 1]) {
       await prisma.enrollment.update({

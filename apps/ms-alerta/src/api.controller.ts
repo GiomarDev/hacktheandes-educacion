@@ -47,7 +47,7 @@ export class ApiController {
     if (query.schoolId) await this.scope.assertSchool(user, query.schoolId);
     return this.prisma.alert.findMany({
       where: {
-        ...(await this.scope.filter(user)),
+        AND: [await this.scope.filter(user, 'alert')],
         ...(query.schoolId ? { schoolId: query.schoolId } : {}),
         status: query.status as AlertStatus | undefined,
       },
@@ -96,7 +96,7 @@ export class ApiController {
     if (query.schoolId) await this.scope.assertSchool(user, query.schoolId);
     return this.prisma.case.findMany({
       where: {
-        ...(await this.scope.filter(user)),
+        AND: [await this.scope.filter(user, 'case')],
         ...(query.schoolId ? { schoolId: query.schoolId } : {}),
         status: query.status as CaseStatus | undefined,
       },
@@ -113,7 +113,7 @@ export class ApiController {
   ) {
     const record = await this.prisma.case.findUnique({ where: { id } });
     if (!record) throw new NotFoundException('Caso no encontrado');
-    await this.scope.assertSchool(user, record.schoolId);
+    await this.scope.assertRead(user, record);
     return this.prisma.case.findUniqueOrThrow({
       where: { id },
       include: {
@@ -221,7 +221,7 @@ export class ApiController {
 
   @Get('rules')
   async rules(@CurrentUser() user: AuthUser) {
-    const filter = await this.scope.filter(user);
+    const filter = await this.scope.schoolFilter(user);
     return this.prisma.riskRule.findMany({
       where: filter.schoolId
         ? { OR: [{ schoolId: null }, { schoolId: filter.schoolId }] }

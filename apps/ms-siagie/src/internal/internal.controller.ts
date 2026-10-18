@@ -37,6 +37,22 @@ export class InternalController {
     return { id: ugel.id, dreId: ugel.dreId };
   }
 
+  // Secciones a cargo de una persona (tutoría, auxiliar o carga docente): ms-alerta filtra casos con esto.
+  @Get('staff/:userId/sections')
+  async staffSections(@Param('userId', ParseUUIDPipe) userId: string) {
+    const sections = await this.prisma.section.findMany({
+      where: {
+        OR: [
+          { tutorUserId: userId },
+          { auxiliarUserId: userId },
+          { teachingAssignments: { some: { teacherUserId: userId } } },
+        ],
+      },
+      select: { id: true },
+    });
+    return sections.map((s) => s.id);
+  }
+
   @Get('dres/:id')
   async dre(@Param('id', ParseUUIDPipe) id: string) {
     const dre = await this.prisma.dre.findUnique({ where: { id } });

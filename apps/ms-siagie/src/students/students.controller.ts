@@ -6,12 +6,21 @@ import {
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
-import { CurrentUser, dateOnly, Roles } from '@app/common';
-import type { AuthUser } from '@app/common';
+import { canAccessSchool, CurrentUser, dateOnly, Roles } from '@app/common';
+import type { AuthUser, Role } from '@app/common';
 import { SchoolAccessService } from '../school-access.service.js';
 import { calculateAttendanceRate } from '../grades/period-grade.js';
 import { PrismaService } from '../prisma.service.js';
 import { CreateStudentDto } from './students.dto.js';
+
+const SCHOOL_WIDE_READERS: Role[] = [
+  'MINEDU_ADMIN',
+  'DRE_SPECIALIST',
+  'UGEL_SPECIALIST',
+  'DIRECTOR',
+  'SECRETARY',
+  'PSYCHOLOGIST',
+];
 
 @Controller('students')
 export class StudentsController {
@@ -68,6 +77,15 @@ export class StudentsController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const enrollment = await this.access.assertStudent(user, id);
+    // Dirección, secretaría, psicología y autoridades ven toda la IE; el personal de aula, solo sus secciones.
+    const { section } = enrollment;
+    const school = {
+      id: section.schoolId,
+      ugelId: section.school.ugelId,
+      dreId: section.school.ugel.dreId,
+    };
+    if (!canAccessSchool(user, school, SCHOOL_WIDE_READERS))
+      await this.access.assertSectionStaff(user, section);
     const [student, attendance, periodGrades] = await Promise.all([
       this.prisma.student.findUniqueOrThrow({ where: { id } }),
       this.prisma.attendanceRecord.groupBy({

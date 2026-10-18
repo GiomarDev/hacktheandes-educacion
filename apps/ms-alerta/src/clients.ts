@@ -28,6 +28,12 @@ export class SiagieClient {
       `/internal/schools/${id}`,
     );
   }
+  staffSections(userId: string) {
+    return internalGet<string[]>(
+      'SIAGIE_URL',
+      `/internal/staff/${userId}/sections`,
+    );
+  }
   schoolIds(query: string) {
     return internalGet<{ id: string }[]>(
       'SIAGIE_URL',
