@@ -91,7 +91,7 @@ La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No e
 
 ---
 
-## Frontend: Centinela Escolar
+## Frontend: Amauti
 
 `apps/web` (React 19, Vite, TanStack Query, React Router y Tailwind) implementa el [bosquejo de Claude Design del equipo](https://claude.ai/artifact/UT5n57ZJPMv7sX4mY3XqhB) conectado a los cinco microservicios. Los datos mostrados vienen de las APIs: el score de ML y otras cifras del bosquejo sin respaldo se reemplazaron por datos reales con su fuente.
 
@@ -190,7 +190,7 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
 
-> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` mencionada a continuación se retiró del repositorio. El frontend implementado (Centinela Escolar) sigue el bosquejo de Claude Design descrito en la sección Frontend.
+> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` mencionada a continuación se retiró del repositorio. El frontend implementado (Amauti) sigue el bosquejo de Claude Design descrito en la sección Frontend.
 
 Como parte de la fase de prototipado y validación de la solución, se diseñó la primera versión interactiva de **AmautaIA — Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero**. Los prototipos fueron generados e iterados a través de la integración agéntica con **Google Stitch MCP** en el proyecto `Hack The Andes Test` (`projects/1503192843636542264`), bajo el sistema de diseño semántico **AmautaIA Institucional Claro (MINEDU GovTech)** (`assets/764693782689717926`).
 
@@ -231,7 +231,7 @@ Para más detalles sobre los componentes y sugerencias de iteración devueltas p
 │       └── stitch-*/                       # Skills especializadas para Google Stitch
 ├── .claude/                                # Configuración de Claude Code
 ├── .commands/                              # Comandos reutilizables (/commit, /review)
-├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002), ms-simon (3003), ms-escale (3004) y web (Centinela Escolar)
+├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002), ms-simon (3003), ms-escale (3004) y web (Amauti)
 ├── libs/                                   # Autorización, contratos de eventos y fixtures sintéticos
 ├── test/                                   # Entornos y protección de schemas de prueba
 ├── scripts/                                # Creación de base y verificación del arranque compilado

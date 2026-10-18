@@ -56,7 +56,7 @@ export function stepsFor(claim: RoleClaim, name: string): TourStep[] {
     {
       id: 'welcome',
       title: `¡Hola${firstName ? `, ${firstName}` : ''}! Soy Amauti`,
-      body: `Te acompaño en Centinela Escolar. Te muestro en un momento lo que puedes hacer con el rol ${roleLabel(claim.role)}.`,
+      body: `Esta plataforma lleva mi nombre y te acompaño en ella. Te muestro en un momento lo que puedes hacer con el rol ${roleLabel(claim.role)}.`,
       pose: 'greeting',
     },
     ...items.map((item, i) => ({

@@ -10,7 +10,7 @@ Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú
 
 ## Stack
 
-Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. El frontend `apps/web` (Centinela Escolar: React 19 + Vite + TanStack Query + Tailwind) es un paquete propio con su `package.json`; en desarrollo Vite enruta `/api/<servicio>` a cada puerto y en producción lo hace nginx (`deploy/`). CI en `.github/workflows/ci.yml`.
+Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. El frontend `apps/web` (Amauti: React 19 + Vite + TanStack Query + Tailwind) es un paquete propio con su `package.json`; en desarrollo Vite enruta `/api/<servicio>` a cada puerto y en producción lo hace nginx (`deploy/`). CI en `.github/workflows/ci.yml`.
 
 | Tarea        | Comando |
 |--------------|---------|

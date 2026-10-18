@@ -22,7 +22,7 @@ export function Wordmark({ light = false }: { light?: boolean }) {
             : 'text-[15px] font-semibold whitespace-nowrap text-ink'
         }
       >
-        Centinela Escolar
+        Amauti
       </span>
       <span className="hidden rounded bg-peru px-1.5 py-0.5 font-mono min-[400px]:inline text-[9.5px] font-medium tracking-wider text-white">
         PILOTO

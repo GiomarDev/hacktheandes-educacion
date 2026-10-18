@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Tokens del bosquejo de Claude Design (Centinela Escolar). */
+/* Tokens del bosquejo de Claude Design (Amauti, antes Centinela Escolar). */
 @theme {
   /* Geist + Geist Mono: pareja sans/mono para interfaces densas (skill taste-design). */
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;

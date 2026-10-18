@@ -86,5 +86,5 @@ jobs:
     needs: [backend, web]
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -f deploy/backend.Dockerfile -t centinela-backend .
-      - run: docker build -f deploy/web.Dockerfile -t centinela-web .
+      - run: docker build -f deploy/backend.Dockerfile -t amauti-backend .
+      - run: docker build -f deploy/web.Dockerfile -t amauti-web .

@@ -114,7 +114,7 @@ Verificación final: lint, tipos y build de los cinco servicios sin errores; **9
 
 Migración `apps/ms-escale/prisma/migrations/20261018020000_init`: **aplicada solo a `escale_test`**. La URL de `escale_test` se deriva de `SIMON_TEST_DATABASE_URL` cuando falta `ESCALE_TEST_DATABASE_URL`. Para correr el servicio sobre el schema real hay que agregar `ESCALE_DATABASE_URL` al `.env`; los marcadores ya están en `.env.example`.
 
-## Frontend — Centinela Escolar
+## Frontend — Amauti (antes Centinela Escolar)
 
 Claude implementó `apps/web` a partir del [bosquejo de Claude Design](https://claude.ai/artifact/UT5n57ZJPMv7sX4mY3XqhB), siguiendo su [plan](superpowers/plans/2026-10-17-frontend-centinela.md). Las pantallas cubren tres grupos de usuarios: el portal docente (Hoy, pase de lista, ficha del estudiante), dirección (Escuela) y los especialistas o MINEDU (Panorama). Además hay centro de alertas, detalle de caso con bitácora y contacto simulado, reportes SIMON con envío y revisión, y fuentes de datos para importar los CSV.
 

@@ -5,7 +5,7 @@ x-backend: &backend
   build:
     context: ..
     dockerfile: deploy/backend.Dockerfile
-  image: centinela-backend
+  image: amauti-backend
   restart: unless-stopped
   env_file: ../.env
   environment: &urls

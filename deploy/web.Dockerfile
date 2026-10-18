@@ -1,4 +1,4 @@
-# Build estático de Centinela Escolar servido por nginx, que enruta /api/<servicio> a cada microservicio.
+# Build estático de Amauti servido por nginx, que enruta /api/<servicio> a cada microservicio.
 # Construir desde la raíz del repositorio: docker build -f deploy/web.Dockerfile .
 FROM node:26-slim AS build
 WORKDIR /web
