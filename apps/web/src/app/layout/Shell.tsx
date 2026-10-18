@@ -13,6 +13,7 @@ import { useOnboarding } from '@/features/onboarding/useOnboarding';
 import { Flag, Wordmark } from '@/shared/ui/Brand';
 import { cx } from '@/shared/ui/kit';
 import { DataProgress } from '@/shared/ui/motion';
+import { NewVersionNotice } from '@/shared/ui/NewVersionNotice';
 
 function initials(name: string) {
   return name
@@ -231,6 +232,7 @@ export function Shell() {
             <Outlet />
           </div>
         </main>
+        <NewVersionNotice />
         {tour.open && (
           <Tour
             steps={stepsFor(active, user.name).filter(

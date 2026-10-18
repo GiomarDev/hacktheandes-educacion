@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { homeFor } from '@/features/auth/roles';
 import { Shell } from '@/app/layout/Shell';
+import { RouteError } from '@/app/RouteError';
 import { Empty } from '@/shared/ui/kit';
 import { PageSkeleton } from '@/shared/ui/motion';
 
@@ -39,118 +40,128 @@ const routes = [
         <PageSkeleton />
       </div>
     ),
+    // Un error en una pantalla se muestra dentro del shell; el menú sigue disponible.
+    errorElement: <RouteError />,
     children: [
-      { index: true, element: <Home /> },
       {
-        path: 'docente',
-        lazy: page(
-          () => import('@/features/home/pages/DocenteHoyPage'),
-          'DocenteHoyPage',
-        ),
+        errorElement: <RouteError />,
+        children: [
+          { index: true, element: <Home /> },
+          {
+            path: 'docente',
+            lazy: page(
+              () => import('@/features/home/pages/DocenteHoyPage'),
+              'DocenteHoyPage',
+            ),
+          },
+          {
+            path: 'docente/aula',
+            lazy: page(
+              () => import('@/features/attendance/pages/AulaPage'),
+              'AulaPage',
+            ),
+          },
+          {
+            path: 'estudiantes/:id',
+            lazy: page(
+              () => import('@/features/schools/pages/EstudiantePage'),
+              'EstudiantePage',
+            ),
+          },
+          {
+            path: 'notas',
+            lazy: page(
+              () => import('@/features/grades/pages/NotasPage'),
+              'NotasPage',
+            ),
+          },
+          {
+            path: 'documentos',
+            lazy: page(
+              () => import('@/features/documents/pages/DocumentosPage'),
+              'DocumentosPage',
+            ),
+          },
+          {
+            path: 'alertas',
+            lazy: page(
+              () => import('@/features/alerts/pages/AlertasPage'),
+              'AlertasPage',
+            ),
+          },
+          {
+            path: 'casos/:id',
+            lazy: page(
+              () => import('@/features/alerts/pages/CasoPage'),
+              'CasoPage',
+            ),
+          },
+          {
+            path: 'panorama',
+            lazy: page(
+              () => import('@/features/indicators/pages/PanoramaPage'),
+              'PanoramaPage',
+            ),
+          },
+          {
+            path: 'escuelas',
+            lazy: page(
+              () => import('@/features/schools/pages/EscuelasPage'),
+              'EscuelasPage',
+            ),
+          },
+          {
+            path: 'escuelas/:id',
+            lazy: page(
+              () => import('@/features/schools/pages/EscuelaPage'),
+              'EscuelaPage',
+            ),
+          },
+          {
+            path: 'reportes',
+            lazy: page(
+              () => import('@/features/reports/pages/ReportesPage'),
+              'ReportesPage',
+            ),
+          },
+          {
+            path: 'fuentes',
+            lazy: page(
+              () => import('@/features/indicators/pages/FuentesPage'),
+              'FuentesPage',
+            ),
+          },
+          {
+            path: 'planes',
+            lazy: page(
+              () => import('@/features/plans/pages/PlanesPage'),
+              'PlanesPage',
+            ),
+          },
+          {
+            path: 'planes/:id',
+            lazy: page(
+              () => import('@/features/plans/pages/PlanPage'),
+              'PlanPage',
+            ),
+          },
+          {
+            path: 'visitas',
+            lazy: page(
+              () => import('@/features/visits/pages/VisitasPage'),
+              'VisitasPage',
+            ),
+          },
+          {
+            path: 'admin',
+            lazy: page(
+              () => import('@/features/admin/pages/AdminPage'),
+              'AdminPage',
+            ),
+          },
+          { path: '*', element: <NotFound /> },
+        ],
       },
-      {
-        path: 'docente/aula',
-        lazy: page(
-          () => import('@/features/attendance/pages/AulaPage'),
-          'AulaPage',
-        ),
-      },
-      {
-        path: 'estudiantes/:id',
-        lazy: page(
-          () => import('@/features/schools/pages/EstudiantePage'),
-          'EstudiantePage',
-        ),
-      },
-      {
-        path: 'notas',
-        lazy: page(
-          () => import('@/features/grades/pages/NotasPage'),
-          'NotasPage',
-        ),
-      },
-      {
-        path: 'documentos',
-        lazy: page(
-          () => import('@/features/documents/pages/DocumentosPage'),
-          'DocumentosPage',
-        ),
-      },
-      {
-        path: 'alertas',
-        lazy: page(
-          () => import('@/features/alerts/pages/AlertasPage'),
-          'AlertasPage',
-        ),
-      },
-      {
-        path: 'casos/:id',
-        lazy: page(
-          () => import('@/features/alerts/pages/CasoPage'),
-          'CasoPage',
-        ),
-      },
-      {
-        path: 'panorama',
-        lazy: page(
-          () => import('@/features/indicators/pages/PanoramaPage'),
-          'PanoramaPage',
-        ),
-      },
-      {
-        path: 'escuelas',
-        lazy: page(
-          () => import('@/features/schools/pages/EscuelasPage'),
-          'EscuelasPage',
-        ),
-      },
-      {
-        path: 'escuelas/:id',
-        lazy: page(
-          () => import('@/features/schools/pages/EscuelaPage'),
-          'EscuelaPage',
-        ),
-      },
-      {
-        path: 'reportes',
-        lazy: page(
-          () => import('@/features/reports/pages/ReportesPage'),
-          'ReportesPage',
-        ),
-      },
-      {
-        path: 'fuentes',
-        lazy: page(
-          () => import('@/features/indicators/pages/FuentesPage'),
-          'FuentesPage',
-        ),
-      },
-      {
-        path: 'planes',
-        lazy: page(
-          () => import('@/features/plans/pages/PlanesPage'),
-          'PlanesPage',
-        ),
-      },
-      {
-        path: 'planes/:id',
-        lazy: page(() => import('@/features/plans/pages/PlanPage'), 'PlanPage'),
-      },
-      {
-        path: 'visitas',
-        lazy: page(
-          () => import('@/features/visits/pages/VisitasPage'),
-          'VisitasPage',
-        ),
-      },
-      {
-        path: 'admin',
-        lazy: page(
-          () => import('@/features/admin/pages/AdminPage'),
-          'AdminPage',
-        ),
-      },
-      { path: '*', element: <NotFound /> },
     ],
   },
 ];
