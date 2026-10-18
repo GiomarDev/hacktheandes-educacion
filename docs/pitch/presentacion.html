@@ -144,37 +144,94 @@
       margin-bottom: 48px;
     }
 
-    /* ════════ SLIDE 1: 375 + MAPA REAL ════════ */
-    .s1-visual {
+    /* ════════ SLIDE 1: PORTADA AMAUTI + INTEGRANTES ════════ */
+    .s1-cover {
       display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
-      gap: 56px;
+      gap: 52px;
     }
 
-    .num-375 {
+    .project-title {
       font-family: var(--font-display);
-      font-size: clamp(9.5rem, 16vw, 14.5rem);
+      font-size: clamp(4.5rem, 6.8vw, 6.2rem);
       font-weight: 800;
-      line-height: 0.82;
-      color: var(--gob-rojo);
-      letter-spacing: -0.05em;
-    }
-
-    .label-375 {
-      font-family: var(--font-display);
-      font-size: clamp(2.1rem, 3vw, 2.75rem);
-      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
       color: var(--ink);
-      margin-top: 16px;
-      line-height: 1.15;
+      margin-bottom: 16px;
     }
 
-    .sub-question {
-      margin-top: 28px;
-      font-size: 1.65rem;
+    .project-title span {
+      color: var(--gob-rojo);
+    }
+
+    .project-subtitle {
+      font-family: var(--font-sans);
+      font-size: clamp(1.3rem, 1.8vw, 1.65rem);
+      font-weight: 600;
+      color: var(--ink-mid);
+      line-height: 1.35;
+      margin-bottom: 36px;
+      max-width: 620px;
+    }
+
+    .team-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .team-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--gob-azul);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 18px;
+      max-width: 600px;
+    }
+
+    .member-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      box-shadow: 0 4px 12px -2px rgba(26, 35, 50, 0.06);
+    }
+
+    .member-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gob-azul-bg);
+      color: var(--gob-azul);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .member-name {
+      font-family: var(--font-sans);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
     }
 
     .visual-showcase {
@@ -200,94 +257,138 @@
       filter: drop-shadow(0 12px 20px rgba(26, 35, 50, 0.2));
     }
 
-    /* ════════ SLIDE 2: LÍNEA DE TIEMPO ABIERTA (CERO CUADRADOS) ════════ */
-    .open-timeline {
-      position: relative;
+    /* ════════ SLIDE 2: 375 + PUNTO CIEGO 60 DÍAS ════════ */
+    .s2-combined-layout {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      padding: 20px 0 48px;
+      grid-template-columns: 0.95fr 1.25fr;
+      align-items: center;
+      gap: 48px;
     }
 
-    /* Línea conectora de fondo */
-    .open-timeline::before {
+    .s2-stat-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .num-375 {
+      font-family: var(--font-display);
+      font-size: clamp(7.5rem, 11vw, 10.5rem);
+      font-weight: 800;
+      line-height: 0.82;
+      color: var(--gob-rojo);
+      letter-spacing: -0.05em;
+    }
+
+    .label-375 {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 2.5vw, 2.35rem);
+      font-weight: 800;
+      color: var(--ink);
+      margin-top: 14px;
+      line-height: 1.15;
+    }
+
+    .sub-question {
+      margin-top: 24px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--gob-azul);
+      line-height: 1.25;
+    }
+
+    .s2-problem-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s2-timeline-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      padding-left: 8px;
+    }
+
+    /* Línea vertical conectora */
+    .s2-timeline-vertical::before {
       content: '';
       position: absolute;
-      top: 72px;
-      left: 14%;
-      right: 14%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--estable) 0%, var(--estable) 55%, var(--critico) 100%);
+      top: 24px;
+      bottom: 24px;
+      left: 31px;
+      width: 3px;
+      background: linear-gradient(180deg, var(--estable) 0%, var(--estable) 55%, var(--critico) 100%);
       z-index: 0;
     }
 
-    .tl-node {
+    .vtl-node {
       position: relative;
       z-index: 1;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
+      gap: 16px;
     }
 
-    .tl-circle {
-      width: 108px;
-      height: 108px;
+    .vtl-circle {
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: var(--surface);
-      border: 5px solid var(--estable);
+      border: 4px solid var(--estable);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.8rem;
-      box-shadow: 0 12px 28px -8px rgba(26, 35, 50, 0.14);
-      margin-bottom: 22px;
+      font-size: 1.45rem;
+      box-shadow: 0 8px 18px -4px rgba(26, 35, 50, 0.12);
+      flex-shrink: 0;
     }
-
-    .tl-node.danger .tl-circle {
+    .vtl-node.danger .vtl-circle {
       border-color: var(--critico);
       background: var(--critico-bg);
     }
 
-    .tl-day {
+    .vtl-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .vtl-day {
       font-family: var(--font-mono);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       text-transform: uppercase;
       color: var(--ink-mute);
-      margin-bottom: 6px;
+      min-width: 60px;
     }
-    .tl-node.danger .tl-day { color: var(--critico); }
+    .vtl-node.danger .vtl-day { color: var(--critico); }
 
-    .tl-title {
+    .vtl-title {
       font-family: var(--font-display);
-      font-size: 2rem;
+      font-size: 1.55rem;
       font-weight: 800;
       color: var(--ink);
-      margin-bottom: 12px;
     }
 
     .status-dot {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 1.05rem;
+      gap: 6px;
+      font-size: 0.95rem;
       font-weight: 800;
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 99px;
     }
     .status-dot.normal { background: var(--estable-bg); color: var(--estable-text); }
     .status-dot.late   { background: var(--critico); color: #FFF; }
 
-    /* Fila visual inferior sin caja pesada */
+    /* Fila visual docente inferior */
     .teacher-visual-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 28px;
-      padding-top: 28px;
-      border-top: 2px dashed var(--line-strong);
-      font-size: 1.65rem;
+      gap: 16px;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--ink-mid);
     }
@@ -295,15 +396,15 @@
     .wsp-badge-clean {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: var(--estable);
       color: #FFF;
-      padding: 10px 24px;
+      padding: 8px 18px;
       border-radius: 99px;
       font-family: var(--font-display);
-      font-size: 1.65rem;
+      font-size: 1.3rem;
       font-weight: 800;
-      box-shadow: 0 10px 24px -6px rgba(43, 138, 62, 0.4);
+      box-shadow: 0 8px 20px -4px rgba(43, 138, 62, 0.4);
     }
 
     /* ════════ SLIDE 3: 2 CAPTURAS WHATSAPP ➔ PLATAFORMA EN VIVO ════════ */
@@ -560,20 +661,32 @@
     }
 
     @media (max-height: 850px) {
-      .title { margin-bottom: 24px; font-size: 2.8rem; }
+      .title { margin-bottom: 20px; font-size: 2.5rem; }
+      .project-title { font-size: 4.2rem; margin-bottom: 10px; }
+      .project-subtitle { font-size: 1.25rem; margin-bottom: 24px; }
+      .member-pill { padding: 8px 14px; font-size: 0.95rem; }
+      .num-375 { font-size: 6.5rem; }
+      .label-375 { font-size: 1.7rem; margin-top: 8px; }
+      .sub-question { font-size: 1.25rem; margin-top: 16px; }
+      .s2-combined-layout { gap: 32px; }
+      .s2-timeline-vertical { gap: 12px; }
+      .vtl-circle { width: 44px; height: 44px; font-size: 1.25rem; }
+      .vtl-title { font-size: 1.35rem; }
       .phone-mockup { height: 370px; width: 168px; border-radius: 18px; }
       .platform-shot { height: 370px; }
       .s3-visual-flow { gap: 24px; }
       .sync-arrow { font-size: 2rem; }
-      .open-timeline::before { top: 56px; }
-      .tl-circle { width: 84px; height: 84px; font-size: 2.2rem; }
     }
 
     @media (max-width: 1200px) {
       .slide { padding: 0 32px; }
-      .phone-mockup { height: 340px; width: 154px; }
-      .platform-shot { height: 340px; }
-      .s3-visual-flow { grid-template-columns: auto 50px 1fr; gap: 16px; }
+      .s1-cover { gap: 32px; }
+      .project-title { font-size: 3.6rem; }
+      .team-grid { grid-template-columns: 1fr; }
+      .s2-combined-layout { gap: 28px; }
+      .phone-mockup { height: 330px; width: 150px; }
+      .platform-shot { height: 330px; }
+      .s3-visual-flow { grid-template-columns: auto 40px 1fr; gap: 14px; }
     }
   </style>
 </head>
@@ -589,14 +702,37 @@
 
   <main class="deck">
 
-    <!-- ══════════════════ SLIDE 1: EL HOOK (375 + MAPA) ══════════════════ -->
+    <!-- ══════════════════ SLIDE 1: PORTADA AMAUTI + INTEGRANTES ══════════════════ -->
     <section class="slide active">
-      <div class="s1-visual">
+      <div class="s1-cover">
         <div>
-          <div class="kicker">Perú · Cada 24 Horas</div>
-          <div class="num-375">375</div>
-          <div class="label-375">alumnos abandonan el colegio.</div>
-          <div class="sub-question">¿En qué minuto exacto los perdimos?</div>
+          <div class="kicker">Hack the Andes 2026 · Reto Educación Escolar</div>
+          <h1 class="project-title">Amauti<span>.</span></h1>
+          <p class="project-subtitle">Continuidad educativa, alerta temprana y reporting sin fricción en el aula escolar.</p>
+
+          <div class="team-section">
+            <div class="team-badge">
+              <span>👥</span> Equipo: Futuro Agéntico (KeoIT)
+            </div>
+            <div class="team-grid">
+              <div class="member-pill">
+                <span class="member-avatar">AH</span>
+                <span class="member-name">Augusto Huerta</span>
+              </div>
+              <div class="member-pill">
+                <span class="member-avatar">XD</span>
+                <span class="member-name">Alexander Delgado (Xander)</span>
+              </div>
+              <div class="member-pill">
+                <span class="member-avatar">GL</span>
+                <span class="member-name">Giomar Limo</span>
+              </div>
+              <div class="member-pill">
+                <span class="member-avatar">RV</span>
+                <span class="member-name">Ronaldinho Villanueva</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="visual-showcase">
@@ -623,38 +759,59 @@
       </div>
     </section>
 
-    <!-- ══════════════════ SLIDE 2: 60 DÍAS A CIEGAS (LÍNEA VISUAL CON ÍCONOS) ══════════════════ -->
+    <!-- ══════════════════ SLIDE 2: 375 ALUMNOS + EL PUNTO CIEGO DE 60 DÍAS ══════════════════ -->
     <section class="slide">
-      <div class="kicker">El Punto Ciego de 60 Días</div>
-      <h2 class="title">Sistemas que hacen <span style="color: var(--gob-rojo);">autopsias</span>, no rescates.</h2>
-
-      <div class="open-timeline">
-        <div class="tl-node">
-          <div class="tl-circle">📉</div>
-          <div class="tl-day">Lunes</div>
-          <div class="tl-title">Falla en clase</div>
-          <span class="status-dot normal">🟢 Oficial: "Normal"</span>
+      <div class="s2-combined-layout">
+        <!-- Columna Izquierda: El Hook de 375 -->
+        <div class="s2-stat-col">
+          <div class="kicker">Perú · Cada 24 Horas</div>
+          <div class="num-375">375</div>
+          <div class="label-375">alumnos abandonan el colegio.</div>
+          <div class="sub-question">¿En qué minuto exacto los perdimos?</div>
         </div>
 
-        <div class="tl-node">
-          <div class="tl-circle">🪑</div>
-          <div class="tl-day">Jueves</div>
-          <div class="tl-title">Empieza a faltar</div>
-          <span class="status-dot normal">🟢 Oficial: "Normal"</span>
-        </div>
+        <!-- Columna Derecha: El Punto Ciego de 60 Días -->
+        <div class="s2-problem-col">
+          <div class="kicker">El Punto Ciego de 60 Días</div>
+          <h2 class="title" style="margin-bottom: 24px; font-size: clamp(2rem, 3vw, 2.7rem);">
+            Sistemas que hacen <span style="color: var(--gob-rojo);">autopsias</span>, no rescates.
+          </h2>
 
-        <div class="tl-node danger">
-          <div class="tl-circle">🚨</div>
-          <div class="tl-day">Día 60</div>
-          <div class="tl-title">Ya desertó</div>
-          <span class="status-dot late">🔴 Recién salta la alerta</span>
-        </div>
-      </div>
+          <div class="s2-timeline-vertical">
+            <div class="vtl-node">
+              <div class="vtl-circle">📉</div>
+              <div class="vtl-info">
+                <span class="vtl-day">Lunes</span>
+                <span class="vtl-title">Falla en clase</span>
+                <span class="status-dot normal">🟢 Oficial: "Normal"</span>
+              </div>
+            </div>
 
-      <div class="teacher-visual-row">
-        <span>👩‍🏫 Profesor solo, en trámites y sin tecnología en el aula…</span>
-        <span>➔</span>
-        <span class="wsp-badge-clean">💬 Salvo WhatsApp</span>
+            <div class="vtl-node">
+              <div class="vtl-circle">🪑</div>
+              <div class="vtl-info">
+                <span class="vtl-day">Jueves</span>
+                <span class="vtl-title">Empieza a faltar</span>
+                <span class="status-dot normal">🟢 Oficial: "Normal"</span>
+              </div>
+            </div>
+
+            <div class="vtl-node danger">
+              <div class="vtl-circle">🚨</div>
+              <div class="vtl-info">
+                <span class="vtl-day">Día 60</span>
+                <span class="vtl-title">Ya desertó</span>
+                <span class="status-dot late">🔴 Recién salta la alerta</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="teacher-visual-row" style="margin-top: 24px; padding-top: 20px; font-size: 1.35rem; justify-content: flex-start;">
+            <span>👩‍🏫 Docente solo en el aula…</span>
+            <span>➔</span>
+            <span class="wsp-badge-clean" style="font-size: 1.25rem; padding: 6px 18px;">💬 Salvo WhatsApp</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -691,10 +848,7 @@
         <!-- Plataforma web oficial en vivo -->
         <div class="platform-container">
           <div class="platform-header">
-            <div class="platform-label">💻 Tablero Diario · IE & UGEL</div>
-            <a href="https://amauti.keoit.com" target="_blank" rel="noopener" class="live-cta">
-              🚀 Demo en vivo (Xander) ↗
-            </a>
+            <div class="platform-label">💻 Tablero Diario Sincronizado · IE & UGEL</div>
           </div>
           <img class="platform-shot" src="./screenshots/17_docente_hoy_tablero_diario_limpio.png" alt="Tablero Diario Sincronizado Amauti" />
         </div>

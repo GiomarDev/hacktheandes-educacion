@@ -1,6 +1,7 @@
 # Guion Oficial de Pitch (3 Minutos) y Defensa Q&A (2 Minutos)
 ## Amauti — Continuidad Educativa, Alerta Temprana y Reporting sin Fricción
-**Equipo:** Futuro Agéntico (KeoIT) · **Track:** Educación Escolar · **Hack the Andes 2026**
+**Equipo:** Futuro Agéntico (KeoIT) · **Integrantes:** Augusto Huerta, Alexander (Xander) Delgado, Giomar Limo, Ronaldinho Villanueva  
+**Track:** Educación Escolar · **Hack the Andes 2026**
 
 ---
 
@@ -8,9 +9,9 @@
 
 | Tiempo | Orador | Bloque | Pantalla visible en el auditorio | Criterio Rúbrica |
 | :---: | :---: | :--- | :--- | :--- |
-| **`0:00 - 0:13`** | **Augusto** | **Acto I: Hook y Curiosidad** | Slide 1: **375** alumnos / 24h + Pregunta de Curiosidad | Problema e Impacto (15%) |
-| **`0:13 - 0:44`** | **Augusto** | **Acto II: Tensión Visceral** | Slide 2: Punto ciego 60 días (Autopsias) + Docente solo con WhatsApp | Problema e Impacto (15%) |
-| **`0:44 - 1:08`** | **Augusto** | **Acto III: La Diferencia Amauti** | Slide 3: 2 Capturas Reales WhatsApp (1. Bitácora Huamán/Lucero · 2. Alerta 4 faltas Nayeli) ➔ Plataforma Amauti en Vivo | Claridad (10%) |
+| **`Previo / 0:00`** | **—** | **Portada** | Slide 1: **Amauti** · Equipo Futuro Agéntico e Integrantes | Identidad y Proyecto |
+| **`0:00 - 0:44`** | **Augusto** | **Acto I & II: Hook y Tensión** | Slide 2: **375** alumnos / 24h + Punto ciego 60 días (Autopsias) + WhatsApp | Problema e Impacto (15%) |
+| **`0:44 - 1:08`** | **Augusto** | **Acto III: La Diferencia Amauti** | Slide 3: 2 Capturas Reales WhatsApp (Bitácora + Alerta) ➔ Tablero Sincronizado | Claridad (10%) |
 | **`1:08 - 2:10`** | **Xander** | **DEMO EN VIVO (62 seg)** | **Web en vivo: `https://amauti.keoit.com`** | **Funciona (25%) + Tracción (+0.5)** |
 | **`2:10 - 2:35`** | **Xander** | **Arquitectura y Complejidad** | Slide 4: 5 Microservicios NestJS + Cifrado AES-256 + SHA-256 | **Complejidad (30%) + Calidad (20%)** |
 | **`2:35 - 3:00`** | **Xander** | **Tradeoffs, Siguiente Paso y Cierre** | Slide 5: Reglas deterministas + Planes de Nivelación (Roadmap) | Claridad / Tradeoffs (10%) |
