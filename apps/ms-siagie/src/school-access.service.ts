@@ -7,6 +7,16 @@ import { canAccessSchool, todayInLima } from '@app/common';
 import type { AuthUser, Role } from '@app/common';
 import { PrismaService } from './prisma.service.js';
 
+// Leen toda la IE de su ámbito; el personal de aula (tutor, docente, auxiliar) solo sus secciones.
+export const SCHOOL_WIDE_READERS: Role[] = [
+  'MINEDU_ADMIN',
+  'DRE_SPECIALIST',
+  'UGEL_SPECIALIST',
+  'DIRECTOR',
+  'SECRETARY',
+  'PSYCHOLOGIST',
+];
+
 // Punto único donde se decide si un usuario puede tocar los datos de una IE.
 @Injectable()
 export class SchoolAccessService {
@@ -83,6 +93,26 @@ export class SchoolAccessService {
   ): void {
     if (!canAccessSchool(user, school, roles))
       throw new ForbiddenException('No tiene acceso a esta IE');
+  }
+
+  // Lectura de datos de estudiantes de una sección (nómina, ficha).
+  async assertSectionReader(
+    user: AuthUser,
+    section: {
+      id: string;
+      schoolId: string;
+      tutorUserId: string;
+      auxiliarUserId: string | null;
+      school: { ugelId: string; ugel: { dreId: string } };
+    },
+  ) {
+    const school = {
+      id: section.schoolId,
+      ugelId: section.school.ugelId,
+      dreId: section.school.ugel.dreId,
+    };
+    if (!canAccessSchool(user, school, SCHOOL_WIDE_READERS))
+      await this.assertSectionStaff(user, section);
   }
 
   // Dentro de la IE, el personal solo actúa sobre sus secciones: el auxiliar en las que tiene a cargo,

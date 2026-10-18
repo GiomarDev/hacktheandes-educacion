@@ -7,7 +7,11 @@ import { dateOnly, todayInLima } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { PrismaService } from '../prisma.service.js';
 import { SchoolAccessService } from '../school-access.service.js';
-import { BulkAttendanceDto, CreateClassSessionDto } from './attendance.dto.js';
+import {
+  AttendanceRangeQuery,
+  BulkAttendanceDto,
+  CreateClassSessionDto,
+} from './attendance.dto.js';
 
 @Injectable()
 export class AttendanceService {
@@ -177,5 +181,30 @@ export class AttendanceService {
       throw new BadRequestException(
         'No se puede registrar asistencia de una fecha futura',
       );
+  }
+
+  async range(user: AuthUser, query: AttendanceRangeQuery) {
+    const from = dateOnly(query.from);
+    const to = dateOnly(query.to);
+    const days = (to.getTime() - from.getTime()) / 86400000;
+    if (!Number.isFinite(days) || days < 0 || days > 30)
+      throw new BadRequestException(
+        'El rango debe ir de from a to y abarcar hasta 31 días',
+      );
+    const section = await this.access.assertSection(user, query.sectionId);
+    await this.access.assertSectionReader(user, section);
+    const records = await this.prisma.attendanceRecord.findMany({
+      where: {
+        classSessionId: null,
+        date: { gte: from, lte: to },
+        enrollment: { sectionId: query.sectionId },
+      },
+      select: { enrollmentId: true, date: true, status: true },
+      orderBy: [{ date: 'asc' }, { enrollmentId: 'asc' }],
+    });
+    return records.map((r) => ({
+      ...r,
+      date: r.date.toISOString().slice(0, 10),
+    }));
   }
 }

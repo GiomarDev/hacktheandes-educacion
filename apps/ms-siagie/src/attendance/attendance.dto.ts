@@ -1,8 +1,33 @@
 import { Type } from 'class-transformer';
-import { ArrayMaxSize, ArrayMinSize, IsDateString, IsIn, IsInt, IsOptional, IsString, IsUUID, Length, Max, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsDateString,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
-export const ATTENDANCE_STATUSES = ['PRESENT', 'ABSENT', 'LATE', 'JUSTIFIED', 'LEFT_EARLY'] as const;
+export const ATTENDANCE_STATUSES = [
+  'PRESENT',
+  'ABSENT',
+  'LATE',
+  'JUSTIFIED',
+  'LEFT_EARLY',
+] as const;
 export type AttendanceStatusValue = (typeof ATTENDANCE_STATUSES)[number];
+
+export class AttendanceRangeQuery {
+  @IsUUID() sectionId: string;
+  @IsDateString({ strict: true }) from: string;
+  @IsDateString({ strict: true }) to: string;
+}
 
 export class CreateClassSessionDto {
   @IsUUID() sectionId: string;
@@ -21,6 +46,9 @@ export class BulkAttendanceDto {
   @IsUUID() sectionId: string;
   @IsDateString({ strict: true }) date: string;
   @IsOptional() @IsUUID() classSessionId?: string;
-  @ValidateNested({ each: true }) @Type(() => AttendanceItemDto) @ArrayMinSize(1) @ArrayMaxSize(60)
+  @ValidateNested({ each: true })
+  @Type(() => AttendanceItemDto)
+  @ArrayMinSize(1)
+  @ArrayMaxSize(60)
   records: AttendanceItemDto[];
 }

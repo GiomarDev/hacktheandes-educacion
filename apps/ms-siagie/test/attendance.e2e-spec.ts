@@ -95,6 +95,22 @@ describe('pase de lista', () => {
       .expect(403);
   });
 
+  it('lee la asistencia diaria de una sección en un rango', async () => {
+    await bulk(auxiliar, { sectionId: fx.sectionA.id, date: DATE, records: records() }).expect(200);
+    await bulk(auxiliar, { sectionId: fx.sectionA.id, date: '2026-04-07', records: records('ABSENT') }).expect(200);
+    const read = (token: string, query: string) =>
+      http().get(`/attendance?sectionId=${fx.sectionA.id}&${query}`).set(bearer(token));
+    const { body } = await read(auxiliar, `from=${DATE}&to=2026-04-07`).expect(200);
+    expect(body).toHaveLength(6);
+    expect(body[0]).toEqual({ enrollmentId: expect.any(String), date: DATE, status: 'PRESENT' });
+    expect((await read(auxiliar, `from=${DATE}&to=${DATE}`).expect(200)).body).toHaveLength(3);
+    // Solo quien tiene a cargo la sección; rango de hasta 31 días.
+    const otherAux = signTestToken({ id: USERS.auxiliarA2, roles: [{ role: 'AUXILIAR', schoolId: fx.schoolA.id }] });
+    await read(otherAux, `from=${DATE}&to=${DATE}`).expect(403);
+    await read(auxiliar, 'from=2026-03-01&to=2026-05-01').expect(400);
+    await read(auxiliar, 'from=2026-04-08&to=2026-04-07').expect(400);
+  });
+
   it('la lista de una hora convive con la del día', async () => {
     const teacher = signTestToken({ id: USERS.teacherA, roles: [{ role: 'TEACHER', schoolId: fx.schoolA.id }] });
     await prisma.teachingAssignment.create({
