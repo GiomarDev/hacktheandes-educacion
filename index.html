@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Amauti — Pitch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Source+Sans+3:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,700;8..60,800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    /* ──────── Paleta Oficial (palette.md) ──────── */
+    :root {
+      --gob-rojo:        #D91023;
+      --gob-rojo-bg:     #FFF5F5;
+      --gob-azul:        #003876;
+      --gob-azul-hover:  #002855;
+      --gob-azul-bg:     #E6EEF5;
+
+      --bg:              #F5F7FA;
+      --surface:         #FFFFFF;
+      --surface-mute:    #F0F3F7;
+
+      --nav-bg:          #1A2332;
+      --ink:             #1A2332;
+      --ink-mid:         #5A6578;
+      --ink-mute:        #8A95A8;
+
+      --line:            #E1E5EB;
+      --line-strong:     #CBD1D9;
+
+      --critico:         #C8102E;
+      --critico-bg:      #FFEEF0;
+      --medio:           #E6A316;
+      --estable:         #2B8A3E;
+      --estable-text:    #1F6E30;
+      --estable-bg:      #E8F3EC;
+
+      --amauti:          #FFD21F;
+
+      --font-sans:       'Source Sans 3', system-ui, sans-serif;
+      --font-display:    'Source Serif 4', Georgia, serif;
+      --font-mono:       'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ──────── Cabecera Mínima Flotante ──────── */
+    .top-bar {
+      position: fixed;
+      top: 32px;
+      left: 64px;
+      right: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--ink);
+    }
+
+    .flag {
+      width: 24px;
+      height: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px var(--line-strong);
+    }
+    .flag i:nth-child(1), .flag i:nth-child(3) { background: var(--gob-rojo); }
+    .flag i:nth-child(2) { background: var(--surface); }
+
+    .counter {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink-mute);
+    }
+
+    /* ──────── Escenario Abierto (Sin Cajas Recargadas) ──────── */
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide {
+      width: 100%;
+      max-width: 1380px;
+      padding: 0 64px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fade 0.25s ease-out;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gob-rojo);
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 4.4vw, 4rem);
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 48px;
+    }
+
+    /* ════════ SLIDE 1: PORTADA AMAUTI + INTEGRANTES ════════ */
+    .s1-cover {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 52px;
+    }
+
+    .project-title {
+      font-family: var(--font-display);
+      font-size: clamp(4.5rem, 6.8vw, 6.2rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .project-title span {
+      color: var(--gob-rojo);
+    }
+
+    .project-subtitle {
+      font-family: var(--font-sans);
+      font-size: clamp(1.3rem, 1.8vw, 1.65rem);
+      font-weight: 600;
+      color: var(--ink-mid);
+      line-height: 1.35;
+      margin-bottom: 36px;
+      max-width: 620px;
+    }
+
+    .team-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .team-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gob-azul);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 18px;
+      max-width: 600px;
+    }
+
+    .member-pill {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      box-shadow: 0 4px 12px -2px rgba(26, 35, 50, 0.06);
+    }
+
+    .member-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gob-azul-bg);
+      color: var(--gob-azul);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .member-name {
+      font-family: var(--font-sans);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .visual-showcase {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clean-shot {
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 24px 56px -16px rgba(26, 35, 50, 0.22);
+      border: 1px solid var(--line-strong);
+    }
+
+    .floating-mascot {
+      position: absolute;
+      right: -28px;
+      bottom: -36px;
+      width: 145px;
+      height: 200px;
+      filter: drop-shadow(0 12px 20px rgba(26, 35, 50, 0.2));
+    }
+
+    /* ════════ SLIDE 2: 375 + PUNTO CIEGO 60 DÍAS ════════ */
+    .s2-combined-layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1.25fr;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .s2-stat-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .num-375 {
+      font-family: var(--font-display);
+      font-size: clamp(7.5rem, 11vw, 10.5rem);
+      font-weight: 800;
+      line-height: 0.82;
+      color: var(--gob-rojo);
+      letter-spacing: -0.05em;
+    }
+
+    .label-375 {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 2.5vw, 2.35rem);
+      font-weight: 800;
+      color: var(--ink);
+      margin-top: 14px;
+      line-height: 1.15;
+    }
+
+    .sub-question {
+      margin-top: 24px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--gob-azul);
+      line-height: 1.25;
+    }
+
+    .s2-problem-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s2-timeline-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      padding-left: 8px;
+    }
+
+    /* Línea vertical conectora */
+    .s2-timeline-vertical::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      bottom: 24px;
+      left: 31px;
+      width: 3px;
+      background: linear-gradient(180deg, var(--estable) 0%, var(--estable) 55%, var(--critico) 100%);
+      z-index: 0;
+    }
+
+    .vtl-node {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .vtl-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 4px solid var(--estable);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      box-shadow: 0 8px 18px -4px rgba(26, 35, 50, 0.12);
+      flex-shrink: 0;
+    }
+    .vtl-node.danger .vtl-circle {
+      border-color: var(--critico);
+      background: var(--critico-bg);
+    }
+
+    .vtl-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .vtl-day {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      min-width: 60px;
+    }
+    .vtl-node.danger .vtl-day { color: var(--critico); }
+
+    .vtl-title {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 99px;
+    }
+    .status-dot.normal { background: var(--estable-bg); color: var(--estable-text); }
+    .status-dot.late   { background: var(--critico); color: #FFF; }
+
+    /* Fila visual docente inferior */
+    .teacher-visual-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--ink-mid);
+    }
+
+    .wsp-badge-clean {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--estable);
+      color: #FFF;
+      padding: 8px 18px;
+      border-radius: 99px;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 800;
+      box-shadow: 0 8px 20px -4px rgba(43, 138, 62, 0.4);
+    }
+
+    /* ════════ SLIDE 3: 2 CAPTURAS WHATSAPP ➔ PLATAFORMA EN VIVO ════════ */
+    .s3-visual-flow {
+      display: grid;
+      grid-template-columns: auto 70px 1fr;
+      align-items: center;
+      gap: 32px;
+      width: 100%;
+    }
+
+    .phones-duo {
+      display: flex;
+      gap: 18px;
+      align-items: flex-end;
+    }
+
+    .phone-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .phone-tag {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 8px rgba(26, 35, 50, 0.06);
+      white-space: nowrap;
+    }
+    .phone-tag.alert {
+      color: var(--critico);
+      background: var(--critico-bg);
+      border-color: rgba(200, 16, 46, 0.2);
+    }
+
+    .phone-mockup {
+      width: 200px;
+      height: 442px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 4px solid var(--nav-bg);
+      background: #000;
+      box-shadow: 0 16px 36px -10px rgba(26, 35, 50, 0.22);
+      position: relative;
+    }
+
+    .phone-mockup img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .sync-bridge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 6px;
+    }
+
+    .sync-arrow {
+      font-size: 2.6rem;
+      line-height: 1;
+      color: var(--gob-azul);
+    }
+
+    .sync-text {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+
+    .sync-sub {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--estable);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .platform-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .platform-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .platform-label {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gob-rojo);
+      color: #FFF;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 8px 18px;
+      border-radius: 99px;
+      box-shadow: 0 8px 18px -4px rgba(217, 16, 35, 0.45);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .live-cta:hover {
+      background: #B50D1C;
+      transform: translateY(-1px);
+    }
+
+    .platform-shot {
+      width: 100%;
+      height: 442px;
+      object-fit: cover;
+      object-position: top left;
+      border-radius: 16px;
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 20px 48px -12px rgba(26, 35, 50, 0.2);
+    }
+
+    /* ════════ SLIDE 4: ARQUITECTURA VISUAL (NODOS + CAPTURA SHA-256) ════════ */
+    .s4-arch-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .arch-nodes {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .arch-pill {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .arch-dot {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 10px 18px;
+      border-radius: 99px;
+      background: var(--nav-bg);
+      color: var(--amauti);
+      min-width: 145px;
+      text-align: center;
+    }
+
+    .arch-text {
+      font-family: var(--font-display);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ════════ SLIDE 5: CIERRE VISUAL ════════ */
+    .s5-closing {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .roadmap-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      margin-top: 12px;
+    }
+
+    .rm-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 22px;
+    }
+
+    .rm-tag {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 99px;
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+    .rm-tag.now  { background: var(--gob-azul-bg); color: var(--gob-azul); }
+    .rm-tag.next { background: var(--critico-bg); color: var(--critico); }
+
+    .rm-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.12;
+      color: var(--ink);
+    }
+
+    /* ──────── Puntos de Navegación ──────── */
+    .bottom-dots {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 99px;
+      border: none;
+      background: var(--line-strong);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dot.active {
+      width: 36px;
+      background: var(--gob-rojo);
+    }
+
+    @media (max-height: 850px) {
+      .title { margin-bottom: 20px; font-size: 2.5rem; }
+      .project-title { font-size: 4.2rem; margin-bottom: 10px; }
+      .project-subtitle { font-size: 1.25rem; margin-bottom: 24px; }
+      .member-pill { padding: 8px 14px; font-size: 0.95rem; }
+      .num-375 { font-size: 6.5rem; }
+      .label-375 { font-size: 1.7rem; margin-top: 8px; }
+      .sub-question { font-size: 1.25rem; margin-top: 16px; }
+      .s2-combined-layout { gap: 32px; }
+      .s2-timeline-vertical { gap: 12px; }
+      .vtl-circle { width: 44px; height: 44px; font-size: 1.25rem; }
+      .vtl-title { font-size: 1.35rem; }
+      .phone-mockup { height: 370px; width: 168px; border-radius: 18px; }
+      .platform-shot { height: 370px; }
+      .s3-visual-flow { gap: 24px; }
+      .sync-arrow { font-size: 2rem; }
+    }
+
+    @media (max-width: 1200px) {
+      .slide { padding: 0 32px; }
+      .s1-cover { gap: 32px; }
+      .project-title { font-size: 3.6rem; }
+      .team-grid { grid-template-columns: 1fr; }
+      .s2-combined-layout { gap: 28px; }
+      .phone-mockup { height: 330px; width: 150px; }
+      .platform-shot { height: 330px; }
+      .s3-visual-flow { grid-template-columns: auto 40px 1fr; gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="brand">
+      <span class="flag"><i></i><i></i><i></i></span>
+      Amauti
+    </div>
+    <div class="counter" id="counter">01 / 05</div>
+  </header>
+
+  <main class="deck">
+
+    <!-- ══════════════════ SLIDE 1: PORTADA AMAUTI + INTEGRANTES ══════════════════ -->
+    <section class="slide active">
+      <div class="s1-cover">
+        <div>
+          <div class="kicker">Hack the Andes 2026 · Reto Educación Escolar</div>
+          <h1 class="project-title">Amauti<span>.</span></h1>
+          <p class="project-subtitle">Continuidad educativa, alerta temprana y reporting sin fricción en el aula escolar.</p>
+
+          <div class="team-section">
+            <div class="team-badge">
+              <span>👥</span> Equipo: Futuro Agéntico
+            </div>
+            <div class="team-grid">
+              <div class="member-pill">
+                <span class="member-avatar">AH</span>
+                <span class="member-name">Augusto Huerta</span>
+              </div>
+              <div class="member-pill">
+                <span class="member-avatar">XD</span>
+                <span class="member-name">Alexander Delgado</span>
+              </div>
+              <div class="member-pill">
+                <span class="member-avatar">GL</span>
+                <span class="member-name">Giomar Limo</span>
+              </div>
+              <div class="member-pill">
+                <span class="member-avatar">RV</span>
+                <span class="member-name">Ronaldinho Villanueva</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visual-showcase">
+          <img class="clean-shot" src="./screenshots/01_panorama_nacional_secundaria.png" alt="Panorama Nacional de Deserción" />
+          <svg class="floating-mascot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 340">
+            <ellipse cx="120" cy="318" rx="65" ry="9" fill="#0F172A" opacity=".12"/>
+            <g data-part="pencil">
+              <path d="M103 277 L99 311 L85 311" fill="none" stroke="#0F172A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M137 277 L143 311 L156 311" fill="none" stroke="#0F172A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M73 165 Q46 177 36 207" fill="none" stroke="#0F172A" stroke-width="9" stroke-linecap="round"/><circle cx="36" cy="207" r="9" fill="#0F172A"/>
+              <path d="M167 165 Q194 177 204 207" fill="none" stroke="#0F172A" stroke-width="9" stroke-linecap="round"/><circle cx="204" cy="207" r="9" fill="#0F172A"/>
+              <path d="M70 66 V43 Q70 22 92 22 H148 Q170 22 170 43 V66Z" fill="#C8102E"/>
+              <path d="M69 61 Q120 55 171 61 V85 H69Z" fill="#0F172A"/>
+              <path d="M70 231 Q91 247 120 286 Q149 247 170 231Z" fill="#F5D7B6"/>
+              <path d="M105 267 Q120 261 135 267 L120 287Z" fill="#0F172A"/>
+              <path d="M70 81 H170 V231 Q170 245 159 240 L145 230 Q137 225 129 234 Q120 244 111 234 Q102 225 94 232 L81 241 Q70 247 70 231Z" fill="#FFD21F"/>
+              <ellipse cx="97" cy="153" rx="6" ry="8" fill="#0F172A"/><circle cx="99" cy="150" r="1.6" fill="white"/>
+              <ellipse cx="143" cy="153" rx="6" ry="8" fill="#0F172A"/><circle cx="145" cy="150" r="1.6" fill="white"/>
+              <ellipse cx="86" cy="172" rx="10" ry="6" fill="#F58A91"/><ellipse cx="154" cy="172" rx="10" ry="6" fill="#F58A91"/>
+              <path d="M108 174 Q120 179 132 174 Q130 192 120 192 Q110 192 108 174Z" fill="#0F172A"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ SLIDE 2: 375 ALUMNOS + EL PUNTO CIEGO DE 60 DÍAS ══════════════════ -->
+    <section class="slide">
+      <div class="s2-combined-layout">
+        <!-- Columna Izquierda: El Hook de 375 -->
+        <div class="s2-stat-col">
+          <div class="kicker">Perú · Cada 24 Horas</div>
+          <div class="num-375">375</div>
+          <div class="label-375">alumnos abandonan el colegio.</div>
+          <div class="sub-question">¿En qué minuto exacto los perdimos?</div>
+        </div>
+
+        <!-- Columna Derecha: El Punto Ciego de 60 Días -->
+        <div class="s2-problem-col">
+          <div class="kicker">El Punto Ciego de 60 Días</div>
+          <h2 class="title" style="margin-bottom: 24px; font-size: clamp(2rem, 3vw, 2.7rem);">
+            Sistemas que hacen <span style="color: var(--gob-rojo);">autopsias</span>, no rescates.
+          </h2>
+
+          <div class="s2-timeline-vertical">
+            <div class="vtl-node">
+              <div class="vtl-circle">📉</div>
+              <div class="vtl-info">
+                <span class="vtl-day">Lunes</span>
+                <span class="vtl-title">Falla en clase</span>
+                <span class="status-dot normal">🟢 Oficial: "Normal"</span>
+              </div>
+            </div>
+
+            <div class="vtl-node">
+              <div class="vtl-circle">🪑</div>
+              <div class="vtl-info">
+                <span class="vtl-day">Jueves</span>
+                <span class="vtl-title">Empieza a faltar</span>
+                <span class="status-dot normal">🟢 Oficial: "Normal"</span>
+              </div>
+            </div>
+
+            <div class="vtl-node danger">
+              <div class="vtl-circle">🚨</div>
+              <div class="vtl-info">
+                <span class="vtl-day">Día 60</span>
+                <span class="vtl-title">Ya desertó</span>
+                <span class="status-dot late">🔴 Recién salta la alerta</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="teacher-visual-row" style="margin-top: 24px; padding-top: 20px; font-size: 1.35rem; justify-content: flex-start;">
+            <span>👩‍🏫 Docente sin ayuda en el aula...</span>
+            <span>➔</span>
+            <span class="wsp-badge-clean" style="font-size: 1.25rem; padding: 6px 18px;">💬 Salvo WhatsApp</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ SLIDE 3: SEÑAL ➔ RESCATE (WHATSAPP ➔ PLATAFORMA) ══════════════════ -->
+    <section class="slide">
+      <div class="kicker">La Diferencia Amauti</div>
+      <h2 class="title" style="margin-bottom: 28px;">Cierra el ciclo <span style="color: var(--gob-azul);">entre la señal y el rescate.</span></h2>
+
+      <div class="s3-visual-flow">
+        <!-- Dos teléfonos con capturas reales de WhatsApp -->
+        <div class="phones-duo">
+          <div class="phone-column">
+            <span class="phone-tag">💬 1. Bitácora de aula</span>
+            <div class="phone-mockup">
+              <img src="./screenshots/wsp_real_bitacora_observaciones.png" alt="WhatsApp bitácora Brayan Huamán y Lucero" />
+            </div>
+          </div>
+
+          <div class="phone-column">
+            <span class="phone-tag alert">🚨 2. Alerta temprana</span>
+            <div class="phone-mockup">
+              <img src="./screenshots/wsp_real_alerta_nayeli.png" alt="WhatsApp alerta 4 faltas Nayeli Cachique" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Conector en tiempo real -->
+        <div class="sync-bridge">
+          <div class="sync-arrow">➔</div>
+          <div class="sync-text">Sincronización instantánea</div>
+          <div class="sync-sub">Sin papeleo</div>
+        </div>
+
+        <!-- Plataforma web oficial en vivo -->
+        <div class="platform-container">
+          <div class="platform-header">
+            <div class="platform-label">💻 Tablero Diario Sincronizado · IE & UGEL</div>
+          </div>
+          <img class="platform-shot" src="./screenshots/17_docente_hoy_tablero_diario_limpio.png" alt="Tablero Diario Sincronizado Amauti" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ SLIDE 4: ARQUITECTURA VISUAL ══════════════════ -->
+    <section class="slide">
+      <div class="kicker">Ingeniería Real</div>
+      <h2 class="title" style="margin-bottom: 36px;">5 Microservicios Desacoplados</h2>
+
+      <div class="s4-arch-layout">
+        <div class="arch-nodes">
+          <div class="arch-pill">
+            <span class="arch-dot">ms-auth</span>
+            <span class="arch-text">RBAC Multinivel · JWKS</span>
+          </div>
+          <div class="arch-pill">
+            <span class="arch-dot">ms-siagie</span>
+            <span class="arch-text">Asistencia · Notas CNEB</span>
+          </div>
+          <div class="arch-pill">
+            <span class="arch-dot">ms-alerta</span>
+            <span class="arch-text">Motor Determinista · 48h</span>
+          </div>
+          <div class="arch-pill">
+            <span class="arch-dot">ms-simon</span>
+            <span class="arch-text">Reportes · Cifrado AES-256</span>
+          </div>
+          <div class="arch-pill">
+            <span class="arch-dot">ms-escale</span>
+            <span class="arch-text">Datos Oficiales SHA-256</span>
+          </div>
+        </div>
+
+        <img class="clean-shot" src="./screenshots/14_fuentes_datos_abiertos_csv.png" alt="Auditoría SHA-256 de Datos Oficiales" />
+      </div>
+    </section>
+
+    <!-- ══════════════════ SLIDE 5: HOY VS FUTURO ══════════════════ -->
+    <section class="slide">
+      <div class="kicker">Decisiones y Visión</div>
+      <h2 class="title" style="margin-bottom: 36px;">Cada día en el aula <span style="color: var(--gob-rojo);">cuenta.</span></h2>
+
+      <div class="s5-closing">
+        <div class="roadmap-steps">
+          <div class="rm-row">
+            <span class="rm-tag now">Hoy en vivo</span>
+            <div class="rm-title">Reglas Auditables + Tiempo libre para que el profesor intervenga</div>
+          </div>
+
+          <div class="rm-row">
+            <span class="rm-tag next">Siguiente Paso</span>
+            <div class="rm-title">Planes concretos de nivelación y tutoría desde la bitácora</div>
+          </div>
+        </div>
+
+        <img class="clean-shot" src="./screenshots/16_admin_reglas_alerta_umbrales.png" alt="Motor de Reglas Configurables" />
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-dots" aria-label="Diapositivas">
+    <button class="dot active" onclick="go(0)"></button>
+    <button class="dot" onclick="go(1)"></button>
+    <button class="dot" onclick="go(2)"></button>
+    <button class="dot" onclick="go(3)"></button>
+    <button class="dot" onclick="go(4)"></button>
+  </nav>
+
+  <script>
+    let idx = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const counter = document.getElementById('counter');
+
+    function go(n) {
+      if (n < 0 || n >= slides.length) return;
+      idx = n;
+      slides.forEach((s, i) => s.classList.toggle('active', i === n));
+      dots.forEach((d, i) => d.classList.toggle('active', i === n));
+      counter.textContent = `0${n + 1} / 0${slides.length}`;
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); }
+    });
+
+    gsap.to('[data-part="pencil"]', {
+      y: -10,
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
+  </script>
+</body>
+</html>
