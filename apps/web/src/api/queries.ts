@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, seg } from './client';
 import type { Role } from '../auth/roles';
+import { notifyMascot } from '../mascot/events';
 import type {
   Alert,
   AlertStatus,
@@ -78,7 +79,10 @@ export function useSaveAttendance() {
         justification?: string;
       }[];
     }) => apiFetch('siagie', '/attendance/bulk', { method: 'POST', body }),
-    onSuccess: () => client.invalidateQueries({ queryKey: ['attendance-day'] }),
+    onSuccess: () => {
+      notifyMascot('activity:completed', '¡Asistencia guardada! Buen trabajo.');
+      return client.invalidateQueries({ queryKey: ['attendance-day'] });
+    },
   });
 }
 
@@ -251,7 +255,13 @@ export function useGenerateReport() {
       periodId?: string;
     }) =>
       apiFetch<Report>('simon', '/reports/generate', { method: 'POST', body }),
-    onSuccess: () => client.invalidateQueries({ queryKey: ['reports'] }),
+    onSuccess: () => {
+      notifyMascot(
+        'report:completed',
+        'Reporte listo con los datos registrados.',
+      );
+      return client.invalidateQueries({ queryKey: ['reports'] });
+    },
   });
 }
 export function useReportTransition() {
@@ -362,7 +372,10 @@ export const useApproveVersion = (id: string) =>
         'simon',
         `/support-plans/${seg(id)}/versions/${seg(versionId)}/approve`,
         { method: 'POST', body: { expectedUpdatedAt } },
-      ),
+      ).then((r) => {
+        notifyMascot('activity:completed', 'Versión aprobada: el plan avanza.');
+        return r;
+      }),
   );
 
 export const useVisits = (params: { schoolId?: string; year?: number }) =>
@@ -408,7 +421,14 @@ export function useUpdateVisit() {
         method: 'PATCH',
         body,
       }),
-    onSuccess: () => client.invalidateQueries({ queryKey: ['visits'] }),
+    onSuccess: (visit) => {
+      if (visit.status === 'FEEDBACK_GIVEN')
+        notifyMascot(
+          'activity:completed',
+          'Devolución registrada. ¡Gracias por acompañar!',
+        );
+      return client.invalidateQueries({ queryKey: ['visits'] });
+    },
   });
 }
 

@@ -145,7 +145,7 @@ export function DocenteHoyPage() {
         />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <Card>
           <CardHeader
             title="Alumnos que requieren tu atención"

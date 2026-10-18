@@ -112,6 +112,12 @@ npm run web:dev             # http://localhost:5173
 
 Los usuarios de demo usan los DNI `70000100` (MINEDU), `70000101` (UGEL), `70000102` (dirección), `70000104` (tutor), `70000106` (docente de Matemática), `70000107` (docente de Comunicación) y `70000108` (auxiliar). Si el puerto 5173 está ocupado, Vite usa el siguiente libre (lo indica al arrancar). La contraseña es la de `SEED_PASSWORD`. En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
 
+### Amauti y recorrido de bienvenida
+
+Amauti, la mascota del proyecto (un lápiz animado con GSAP, en `apps/web/src/mascot/`), acompaña la aplicación: saluda en el login, duerme en los estados vacíos y celebra al guardar asistencia, generar un reporte, aprobar un plan o registrar la devolución de una visita. Se puede arrastrar, sigue el cursor con los ojos y se muestra u oculta desde la cabecera (la preferencia queda en el navegador; en el móvil arranca oculta). Respeta `prefers-reduced-motion`.
+
+La primera vez que alguien entra con un rol, Amauti lo guía paso a paso por los accesos de ese rol, resaltando cada uno. ms-auth guarda qué roles ya vieron el recorrido (`GET`/`POST /auth/onboarding`, `DELETE /auth/onboarding/:role`), así que no se repite en otro dispositivo; el botón de brújula de la cabecera lo vuelve a abrir.
+
 ### Despliegue con Docker
 
 `deploy/backend.Dockerfile` construye una imagen para los cinco servicios (la variable `SERVICE` elige cuál arranca) y `deploy/web.Dockerfile` sirve el build estático con nginx, que enruta `/api/<servicio>` como el proxy de Vite, bloquea las rutas `/internal` y `/webhooks` y pasa la IP del cliente a ms-auth para el límite de login por IP (`TRUST_PROXY`).

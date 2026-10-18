@@ -1,23 +1,56 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
 import { apiFetch } from '../api/client';
 import { Flag, Wordmark } from '../ui/Brand';
 import { Button, ErrorNote, Field, inputClass } from '../ui/kit';
+import { MascotFigure } from '../mascot/MascotFigure';
+import type { State } from '../mascot/amauti-animations';
 
-function Frame({ children }: { children: React.ReactNode }) {
+function Frame({
+  children,
+  pose,
+  message,
+}: {
+  children: ReactNode;
+  pose: State;
+  message: string;
+}) {
   return (
-    <div className="flex min-h-screen flex-col bg-canvas">
+    <div className="flex min-h-[100dvh] flex-col bg-canvas">
       <div className="h-1 bg-peru" />
       <header className="flex items-center gap-3 border-b border-line bg-card px-4 py-3 sm:px-8">
         <Flag size={26} />
-        <div className="text-[11px] font-medium uppercase tracking-wide text-muted">
+        <div className="text-[11px] font-medium tracking-wide text-muted uppercase">
           Piloto educativo · Hack the Andes
         </div>
       </header>
       <main className="flex flex-1 items-center justify-center px-4 py-10">
-        <div className="w-full max-w-[380px]">{children}</div>
+        <div className="grid w-full max-w-[880px] items-center gap-10 md:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
+          <div className="min-w-0">
+            {/* En el móvil, Amauti acompaña arriba del formulario. */}
+            <div className="mb-5 flex items-end gap-3 md:hidden">
+              <MascotFigure
+                pose={pose}
+                className="h-[84px] w-[60px] shrink-0"
+              />
+              <p className="mb-2 rounded-xl rounded-bl-sm border border-line bg-card px-3 py-2 text-[12.5px] text-ink">
+                {message}
+              </p>
+            </div>
+            {children}
+          </div>
+          <div
+            aria-hidden
+            className="relative hidden h-full min-h-[420px] items-end justify-center overflow-hidden rounded-2xl bg-amauti-soft md:flex"
+          >
+            <div className="absolute top-8 right-8 left-8 rounded-2xl rounded-bl-sm border border-line bg-card px-4 py-3 text-[14px] leading-snug text-ink shadow-[0_12px_28px_-16px_rgba(26,35,50,0.4)]">
+              {message}
+            </div>
+            <MascotFigure pose={pose} className="mb-6 h-[250px] w-[176px]" />
+          </div>
+        </div>
       </main>
       <footer className="px-4 py-4 text-center text-[11px] text-faint">
         Datos sintéticos de demostración · Las notificaciones a familias son
@@ -48,7 +81,14 @@ export function LoginPage() {
   }
 
   return (
-    <Frame>
+    <Frame
+      pose={error ? 'surprised' : busy ? 'thinking' : 'greeting'}
+      message={
+        error
+          ? 'Uy, no pude entrar. Revisa tu DNI y tu contraseña.'
+          : '¡Hola! Soy Amauti. Ingresa y te muestro cómo funciona todo.'
+      }
+    >
       <div className="mb-6">
         <Wordmark />
         <h1 className="mt-4 text-[22px] font-semibold tracking-tight">
@@ -61,7 +101,7 @@ export function LoginPage() {
       </div>
       <form
         onSubmit={submit}
-        className="space-y-4 rounded-md border border-line bg-card p-5"
+        className="space-y-4 rounded-xl border border-line bg-card p-5"
       >
         <Field label="Número de documento">
           <input
@@ -134,7 +174,10 @@ export function ChangePasswordPage() {
   }
 
   return (
-    <Frame>
+    <Frame
+      pose={error ? 'surprised' : 'idea'}
+      message="Elige una contraseña que solo tú conozcas. Así protegemos los datos de los estudiantes."
+    >
       <h1 className="text-[20px] font-semibold tracking-tight">
         Cambia tu contraseña
       </h1>
@@ -143,7 +186,7 @@ export function ChangePasswordPage() {
       </p>
       <form
         onSubmit={submit}
-        className="space-y-4 rounded-md border border-line bg-card p-5"
+        className="space-y-4 rounded-xl border border-line bg-card p-5"
       >
         <Field label="Contraseña actual">
           <input

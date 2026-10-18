@@ -2,8 +2,12 @@
 
 /* Tokens del bosquejo de Claude Design (Centinela Escolar). */
 @theme {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* Geist + Geist Mono: pareja sans/mono para interfaces densas (skill taste-design). */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  /* Amauti: el amarillo del lápiz, solo para la mascota y sus acentos. */
+  --color-amauti: #ffd21f;
+  --color-amauti-soft: #fff7d1;
   --color-ink: #1a2332;
   --color-ink-2: #243043;
   --color-muted: #5a6578;
@@ -36,9 +40,9 @@ body {
   background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 13px;
-  line-height: 1.45;
-  font-feature-settings: 'cv11', 'ss01';
+  font-size: 13.5px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 .tabular {
   font-variant-numeric: tabular-nums;
@@ -46,4 +50,86 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-gob);
   outline-offset: 2px;
+}
+
+/* Botones con respuesta táctil al presionar. */
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* Carga: esqueleto con brillo en lugar de un spinner. */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-soft) 25%,
+    #e7ebf1 37%,
+    var(--color-soft) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton 1.4s ease infinite;
+}
+@keyframes skeleton {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* Entrada de cada pantalla: los bloques suben en cascada. */
+.page-enter > * {
+  animation: rise 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.page-enter > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+.page-enter > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+.page-enter > *:nth-child(n + 4) {
+  animation-delay: 180ms;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Recorrido de bienvenida: el resto de la pantalla se oscurece alrededor del elemento. */
+.tour-spotlight {
+  box-shadow:
+    0 0 0 3px var(--color-amauti),
+    0 0 0 9999px rgb(26 35 50 / 0.55);
+  transition:
+    top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tour-card {
+  animation: rise 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition:
+    top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .page-enter > *,
+  .tour-card {
+    animation: none;
+  }
+  .tour-spotlight,
+  .tour-card {
+    transition: none;
+  }
+  button:not(:disabled):active {
+    transform: none;
+  }
 }

@@ -18,13 +18,13 @@ export function Wordmark({ light = false }: { light?: boolean }) {
       <span
         className={
           light
-            ? 'text-[15px] font-semibold text-white'
-            : 'text-[15px] font-semibold text-ink'
+            ? 'text-[15px] font-semibold whitespace-nowrap text-white'
+            : 'text-[15px] font-semibold whitespace-nowrap text-ink'
         }
       >
         Centinela Escolar
       </span>
-      <span className="rounded bg-peru px-1.5 py-0.5 font-mono text-[9.5px] font-medium tracking-wider text-white">
+      <span className="hidden rounded bg-peru px-1.5 py-0.5 font-mono min-[400px]:inline text-[9.5px] font-medium tracking-wider text-white">
         PILOTO
       </span>
     </div>

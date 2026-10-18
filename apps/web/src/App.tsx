@@ -25,6 +25,7 @@ import { PlanPage } from './pages/Plan';
 import { VisitasPage } from './pages/Visitas';
 import { AdminPage } from './pages/Admin';
 import { Empty, Loading } from './ui/kit';
+import { MascotProvider } from './mascot/MascotProvider';
 
 function Home() {
   const { active } = useAuth();
@@ -73,5 +74,9 @@ export function App() {
   if (status === 'loading') return <Loading label="Restaurando sesión…" />;
   if (status === 'anonymous') return <LoginPage />;
   if (mustChangePassword) return <ChangePasswordPage />;
-  return <RouterProvider router={router} />;
+  return (
+    <MascotProvider>
+      <RouterProvider router={router} />
+    </MascotProvider>
+  );
 }

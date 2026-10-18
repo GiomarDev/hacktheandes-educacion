@@ -117,7 +117,7 @@ export function CasoPage() {
           </Badge>
         }
       />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-4">
           <Card>
             <CardHeader title="Alertas que originaron el caso" />

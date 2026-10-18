@@ -1,0 +1,45 @@
+/* Ajustes de Amauti a Centinela Escolar; el CSS original (amauti.css) queda intacto. */
+:root .amauti-bubble {
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-card);
+  color: var(--color-ink);
+  font:
+    500 12.5px/1.45 var(--font-sans),
+    sans-serif;
+  box-shadow: 0 10px 24px -12px rgb(26 35 50 / 0.35);
+}
+:root .amauti-tools {
+  gap: 6px;
+  transition: opacity 0.2s ease;
+}
+:root .amauti-tools button {
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-card);
+  color: var(--color-muted);
+  font:
+    500 11px var(--font-sans),
+    sans-serif;
+  cursor: pointer;
+}
+:root .amauti-tools button:hover {
+  background: var(--color-soft);
+  color: var(--color-ink);
+}
+:root .amauti-actor:focus-visible,
+:root .amauti-tools button:focus-visible {
+  outline: 2px solid var(--color-gob);
+}
+/* Con mouse, los controles aparecen al acercarse; en pantallas táctiles siempre están. */
+@media (hover: hover) {
+  :root .amauti-tools {
+    opacity: 0;
+    pointer-events: none;
+  }
+  :root .amauti:hover .amauti-tools,
+  :root .amauti:focus-within .amauti-tools {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

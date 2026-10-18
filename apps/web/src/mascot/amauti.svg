@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 340" role="img" aria-labelledby="amauti-title">
+ <title id="amauti-title">Amauti, tu compañero de aprendizaje</title>
+ <ellipse cx="120" cy="318" rx="65" ry="9" fill="#0F172A" opacity=".08" data-part="shadow"/>
+ <g data-part="rig">
+  <g data-part="leg-left"><path d="M103 277 L99 311 L85 311" fill="none" stroke="#0F172A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g data-part="leg-right"><path d="M137 277 L143 311 L156 311" fill="none" stroke="#0F172A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g data-part="arm-left"><path d="M73 165 Q46 177 36 207" fill="none" stroke="#0F172A" stroke-width="9" stroke-linecap="round"/><circle cx="36" cy="207" r="9" fill="#0F172A"/></g>
+  <g data-part="arm-right"><path d="M167 165 Q194 177 204 207" fill="none" stroke="#0F172A" stroke-width="9" stroke-linecap="round"/><circle cx="204" cy="207" r="9" fill="#0F172A"/></g>
+  <g data-part="pencil">
+   <g data-part="eraser"><path d="M70 66 V43 Q70 22 92 22 H148 Q170 22 170 43 V66Z" fill="#C8102E"/><path d="M81 45 Q81 31 96 31" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="8" fill="none" stroke-linecap="round"/></g>
+   <g data-part="band"><path d="M69 61 Q120 55 171 61 V85 H69Z" fill="#0F172A"/><path d="M75 65 H165" stroke="#FFFFFF" stroke-opacity=".09" stroke-width="5"/></g>
+   <g data-part="tip"><path d="M70 231 Q91 247 120 286 Q149 247 170 231Z" fill="#F5D7B6"/><path d="M105 267 Q120 261 135 267 L120 287Z" fill="#0F172A"/></g>
+   <g data-part="body"><path d="M70 81 H170 V231 Q170 245 159 240 L145 230 Q137 225 129 234 Q120 244 111 234 Q102 225 94 232 L81 241 Q70 247 70 231Z" fill="#FFD21F"/><path d="M78 89 V220" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="8" stroke-linecap="round"/><path d="M159 85 H170 V230 Q170 245 159 240Z" fill="#E9B600" opacity=".22"/></g>
+   <g data-part="face">
+    <g data-part="brows" fill="none" stroke="#0F172A" stroke-width="3" stroke-linecap="round" opacity="0"><path d="M88 137 L103 132"/><path d="M137 132 L152 137"/></g>
+    <g data-part="eyes" fill="#0F172A"><g data-part="eye-left"><ellipse cx="97" cy="153" rx="6" ry="8"/><circle cx="99" cy="150" r="1.6" fill="white"/></g><g data-part="eye-right"><ellipse cx="143" cy="153" rx="6" ry="8"/><circle cx="145" cy="150" r="1.6" fill="white"/></g></g>
+    <g data-part="closed-eyes" fill="none" stroke="#0F172A" stroke-width="5" stroke-linecap="round" opacity="0"><path d="M90 154 Q97 143 104 154"/><path d="M136 154 Q143 143 150 154"/></g>
+    <g data-part="sleep-eyes" fill="none" stroke="#0F172A" stroke-width="4" stroke-linecap="round" opacity="0"><path d="M90 153 Q97 155 104 153"/><path d="M136 153 Q143 155 150 153"/></g><g data-part="cheeks" fill="#F58A91"><ellipse cx="86" cy="172" rx="10" ry="6"/><ellipse cx="154" cy="172" rx="10" ry="6"/></g>
+    <ellipse data-part="sleep-mouth" cx="120" cy="181" rx="3" ry="4" fill="#0F172A" opacity="0"/><path data-part="mouth" d="M108 174 Q120 179 132 174 Q130 192 120 192 Q110 192 108 174Z" fill="#0F172A"/>
+   </g>
+  </g>
+  <g data-part="idea" opacity="0">
+   <circle data-part="idea-halo" cx="200" cy="83" r="27" fill="#FFD21F" opacity=".22"/>
+   <path data-part="idea-bulb" d="M191 104 C191 98 182 95 182 83 C182 60 217 60 217 83 C217 95 208 98 208 104Z" fill="#FFD21F" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
+   <path d="M196 103 V88 L192 83 M203 103 V88 L207 83" fill="none" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+   <path d="M191 105 H208 V112 H191Z" fill="#0F172A"/><path d="M195 116 H204" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+   <path d="M188 80 Q188 71 195 70" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+   <g data-part="idea-rays" stroke="#C8102E" stroke-width="3" stroke-linecap="round"><path d="M200 53 V44 M222 61 L228 55 M227 82 H236 M177 61 L171 55"/></g>
+  </g>
+  
+  <g data-part="sparkles" fill="#C8102E" opacity="0"><path d="M31 85 L35 97 L47 101 L35 105 L31 117 L27 105 L15 101 L27 97Z"/><path d="M199 34 L203 46 L215 50 L203 54 L199 66 L195 54 L183 50 L195 46Z"/><circle cx="26" cy="155" r="4"/><circle cx="213" cy="145" r="4"/></g>
+ </g>
+<g data-part="zzz" fill="#0F172A" font-family="sans-serif" font-weight="700" opacity="0"><text x="175" y="115" font-size="16">z</text><text x="193" y="91" font-size="21">z</text><text x="210" y="62" font-size="27">Z</text></g>
+</svg>
+
+

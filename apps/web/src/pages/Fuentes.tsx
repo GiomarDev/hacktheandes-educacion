@@ -69,7 +69,7 @@ export function FuentesPage() {
         title="Fuentes de datos"
         subtitle="Datos abiertos oficiales que alimentan los indicadores de ESCALE"
       />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <Card>
           <CardHeader
             title="Importaciones"

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router';
+import { NavLink, Outlet, useLocation } from 'react-router';
 import {
   AlertTriangle,
   BarChart3,
@@ -14,6 +14,7 @@ import {
   LogOut,
   MoreHorizontal,
   School,
+  Compass,
   Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -21,6 +22,11 @@ import { useSession } from '../auth/AuthProvider';
 import { navFor, roleLabel } from '../auth/roles';
 import type { NavIcon } from '../auth/roles';
 import { useAlerts } from '../api/queries';
+import { useMascot } from '../mascot/MascotProvider';
+import { MascotFigure } from '../mascot/MascotFigure';
+import { stepsFor } from '../onboarding/steps';
+import { Tour } from '../onboarding/Tour';
+import { useOnboarding } from '../onboarding/useOnboarding';
 import { Flag, Wordmark } from '../ui/Brand';
 import { cx } from '../ui/kit';
 
@@ -50,6 +56,9 @@ function initials(name: string) {
 export function Shell() {
   const { user, active, selectRole, logout } = useSession();
   const items = navFor(active);
+  const mascot = useMascot();
+  const tour = useOnboarding(active.role);
+  const { pathname } = useLocation();
   const canSeeAlerts = items.some((i) => i.to === '/alertas');
   const openAlerts = useAlerts({ status: 'OPEN' });
   const alertCount = canSeeAlerts ? (openAlerts.data?.length ?? 0) : 0;
@@ -76,6 +85,7 @@ export function Shell() {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/docente'}
+                data-tour={`nav-${item.icon}`}
                 className={({ isActive }) =>
                   cx(
                     'relative flex h-12 w-14 flex-col items-center justify-center gap-0.5 rounded-[5px] text-[9px] font-medium transition-colors hover:bg-ink-2 hover:text-white',
@@ -152,6 +162,32 @@ export function Shell() {
                 </span>
               </div>
             )}
+            <div className="flex items-center gap-1" data-tour="amauti">
+              <button
+                type="button"
+                onClick={() => mascot.setVisible(!mascot.visible)}
+                aria-pressed={mascot.visible}
+                title={mascot.visible ? 'Ocultar a Amauti' : 'Mostrar a Amauti'}
+                aria-label={
+                  mascot.visible ? 'Ocultar a Amauti' : 'Mostrar a Amauti'
+                }
+                className={cx(
+                  'flex size-8 items-center justify-center rounded transition-colors hover:bg-soft',
+                  mascot.visible ? 'bg-medium-soft' : 'opacity-70',
+                )}
+              >
+                <MascotFigure className="h-7 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={tour.start}
+                title="Ver el recorrido"
+                aria-label="Ver el recorrido de bienvenida"
+                className="flex size-8 items-center justify-center rounded text-muted transition-colors hover:bg-soft hover:text-ink"
+              >
+                <Compass className="size-4" strokeWidth={1.8} aria-hidden />
+              </button>
+            </div>
             <div className="flex items-center gap-2 border-l border-line pl-3">
               <div className="flex size-8 items-center justify-center rounded-full bg-gob text-[11px] font-semibold text-white">
                 {initials(user.name)}
@@ -190,8 +226,14 @@ export function Shell() {
         </header>
 
         <main className="flex-1 px-4 pt-5 pb-24 md:pb-8 lg:px-8">
-          <Outlet />
+          {/* La clave por ruta repite la entrada en cascada al cambiar de pantalla. */}
+          <div key={pathname} className="page-enter">
+            <Outlet />
+          </div>
         </main>
+        {tour.open && (
+          <Tour steps={stepsFor(active, user.name)} onFinish={tour.finish} />
+        )}
 
         <footer className="hidden items-center gap-4 border-t border-line bg-card px-6 py-2 text-[11px] text-faint md:flex">
           <span className="flex items-center gap-1.5">
@@ -248,6 +290,7 @@ export function Shell() {
               key={item.to}
               to={item.to}
               end={item.to === '/docente'}
+              data-tour={`nav-${item.icon}`}
               onClick={() => setMoreOpen(false)}
               className={({ isActive }) =>
                 cx(
@@ -269,6 +312,7 @@ export function Shell() {
         {moreItems.length > 0 && (
           <button
             type="button"
+            data-tour="nav-more"
             aria-expanded={moreOpen}
             onClick={() => setMoreOpen((o) => !o)}
             className={cx(

@@ -164,6 +164,13 @@ Despliegue y CI: `deploy/` (imagen única de backend, nginx con el build estáti
 
 Verificación final contra un PostgreSQL 17 local (el servidor compartido da `SocketTimeout` intermitentes en suites largas): lint y tipos sin errores, **100 unitarias**, **171 e2e en 22 archivos** y arranque compilado de los cinco servicios; frontend con 21 pruebas y build de producción.
 
+## Amauti y recorrido de bienvenida (18/10/2026)
+
+- Mascota Amauti integrada en `apps/web/src/mascot/` desde la exportación del equipo (motor SVG + GSAP sin cambios de lógica; estilos propios en `amauti-theme.css`). Nueva dependencia del frontend: `gsap` 3.15.0.
+- Recorrido por rol (`apps/web/src/onboarding/`), generado desde `navFor` para que coincida siempre con la navegación. Estado en `users.onboarded_roles` (migración `20261018040000_onboarded_roles`): **aplicada en `auth_test` y en el PostgreSQL local de CI; falta aplicarla en `auth` real** antes de desplegar este frontend (sin ella el recorrido simplemente no aparece).
+- Mejoras de diseño tomadas de las skills del repo (`taste-design`, `react-vite-dashboard`): Geist + Geist Mono en lugar de Inter, esqueletos en lugar de spinners, estados vacíos con la mascota, entrada escalonada de cada pantalla, respuesta táctil en botones, login a dos columnas y grillas sin desborde en el móvil en todas las pantallas.
+- El bundle del frontend pasó de 144 a 186 kB comprimidos por GSAP; dividir el código por ruta queda como mejora.
+
 ## Pendientes ordenados
 
 1. **Validación de dominio:** confirmar el código oficial del estudiante y el cálculo oficial de notas. La moda con desempate por la columna más reciente es una decisión provisional del plan; la pantalla de notas lo advierte.

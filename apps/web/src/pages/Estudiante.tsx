@@ -55,7 +55,7 @@ export function EstudiantePage() {
         <Kpi label="Tardanzas" value={attendance.late} />
         <Kpi label="Días presentes" value={attendance.present} />
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="Calificaciones por competencia"

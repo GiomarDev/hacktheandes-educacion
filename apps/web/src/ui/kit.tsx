@@ -1,5 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { AlertTriangle, Inbox, Loader2 } from 'lucide-react';
+import type { ComponentPropsWithRef, ReactNode } from 'react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+import { MascotFigure } from '../mascot/MascotFigure';
 
 const cx = (...parts: (string | false | null | undefined)[]) =>
   parts.filter(Boolean).join(' ');
@@ -134,7 +135,8 @@ export function Badge({
   );
 }
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+// React 19: ref llega como prop y se reenvía con ...rest.
+type ButtonProps = ComponentPropsWithRef<'button'> & {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   busy?: boolean;
 };
@@ -168,18 +170,25 @@ export function Button({
   );
 }
 
+// Esqueleto con la forma de una lista: anticipa el contenido en lugar de un spinner.
 export function Loading({ label = 'Cargando…' }: { label?: string }) {
   return (
-    <div
-      role="status"
-      className="flex items-center gap-2 px-4 py-6 text-[12.5px] text-faint"
-    >
-      <Loader2 className="size-4 animate-spin" aria-hidden />
-      {label}
+    <div role="status" aria-live="polite" className="space-y-2.5 px-4 py-4">
+      <span className="sr-only">{label}</span>
+      {['w-2/3', 'w-11/12', 'w-1/2'].map((width) => (
+        <div key={width} className="flex items-center gap-3" aria-hidden>
+          <div className="skeleton size-7 shrink-0 rounded-full" />
+          <div className="flex-1 space-y-1.5">
+            <div className={cx('skeleton h-2.5 rounded', width)} />
+            <div className="skeleton h-2 w-1/3 rounded" />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
+// Vacío: Amauti duerme mientras no hay nada; el texto dice cómo llenarlo.
 export function Empty({
   title,
   children,
@@ -189,7 +198,7 @@ export function Empty({
 }) {
   return (
     <div className="flex flex-col items-center px-6 py-8 text-center">
-      <Inbox className="mb-2 size-6 text-faint" aria-hidden />
+      <MascotFigure pose="sleeping" className="mb-1 h-[78px] w-[56px]" />
       <div className="text-[13px] font-medium text-ink">{title}</div>
       {children && (
         <p className="mt-1 max-w-sm text-[12px] text-faint">{children}</p>

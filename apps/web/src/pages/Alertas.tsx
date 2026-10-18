@@ -86,7 +86,7 @@ export function AlertasPage() {
           hint={`${openCases.filter((c) => c.firstContactAt).length} con familia contactada`}
         />
       </div>
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
         <Card>
           <div
             role="tablist"
