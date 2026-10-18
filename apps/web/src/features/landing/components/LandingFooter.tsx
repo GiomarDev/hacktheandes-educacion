@@ -9,8 +9,7 @@ export function LandingFooter() {
           <span className="mx-2" aria-hidden>
             ·
           </span>
-          Datos sintéticos de demostración y microdatos abiertos oficiales
-          MINEDU
+          Microdatos abiertos oficiales MINEDU
         </p>
         <p className="tabular-nums">
           Amauti · Piloto educativo · Hack the Andes · v0.1.0 · piloto

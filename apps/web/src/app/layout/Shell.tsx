@@ -247,7 +247,6 @@ export function Shell() {
             <BarChart3 className="size-3.5" aria-hidden /> SIAGIE · Alerta ·
             SIMON · ESCALE
           </span>
-          <span>Datos sintéticos de demostración</span>
           <span className="ml-auto font-sans tabular-nums">
             v0.1.0 · piloto
           </span>

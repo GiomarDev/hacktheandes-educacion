@@ -70,10 +70,6 @@ export function AuthFrame({
           </div>
         </div>
       </main>
-      <footer className="border-t border-line bg-canvas px-5 py-4 text-center text-[0.875rem] leading-relaxed text-muted">
-        Datos sintéticos de demostración · Las notificaciones a familias son
-        simuladas
-      </footer>
     </div>
   );
 }
