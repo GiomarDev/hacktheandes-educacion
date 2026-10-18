@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import { useSession } from '../auth/AuthProvider';
 import { TERRITORIAL } from '../auth/roles';
 import {
   useGenerateReport,
   useReports,
   useReportTransition,
+  useSchoolPeriods,
   useSchools,
 } from '../api/queries';
 import type { Report } from '../api/types';
 import {
+  currentPeriod,
   formatDate,
   int,
   pct,
+  periodLabel,
   REPORT_STATUS,
   REPORT_TYPE,
   todayInLima,
@@ -30,8 +33,9 @@ import {
   PageHeader,
 } from '../ui/kit';
 
-const MONTHLY_TYPES = [
+const REPORT_TYPES = [
   'MONTHLY_FOLLOWUP',
+  'BIMESTER_ATTENDANCE',
   'ATTENTION_GOAL',
   'DROPOUT_JUSTIFICATION',
 ] as const;
@@ -53,7 +57,15 @@ const MONTHS = [
 type Payload = {
   school?: {
     activeEnrollments?: number;
-    attendance?: { rate?: number };
+    attendance?: {
+      rate?: number;
+      present?: number;
+      late?: number;
+      absent?: number;
+      justified?: number;
+      leftEarly?: number;
+    };
+    grades?: Record<string, number>;
     sectionsTotal?: number;
     reportedSectionDays?: number;
     exitsWithoutReason?: number;
@@ -66,25 +78,64 @@ type Payload = {
   };
 };
 
-function ReportFigures({ report }: { report: Report }) {
-  const p = report.payload as Payload;
-  const items = [
-    ['Matrícula activa', int(p.school?.activeEnrollments)],
-    ['Asistencia', pct(p.school?.attendance?.rate, 1)],
-    ['Alertas detectadas', int(p.alerts?.alertsDetected)],
-    ['Casos abiertos', int(p.alerts?.casesOpened)],
-    ['Primeros contactos', int(p.alerts?.firstContacts)],
-    ['Días al primer contacto', p.alerts?.averageDaysToFirstContact ?? '—'],
-  ];
+function Figures({ items }: { items: [string, ReactNode][] }) {
   return (
     <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3">
       {items.map(([label, value]) => (
-        <div key={label as string} className="rounded bg-canvas px-2.5 py-2">
+        <div key={label} className="rounded bg-canvas px-2.5 py-2">
           <dt className="text-[11px] text-muted">{label}</dt>
           <dd className="font-mono text-[14px] font-medium">{value}</dd>
         </div>
       ))}
     </dl>
+  );
+}
+
+function ReportFigures({ report }: { report: Report }) {
+  const p = report.payload as Payload;
+  const a = p.school?.attendance;
+  if (report.type === 'BIMESTER_ATTENDANCE') {
+    const grades = p.school?.grades ?? {};
+    const graded = Object.values(grades).reduce((n, v) => n + v, 0);
+    return (
+      <div className="space-y-2">
+        <Figures
+          items={[
+            ['Matrícula activa', int(p.school?.activeEnrollments)],
+            ['Asistencia del bimestre', pct(a?.rate, 1)],
+            ['Presentes', int((a?.present ?? 0) + (a?.leftEarly ?? 0))],
+            ['Tardanzas', int(a?.late)],
+            ['Faltas', int(a?.absent)],
+            ['Faltas justificadas', int(a?.justified)],
+          ]}
+        />
+        <div>
+          <div className="mb-1 text-[11px] font-medium text-muted">
+            Notas del periodo por competencia ({int(graded)})
+          </div>
+          <Figures
+            items={(['AD', 'A', 'B', 'C'] as const).map((g) => [
+              g,
+              graded
+                ? `${int(grades[g] ?? 0)} · ${pct((100 * (grades[g] ?? 0)) / graded, 0)}`
+                : '—',
+            ])}
+          />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <Figures
+      items={[
+        ['Matrícula activa', int(p.school?.activeEnrollments)],
+        ['Asistencia', pct(a?.rate, 1)],
+        ['Alertas detectadas', int(p.alerts?.alertsDetected)],
+        ['Casos abiertos', int(p.alerts?.casesOpened)],
+        ['Primeros contactos', int(p.alerts?.firstContacts)],
+        ['Días al primer contacto', p.alerts?.averageDaysToFirstContact ?? '—'],
+      ]}
+    />
   );
 }
 
@@ -100,6 +151,20 @@ export function ReportesPage() {
   const canGenerate = active.role === 'DIRECTOR' || active.role === 'SECRETARY';
   const [type, setType] = useState<string>('MONTHLY_FOLLOWUP');
   const [month, setMonth] = useState(Number(today.slice(5, 7)));
+  const periods = useSchoolPeriods(
+    canGenerate ? active.schoolId : undefined,
+    year,
+  );
+  // Solo bimestres ya iniciados: SIMON rechaza los que aún no comienzan.
+  const bimesters = (periods.data ?? []).filter(
+    (p) => p.type === 'BIMESTER' && p.startDate <= today,
+  );
+  const [periodId, setPeriodId] = useState<string>();
+  const selectedPeriod = periodId ?? currentPeriod(bimesters, today)?.id;
+  const periodName = new Map(
+    (periods.data ?? []).map((p) => [p.id, periodLabel(p)]),
+  );
+  const isBimester = type === 'BIMESTER_ATTENDANCE';
   const [open, setOpen] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
   const schoolName = new Map((schools.data ?? []).map((s) => [s.id, s.name]));
@@ -110,7 +175,7 @@ export function ReportesPage() {
       schoolId: active.schoolId!,
       year,
       type,
-      month,
+      ...(isBimester ? { periodId: selectedPeriod } : { month }),
     });
     setOpen(created.id);
   }
@@ -153,7 +218,11 @@ export function ReportesPage() {
                     <div className="min-w-0 flex-1">
                       <div className="font-medium">
                         {REPORT_TYPE[r.type]} ·{' '}
-                        {r.month ? MONTHS[r.month - 1] : 'bimestre'} {r.year}
+                        {r.month
+                          ? MONTHS[r.month - 1]
+                          : ((r.periodId && periodName.get(r.periodId)) ??
+                            'bimestre')}{' '}
+                        {r.year}
                       </div>
                       <div className="text-[12px] text-faint">
                         {schoolName.get(r.schoolId) ?? 'IE'} · revisión{' '}
@@ -256,32 +325,56 @@ export function ReportesPage() {
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                 >
-                  {MONTHLY_TYPES.map((t) => (
+                  {REPORT_TYPES.map((t) => (
                     <option key={t} value={t}>
                       {REPORT_TYPE[t]}
                     </option>
                   ))}
                 </select>
               </Field>
-              <Field label="Mes" hint="Solo meses ya iniciados.">
-                <select
-                  className={inputClass}
-                  value={month}
-                  onChange={(e) => setMonth(Number(e.target.value))}
-                >
-                  {MONTHS.slice(0, Number(today.slice(5, 7))).map((m, i) => (
-                    <option key={m} value={i + 1}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
-              </Field>
+              {isBimester ? (
+                <Field label="Bimestre" hint="Solo bimestres ya iniciados.">
+                  <select
+                    className={inputClass}
+                    value={selectedPeriod ?? ''}
+                    disabled={!bimesters.length}
+                    onChange={(e) => setPeriodId(e.target.value)}
+                  >
+                    {bimesters.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {periodLabel(p)} ({formatDate(p.startDate)} –{' '}
+                        {formatDate(p.endDate)})
+                      </option>
+                    ))}
+                  </select>
+                  {periods.data && !bimesters.length && (
+                    <span className="mt-1 block text-[11px] text-high">
+                      La IE no tiene bimestres iniciados este año.
+                    </span>
+                  )}
+                </Field>
+              ) : (
+                <Field label="Mes" hint="Solo meses ya iniciados.">
+                  <select
+                    className={inputClass}
+                    value={month}
+                    onChange={(e) => setMonth(Number(e.target.value))}
+                  >
+                    {MONTHS.slice(0, Number(today.slice(5, 7))).map((m, i) => (
+                      <option key={m} value={i + 1}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+              )}
               {generate.error ? <ErrorNote error={generate.error} /> : null}
               <Button
                 type="submit"
                 variant="primary"
                 className="w-full"
                 busy={generate.isPending}
+                disabled={isBimester && !selectedPeriod}
               >
                 Generar
               </Button>
