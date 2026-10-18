@@ -28,10 +28,7 @@
   background: transparent;
   touch-action: none;
   pointer-events: auto;
-  cursor: grab;
-}
-:root .amauti-actor:active {
-  cursor: grabbing;
+  cursor: default;
 }
 :root .amauti-actor svg {
   width: 100%;
@@ -140,4 +137,11 @@
 }
 :root .amauti[data-state='sleeping'] [data-part='cheeks'] {
   opacity: 0.6;
+}
+
+/* En pantallas pequeñas la mascota flotante no se muestra (además de ocultarla por código). */
+@media (max-width: 767px) {
+  :root .amauti {
+    display: none !important;
+  }
 }

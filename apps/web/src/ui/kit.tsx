@@ -194,7 +194,10 @@ export function Empty({
 }) {
   return (
     <div className="flex flex-col items-center px-6 py-8 text-center">
-      <MascotFigure pose="sleeping" className="mb-1 h-[78px] w-[56px]" />
+      <MascotFigure
+        pose="sleeping"
+        className="mb-1 hidden h-[78px] w-[56px] md:block"
+      />
       <div className="text-[1rem] font-medium text-ink">{title}</div>
       {children && (
         <p className="mt-1 max-w-sm text-[0.9375rem] text-faint">{children}</p>

@@ -161,7 +161,7 @@ export function Tour({
         <div className="flex gap-3">
           <MascotFigure
             pose={step.pose}
-            className="-mt-1 h-[92px] w-[66px] shrink-0"
+            className="-mt-1 hidden h-[92px] w-[66px] shrink-0 md:block"
           />
           <div className="min-w-0 flex-1">
             <div className="text-[0.875rem] font-medium text-faint">

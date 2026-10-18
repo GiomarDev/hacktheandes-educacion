@@ -9,12 +9,15 @@ import {
 } from 'react';
 import type { ReactNode } from 'react';
 import { AmautiController } from './amauti-controller';
+import { useIsMobile } from './useIsMobile';
 import './amauti.css';
 import './amauti-theme.css';
 
 const HIDDEN_KEY = 'centinela.amauti.hidden';
 
 interface MascotApi {
+  // En pantallas pequeñas la mascota no se muestra (ni flotante ni su botón).
+  available: boolean;
   visible: boolean;
   setVisible(value: boolean): void;
   say(message: string): void;
@@ -24,6 +27,7 @@ interface MascotApi {
 }
 
 const noop: MascotApi = {
+  available: false,
   visible: false,
   setVisible: () => undefined,
   say: () => undefined,
@@ -54,17 +58,19 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   };
   const [visible, setVisibleState] = useState(initialVisible);
   const [suspended, setSuspended] = useState(false);
+  const mobile = useIsMobile();
   // Estado actual para callbacks programados (p. ej. celebrar justo al cerrar el recorrido).
-  const live = useRef({ visible, suspended });
-  live.current = { visible, suspended };
+  const live = useRef({ visible, suspended, mobile });
+  live.current = { visible, suspended, mobile };
 
   useEffect(() => {
     const controller = new AmautiController({
       autoWelcome: false,
       autoBlink: true,
-      allowDrag: true,
+      // La persona no la mueve: ni arrastrándola ni con las flechas del teclado.
+      allowDrag: false,
       followCursor: true,
-      allowKeyboardMove: true,
+      allowKeyboardMove: false,
       idleMs: 60000,
       // Saludar, caminar, saltar, parpadear, guiñar, sorprenderse, celebrar, dormir, despertar, idea.
       allowedActions: [18, 1, 3, 9, 11, 12, 16, 26, 27, 31],
@@ -93,13 +99,13 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const controller = pet.current;
     if (!controller) return;
-    if (visible && !suspended) {
+    if (visible && !suspended && !mobile) {
       // Sin espacio libre, show() vuelve a ocultarla: eso no es una preferencia de la persona.
       hidingByCode.current = true;
       controller.show();
       hidingByCode.current = false;
     } else hide(controller);
-  }, [visible, suspended]);
+  }, [visible, suspended, mobile]);
 
   const setVisible = useCallback((value: boolean) => {
     setVisibleState(value);
@@ -112,20 +118,30 @@ export function MascotProvider({ children }: { children: ReactNode }) {
 
   const api = useMemo<MascotApi>(
     () => ({
+      available: !mobile,
       visible,
       setVisible,
       say: (message) => {
-        if (live.current.visible && !live.current.suspended)
+        if (
+          live.current.visible &&
+          !live.current.suspended &&
+          !live.current.mobile
+        )
           pet.current?.say(message);
       },
       celebrate: (message) => {
-        if (!live.current.visible || live.current.suspended) return;
+        if (
+          !live.current.visible ||
+          live.current.suspended ||
+          live.current.mobile
+        )
+          return;
         pet.current?.act(16);
         pet.current?.say(message);
       },
       suspend: setSuspended,
     }),
-    [visible, suspended, setVisible],
+    [visible, suspended, mobile, setVisible],
   );
 
   return (

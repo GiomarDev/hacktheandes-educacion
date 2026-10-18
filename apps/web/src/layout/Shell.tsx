@@ -154,6 +154,7 @@ export function Shell() {
             )}
             <div className="flex items-center gap-1" data-tour="amauti">
               <button
+                hidden={!mascot.available}
                 type="button"
                 onClick={() => mascot.setVisible(!mascot.visible)}
                 aria-pressed={mascot.visible}
@@ -231,7 +232,12 @@ export function Shell() {
           </div>
         </main>
         {tour.open && (
-          <Tour steps={stepsFor(active, user.name)} onFinish={tour.finish} />
+          <Tour
+            steps={stepsFor(active, user.name).filter(
+              (s) => mascot.available || s.id !== 'amauti',
+            )}
+            onFinish={tour.finish}
+          />
         )}
 
         <footer className="hidden items-center gap-4 border-t border-line bg-card px-6 py-2 text-[0.875rem] text-faint md:flex">
