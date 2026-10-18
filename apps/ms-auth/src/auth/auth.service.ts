@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import argon2 from 'argon2';
 import { PrismaService } from '../prisma.service.js';
 import { ACCESS_TOKEN_TTL_SECONDS, hashRefreshToken, RequestMeta, TokensService } from './tokens.service.js';
@@ -16,6 +16,16 @@ export interface TokenPair {
 
 export const invalidCredentials = () => new UnauthorizedException('Credenciales inválidas');
 
+// Límite por IP, además del bloqueo por cuenta: frena a quien prueba muchos DNI desde la misma conexión.
+export const IP_MAX_FAILURES = 20;
+export const IP_WINDOW_MS = 15 * 60000;
+
+export class TooManyLoginAttemptsException extends HttpException {
+  constructor(readonly retryAfterSeconds: number) {
+    super('Demasiados intentos desde esta conexión. Intente más tarde.', HttpStatus.TOO_MANY_REQUESTS);
+  }
+}
+
 @Injectable()
 export class AuthService implements OnModuleInit {
   // Se verifica contra este hash cuando el usuario no existe, para no revelar qué DNI están registrados.
@@ -31,10 +41,15 @@ export class AuthService implements OnModuleInit {
   }
 
   async login(dto: LoginDto, meta: RequestMeta): Promise<TokenPair & { mustChangePassword: boolean }> {
-    const user = await this.prisma.user.findUnique({
-      where: { documentType_documentNumber: { documentType: dto.documentType, documentNumber: dto.documentNumber } },
-      include: { roles: true },
-    });
+    // En paralelo con la búsqueda del usuario: la comprobación de IP no retrasa el resto del login.
+    const [retryAfter, user] = await Promise.all([
+      this.ipRetryAfter(meta.ip),
+      this.prisma.user.findUnique({
+        where: { documentType_documentNumber: { documentType: dto.documentType, documentNumber: dto.documentNumber } },
+        include: { roles: true },
+      }),
+    ]);
+    if (retryAfter) throw new TooManyLoginAttemptsException(retryAfter);
     const passwordOk = await argon2.verify(user?.passwordHash ?? this.dummyHash, dto.password);
 
     if (!user) {
@@ -71,6 +86,19 @@ export class AuthService implements OnModuleInit {
       expiresIn: ACCESS_TOKEN_TTL_SECONDS,
       mustChangePassword: user.mustChangePassword,
     };
+  }
+
+  // Segundos hasta que la IP vuelva a tener menos de IP_MAX_FAILURES fallos en la ventana; 0 si puede intentar.
+  async ipRetryAfter(ip: string | undefined, now = new Date()): Promise<number> {
+    if (!ip) return 0;
+    const limiting = await this.prisma.authEvent.findFirst({
+      where: { ip, type: 'LOGIN_FAILED', occurredAt: { gt: new Date(now.getTime() - IP_WINDOW_MS) } },
+      orderBy: { occurredAt: 'desc' },
+      skip: IP_MAX_FAILURES - 1,
+      select: { occurredAt: true },
+    });
+    if (!limiting) return 0;
+    return Math.max(1, Math.ceil((limiting.occurredAt.getTime() + IP_WINDOW_MS - now.getTime()) / 1000));
   }
 
   async event(userId: string | null, type: AuthEventType, meta: RequestMeta): Promise<void> {

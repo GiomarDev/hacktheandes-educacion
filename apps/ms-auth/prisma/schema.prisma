@@ -125,5 +125,6 @@ model AuthEvent {
   occurredAt DateTime      @default(now()) @map("occurred_at") @db.Timestamptz(6)
 
   @@index([userId])
+  @@index([ip, occurredAt])
   @@map("auth_events")
 }

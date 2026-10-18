@@ -103,6 +103,49 @@ describe('POST /auth/login', () => {
     await login('70000001', TEST_PASSWORD).expect(401);
   });
 
+  describe('límite por IP', () => {
+    // Un fallo real para conocer la IP que ve el servicio; el resto se siembra como eventos.
+    const failFromThisIp = async (count: number, minutesAgo = 0) => {
+      await login('79999999', 'mala').expect(401);
+      const { ip } = await prisma.authEvent.findFirstOrThrow({ where: { type: 'LOGIN_FAILED' } });
+      const occurredAt = new Date(Date.now() - minutesAgo * 60000);
+      await prisma.authEvent.updateMany({ data: { occurredAt } });
+      await prisma.authEvent.createMany({
+        data: Array.from({ length: count - 1 }, () => ({ type: 'LOGIN_FAILED' as const, ip, occurredAt })),
+      });
+    };
+
+    it('tras 20 fallos en 15 minutos responde 429, aunque la clave sea correcta', async () => {
+      await createTestUser(prisma);
+      await failFromThisIp(20);
+      const res = await login('70000001', TEST_PASSWORD).expect(429);
+      expect(res.body.message).toBe('Demasiados intentos desde esta conexión. Intente más tarde.');
+      expect(Number(res.headers['retry-after'])).toBeGreaterThan(0);
+      // No toca la cuenta ni deja eventos nuevos: no se pueden usar para alargar el bloqueo.
+      expect(await prisma.authEvent.count()).toBe(20);
+    });
+
+    it('19 fallos todavía permiten entrar', async () => {
+      await createTestUser(prisma);
+      await failFromThisIp(19);
+      await login('70000001', TEST_PASSWORD).expect(200);
+    });
+
+    it('los fallos de hace más de 15 minutos no cuentan', async () => {
+      await createTestUser(prisma);
+      await failFromThisIp(20, 16);
+      await login('70000001', TEST_PASSWORD).expect(200);
+    });
+
+    it('los fallos de otra IP no cuentan', async () => {
+      await createTestUser(prisma);
+      await prisma.authEvent.createMany({
+        data: Array.from({ length: 30 }, () => ({ type: 'LOGIN_FAILED' as const, ip: '203.0.113.7' })),
+      });
+      await login('70000001', TEST_PASSWORD).expect(200);
+    });
+  });
+
   it('valida el cuerpo', async () => {
     await request(app.getHttpServer()).post('/auth/login').send({ documentNumber: '1' }).expect(400);
   });

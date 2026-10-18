@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, Res } from '@nestjs/common';
 import { CurrentUser, Public } from '@app/common';
 import type { AuthUser } from '@app/common';
-import type { Request } from 'express';
-import { AuthService } from './auth.service.js';
+import type { Request, Response } from 'express';
+import { AuthService, TooManyLoginAttemptsException } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshDto } from './dto/refresh.dto.js';
 import { ChangePasswordDto } from './dto/change-password.dto.js';
@@ -17,8 +17,13 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(200)
-  login(@Body() dto: LoginDto, @Req() req: Request) {
-    return this.auth.login(dto, metaOf(req));
+  async login(@Body() dto: LoginDto, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    try {
+      return await this.auth.login(dto, metaOf(req));
+    } catch (error) {
+      if (error instanceof TooManyLoginAttemptsException) res.setHeader('Retry-After', String(error.retryAfterSeconds));
+      throw error;
+    }
   }
 
   @Public()
