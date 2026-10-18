@@ -1,8 +1,8 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
 import { CurrentUser } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { GradesService } from './grades.service.js';
-import { GradeEntryDto } from './grades.dto.js';
+import { GradeEntryDto, GradeSheetQuery } from './grades.dto.js';
 
 @Controller('grades')
 export class GradesController {
@@ -12,5 +12,10 @@ export class GradesController {
   @HttpCode(200)
   record(@CurrentUser() user: AuthUser, @Body() dto: GradeEntryDto) {
     return this.grades.recordEntry(user, dto);
+  }
+
+  @Get()
+  sheet(@CurrentUser() user: AuthUser, @Query() query: GradeSheetQuery) {
+    return this.grades.sheet(user, query);
   }
 }

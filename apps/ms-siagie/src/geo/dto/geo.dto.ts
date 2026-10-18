@@ -1,4 +1,5 @@
-import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, Length, Matches, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString, IsUUID, Length, Matches, Max, Min } from 'class-validator';
 
 export class CreateDreDto {
   @IsString() @Length(1, 10) code: string;
@@ -32,4 +33,8 @@ export class CreateSchoolDto {
 
 export class ListSchoolsQuery {
   @IsOptional() @IsUUID() ugelId?: string;
+}
+
+export class ListPeriodsQuery {
+  @IsOptional() @Type(() => Number) @IsInt() @Min(1900) @Max(2100) year?: number;
 }

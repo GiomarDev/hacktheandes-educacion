@@ -118,4 +118,56 @@ export class SectionsController {
       ],
     });
   }
+
+  // Áreas que se dictan en la sección, con sus competencias; "mine" marca las que dicta el usuario.
+  @Get(':id/areas')
+  async areas(
+    @CurrentUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const section = await this.access.assertSection(user, id);
+    await this.access.assertSectionReader(user, section);
+    const assignments = await this.prisma.teachingAssignment.findMany({
+      where: { sectionId: id },
+      include: {
+        area: {
+          include: {
+            competencies: {
+              select: { id: true, code: true, name: true },
+              orderBy: { code: 'asc' },
+            },
+          },
+        },
+      },
+      orderBy: { area: { name: 'asc' } },
+    });
+    const areas = new Map<
+      string,
+      (typeof assignments)[number]['area'] & {
+        teacherUserIds: string[];
+        mine: boolean;
+      }
+    >();
+    for (const a of assignments) {
+      const area = areas.get(a.areaId) ?? {
+        ...a.area,
+        teacherUserIds: [],
+        mine: false,
+      };
+      area.teacherUserIds.push(a.teacherUserId);
+      area.mine ||= a.teacherUserId === user.id;
+      areas.set(a.areaId, area);
+    }
+    return [...areas.values()].map(
+      ({ id, code, name, level, competencies, teacherUserIds, mine }) => ({
+        id,
+        code,
+        name,
+        level,
+        competencies,
+        teacherUserIds,
+        mine,
+      }),
+    );
+  }
 }

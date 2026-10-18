@@ -4,12 +4,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { todayInLima } from '@app/common';
+import { canAccessSchool, todayInLima } from '@app/common';
 import type { AuthUser } from '@app/common';
 import type { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma.service.js';
-import { SchoolAccessService } from '../school-access.service.js';
-import { GradeEntryDto } from './grades.dto.js';
+import {
+  SCHOOL_WIDE_READERS,
+  SchoolAccessService,
+} from '../school-access.service.js';
+import { GradeEntryDto, GradeSheetQuery } from './grades.dto.js';
 import {
   CALCULATION_METHOD,
   calculateAttendanceRate,
@@ -95,6 +98,112 @@ export class GradesService {
       },
       { timeout: 15000 },
     );
+  }
+
+  // Registro de un área en una sección y periodo: columnas y nota del periodo por estudiante.
+  // Lo leen la dirección y autoridades del ámbito, el tutor de la sección y quien dicta el área.
+  async sheet(user: AuthUser, query: GradeSheetQuery) {
+    const section = await this.access.assertSection(user, query.sectionId);
+    const school = {
+      id: section.schoolId,
+      ugelId: section.school.ugelId,
+      dreId: section.school.ugel.dreId,
+    };
+    const isTutor = user.roles.some(
+      (r) =>
+        r.role === 'TUTOR' &&
+        r.schoolId === section.schoolId &&
+        section.tutorUserId === user.id,
+    );
+    if (!canAccessSchool(user, school, SCHOOL_WIDE_READERS) && !isTutor) {
+      const assignment = await this.prisma.teachingAssignment.findFirst({
+        where: {
+          sectionId: section.id,
+          areaId: query.areaId,
+          teacherUserId: user.id,
+        },
+      });
+      if (!assignment)
+        throw new ForbiddenException('No dicta esta área en la sección');
+    }
+    const area = await this.prisma.curricularArea.findUnique({
+      where: { id: query.areaId },
+      include: {
+        competencies: {
+          select: { id: true, code: true, name: true },
+          orderBy: { code: 'asc' },
+        },
+      },
+    });
+    if (!area) throw new NotFoundException('Área no encontrada');
+    const period = await this.prisma.academicPeriod.findUnique({
+      where: { id: query.periodId },
+    });
+    if (
+      !period ||
+      period.schoolId !== section.schoolId ||
+      period.year !== section.year
+    )
+      throw new BadRequestException(
+        'El periodo no corresponde a la IE y al año de la sección',
+      );
+    const competencyId = { in: area.competencies.map((c) => c.id) };
+    const enrollments = await this.prisma.enrollment.findMany({
+      where: { sectionId: section.id, status: 'ENROLLED' },
+      select: {
+        id: true,
+        student: {
+          select: {
+            id: true,
+            firstName: true,
+            paternalLastName: true,
+            maternalLastName: true,
+          },
+        },
+        gradeEntries: {
+          where: { periodId: period.id, competencyId },
+          select: {
+            competencyId: true,
+            columnNumber: true,
+            value: true,
+            isCompensatory: true,
+          },
+          orderBy: [{ competencyId: 'asc' }, { columnNumber: 'asc' }],
+        },
+        periodGrades: {
+          where: { periodId: period.id, competencyId },
+          select: {
+            competencyId: true,
+            value: true,
+            calculationMethod: true,
+            attendanceRate: true,
+          },
+        },
+      },
+      orderBy: [
+        { student: { paternalLastName: 'asc' } },
+        { student: { firstName: 'asc' } },
+      ],
+    });
+    return {
+      area: { id: area.id, code: area.code, name: area.name },
+      period: {
+        id: period.id,
+        type: period.type,
+        number: period.number,
+        year: period.year,
+      },
+      competencies: area.competencies,
+      rows: enrollments.map(({ id, student, gradeEntries, periodGrades }) => ({
+        enrollmentId: id,
+        student,
+        entries: gradeEntries,
+        periodGrades: periodGrades.map((g) => ({
+          ...g,
+          attendanceRate: Number(g.attendanceRate),
+        })),
+      })),
+    };
   }
 
   private async recalculate(
