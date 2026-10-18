@@ -30,7 +30,27 @@ async function unusedPort() {
   return port;
 }
 
-for (const service of ['ms-auth', 'ms-siagie', 'ms-alerta', 'ms-simon']) {
+// Misma base que SIMON con su propio schema (igual que test/test-databases.ts).
+const escaleTestUrl = (() => {
+  if (process.env.ESCALE_TEST_DATABASE_URL)
+    return process.env.ESCALE_TEST_DATABASE_URL;
+  const url = new URL(process.env.SIMON_TEST_DATABASE_URL);
+  url.searchParams.set('schema', 'escale_test');
+  return url.toString();
+})();
+assert.equal(
+  new URL(escaleTestUrl).searchParams.get('schema'),
+  'escale_test',
+  'ESCALE_TEST_DATABASE_URL debe apuntar a escale_test',
+);
+
+for (const service of [
+  'ms-auth',
+  'ms-siagie',
+  'ms-alerta',
+  'ms-simon',
+  'ms-escale',
+]) {
   const port = await unusedPort();
   const child = spawn(process.execPath, [`dist/apps/${service}/main.js`], {
     env: {
@@ -40,6 +60,7 @@ for (const service of ['ms-auth', 'ms-siagie', 'ms-alerta', 'ms-simon']) {
       SIAGIE_DATABASE_URL: process.env.SIAGIE_TEST_DATABASE_URL,
       ALERTA_DATABASE_URL: process.env.ALERTA_TEST_DATABASE_URL,
       SIMON_DATABASE_URL: process.env.SIMON_TEST_DATABASE_URL,
+      ESCALE_DATABASE_URL: escaleTestUrl,
       BACKGROUND_JOBS_ENABLED: 'false',
     },
     stdio: ['ignore', 'ignore', 'pipe'],

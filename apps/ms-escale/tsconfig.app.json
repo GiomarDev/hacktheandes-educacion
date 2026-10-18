@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": { "declaration": true, "rootDir": "../../", "outDir": "../../dist/apps/ms-escale" },
+  "include": ["src/**/*", "../../libs/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}

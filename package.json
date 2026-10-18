@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "build": "npm run build:auth && npm run build:siagie && npm run build:alerta && npm run build:simon",
+    "build": "npm run build:auth && npm run build:siagie && npm run build:alerta && npm run build:simon && npm run build:escale",
     "build:auth": "nest build ms-auth",
     "build:siagie": "nest build ms-siagie",
     "start:auth": "nest start ms-auth --watch",
@@ -16,7 +16,7 @@
     "start:siagie:prod": "node dist/apps/ms-siagie/main.js",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint": "oxlint apps/ libs/ scripts/ test/",
-    "typecheck": "tsc -p apps/ms-auth/tsconfig.app.json --noEmit && tsc -p apps/ms-siagie/tsconfig.app.json --noEmit && tsc -p apps/ms-alerta/tsconfig.app.json --noEmit && tsc -p apps/ms-simon/tsconfig.app.json --noEmit",
+    "typecheck": "tsc -p apps/ms-auth/tsconfig.app.json --noEmit && tsc -p apps/ms-siagie/tsconfig.app.json --noEmit && tsc -p apps/ms-alerta/tsconfig.app.json --noEmit && tsc -p apps/ms-simon/tsconfig.app.json --noEmit && tsc -p apps/ms-escale/tsconfig.app.json --noEmit",
     "test": "vitest run",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "test:e2e:cross": "vitest run --config ./vitest.config.e2e.ts apps/ms-siagie/test/cross-service.e2e-spec.ts",
@@ -42,7 +42,13 @@
     "start:simon:prod": "node dist/apps/ms-simon/main.js",
     "simon:generate": "prisma generate --config apps/ms-simon/prisma.config.ts",
     "simon:migrate": "prisma migrate dev --config apps/ms-simon/prisma.config.ts",
-    "test:e2e:simon": "vitest run --config ./vitest.config.e2e.ts apps/ms-simon"
+    "test:e2e:simon": "vitest run --config ./vitest.config.e2e.ts apps/ms-simon",
+    "build:escale": "nest build ms-escale",
+    "start:escale": "nest start ms-escale --watch",
+    "start:escale:prod": "node dist/apps/ms-escale/main.js",
+    "escale:generate": "prisma generate --config apps/ms-escale/prisma.config.ts",
+    "escale:migrate": "prisma migrate dev --config apps/ms-escale/prisma.config.ts",
+    "test:e2e:escale": "vitest run --config ./vitest.config.e2e.ts apps/ms-escale"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

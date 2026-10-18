@@ -55,6 +55,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/ms-simon/tsconfig.app.json"
       }
+    },
+    "ms-escale": {
+      "type": "application",
+      "root": "apps/ms-escale",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms-escale/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms-escale/tsconfig.app.json"
+      }
     }
   }
 }

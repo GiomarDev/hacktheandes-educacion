@@ -26,11 +26,29 @@ export const TEST_DATABASES = [
     testVar: 'SIMON_TEST_DATABASE_URL',
     schema: 'simon_test',
   },
+  {
+    service: 'ms-escale',
+    envVar: 'ESCALE_DATABASE_URL',
+    testVar: 'ESCALE_TEST_DATABASE_URL',
+    schema: 'escale_test',
+    // Misma base y credenciales que SIMON; solo cambia el schema. Evita duplicar el secreto en el .env.
+    derivedFrom: 'SIMON_TEST_DATABASE_URL',
+  },
 ] as const;
+
+function testUrlOf(db: (typeof TEST_DATABASES)[number]): string | undefined {
+  const url = process.env[db.testVar];
+  if (url || !('derivedFrom' in db)) return url;
+  const base = process.env[db.derivedFrom];
+  if (!base) return undefined;
+  const derived = new URL(base);
+  derived.searchParams.set('schema', db.schema);
+  return derived.toString();
+}
 
 export function pointToTestDatabases(): void {
   for (const db of TEST_DATABASES) {
-    const url = process.env[db.testVar];
+    const url = testUrlOf(db);
     if (!url) throw new Error(`Falta la variable de entorno ${db.testVar}`);
     if (new URL(url).searchParams.get('schema') !== db.schema) {
       throw new Error(
@@ -38,5 +56,6 @@ export function pointToTestDatabases(): void {
       );
     }
     process.env[db.envVar] = url;
+    process.env[db.testVar] = url;
   }
 }

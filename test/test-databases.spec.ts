@@ -67,6 +67,24 @@ describe('aislamiento de las bases de prueba', () => {
     },
   );
 
+  it('deriva escale_test de la URL de prueba de SIMON cuando no hay una propia', () => {
+    vi.stubEnv('ESCALE_TEST_DATABASE_URL', undefined);
+    pointToTestDatabases();
+    const url = new URL(process.env.ESCALE_DATABASE_URL!);
+    expect(url.searchParams.get('schema')).toBe('escale_test');
+    expect(url.host).toBe('localhost');
+  });
+
+  it('rechaza el schema real de ESCALE', () => {
+    vi.stubEnv(
+      'ESCALE_TEST_DATABASE_URL',
+      'postgresql://test:fake@localhost/school?schema=escale',
+    );
+    expect(() => pointToTestDatabases()).toThrow(
+      'se aborta para no tocar datos reales',
+    );
+  });
+
   it('aborta si falta la URL de prueba', () => {
     vi.stubEnv('AUTH_TEST_DATABASE_URL', undefined);
     expect(() => pointToTestDatabases()).toThrow(
