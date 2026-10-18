@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RuleType {
+  ABSENCES_IN_WINDOW
+  CONSECUTIVE_ABSENCES
+  LATE_COUNT
+  SECTION_SILENT
+  GRADE_WITHOUT_ATTENDANCE
+  LEFT_WITHOUT_EXIT
+  ATTENTION_GOAL_GAP
+}
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+}
+enum AlertType {
+  ABSENCE_PATTERN
+  SECTION_SILENT
+  ACCESS_ENTRY
+  ACCESS_EXIT
+  GRADE_WITHOUT_ATTENDANCE
+  LEFT_WITHOUT_EXIT
+  ATTENTION_GOAL_GAP
+}
+enum AlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  DISMISSED
+}
+enum CaseStatus {
+  OPEN
+  CONTACTING
+  CONTACTED
+  REFERRED
+  CLOSED_RETURNED
+  CLOSED_TRANSFERRED
+  CLOSED_DROPPED_OUT
+}
+enum Role {
+  MINEDU_ADMIN
+  DRE_SPECIALIST
+  UGEL_SPECIALIST
+  DIRECTOR
+  SECRETARY
+  TUTOR
+  TEACHER
+  AUXILIAR
+  PSYCHOLOGIST
+}
+enum ReasonCategory {
+  HEALTH
+  WORK
+  MOVING
+  ECONOMIC
+  BULLYING
+  FAMILY
+  ACADEMIC
+  MIGRATION
+  OTHER
+}
+enum ActionType {
+  NOTE
+  MESSAGE_DRAFTED
+  MESSAGE_SENT
+  CALL
+  MEETING
+  ESCALATED
+  REFERRAL_PSYCHOLOGIST
+  REFERRAL_DEMUNA
+  REFERRAL_CEM
+  REFERRAL_JUNTOS
+  STATUS_CHANGE
+}
+enum RecipientType {
+  GUARDIAN
+  USER
+}
+enum Channel {
+  WHATSAPP
+  SMS
+  EMAIL
+  IN_APP
+}
+enum NotificationStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+model RiskRule {
+  id String @id @default(uuid(7)) @db.Uuid
+  code String @unique @db.VarChar(40)
+  type RuleType
+  params Json
+  severity Severity
+  schoolId String? @map("school_id") @db.Uuid
+  isActive Boolean @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  alerts Alert[]
+  @@map("risk_rules")
+}
+
+model Alert {
+  id String @id @default(uuid(7)) @db.Uuid
+  ruleId String? @map("rule_id") @db.Uuid
+  type AlertType
+  severity Severity
+  schoolId String @map("school_id") @db.Uuid
+  sectionId String? @map("section_id") @db.Uuid
+  studentId String? @map("student_id") @db.Uuid
+  status AlertStatus @default(OPEN)
+  data Json @default("{}")
+  detectedAt DateTime @default(now()) @map("detected_at") @db.Timestamptz(6)
+  caseId String? @map("case_id") @db.Uuid
+  dedupeKey String @unique @map("dedupe_key") @db.VarChar(120)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  rule RiskRule? @relation(fields: [ruleId], references: [id])
+  case Case? @relation(fields: [caseId], references: [id])
+  notifications Notification[]
+  @@index([schoolId, status])
+  @@map("alerts")
+}
+
+model Case {
+  id String @id @default(uuid(7)) @db.Uuid
+  studentId String @map("student_id") @db.Uuid
+  schoolId String @map("school_id") @db.Uuid
+  sectionId String @map("section_id") @db.Uuid
+  status CaseStatus @default(OPEN)
+  ownerUserId String @map("owner_user_id") @db.Uuid
+  ownerRole Role @map("owner_role")
+  escalationLevel Int @default(0) @map("escalation_level") @db.SmallInt
+  dueAt DateTime @map("due_at") @db.Timestamptz(6)
+  openedAt DateTime @default(now()) @map("opened_at") @db.Timestamptz(6)
+  firstContactAt DateTime? @map("first_contact_at") @db.Timestamptz(6)
+  closedAt DateTime? @map("closed_at") @db.Timestamptz(6)
+  closeReason String? @map("close_reason") @db.VarChar(250)
+  reasonCategory ReasonCategory? @map("reason_category")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  alerts Alert[]
+  actions CaseAction[]
+  notifications Notification[]
+  responses GuardianResponse[]
+  // Índice parcial en SQL: un solo caso abierto por estudiante e IE.
+  @@index([schoolId, status])
+  @@index([status, dueAt])
+  @@map("cases")
+}
+
+model CaseAction {
+  id String @id @default(uuid(7)) @db.Uuid
+  caseId String @map("case_id") @db.Uuid
+  type ActionType
+  performedByUserId String? @map("performed_by_user_id") @db.Uuid
+  notes String? @db.Text
+  metadata Json @default("{}")
+  performedAt DateTime @default(now()) @map("performed_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  case Case @relation(fields: [caseId], references: [id])
+  @@index([caseId, performedAt])
+  @@map("case_actions")
+}
+
+model Notification {
+  id String @id @default(uuid(7)) @db.Uuid
+  recipientType RecipientType @map("recipient_type")
+  guardianId String? @map("guardian_id") @db.Uuid
+  userId String? @map("user_id") @db.Uuid
+  channel Channel
+  templateCode String @map("template_code") @db.VarChar(50)
+  body String @db.Text
+  status NotificationStatus @default(QUEUED)
+  provider String @default("console") @db.VarChar(30)
+  providerMessageId String? @unique @map("provider_message_id") @db.VarChar(100)
+  alertId String? @map("alert_id") @db.Uuid
+  caseId String? @map("case_id") @db.Uuid
+  dedupeKey String @unique @map("dedupe_key") @db.VarChar(150)
+  sentAt DateTime? @map("sent_at") @db.Timestamptz(6)
+  deliveredAt DateTime? @map("delivered_at") @db.Timestamptz(6)
+  error String? @db.Text
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now()) @map("next_attempt_at") @db.Timestamptz(6)
+  lockedUntil DateTime? @map("locked_until") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  alert Alert? @relation(fields: [alertId], references: [id])
+  case Case? @relation(fields: [caseId], references: [id])
+  responses GuardianResponse[]
+  @@index([status, nextAttemptAt])
+  @@map("notifications")
+}
+
+model GuardianResponse {
+  id String @id @default(uuid(7)) @db.Uuid
+  providerEventId String @unique @map("provider_event_id") @db.Uuid
+  notificationId String @map("notification_id") @db.Uuid
+  caseId String? @map("case_id") @db.Uuid
+  rawText String @map("raw_text") @db.Text
+  classifiedReason ReasonCategory? @map("classified_reason")
+  classificationConfidence Decimal? @map("classification_confidence") @db.Decimal(3, 2)
+  receivedAt DateTime @default(now()) @map("received_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  notification Notification @relation(fields: [notificationId], references: [id])
+  case Case? @relation(fields: [caseId], references: [id])
+  @@map("guardian_responses")
+}
+
+model InboxEvent {
+  id String @id @db.Uuid
+  type String @db.VarChar(40)
+  resourceId String @map("resource_id") @db.Uuid
+  date String @db.Char(10)
+  processedAt DateTime? @map("processed_at") @db.Timestamptz(6)
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now()) @map("next_attempt_at") @db.Timestamptz(6)
+  lockedUntil DateTime? @map("locked_until") @db.Timestamptz(6)
+  error String? @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  @@index([processedAt, nextAttemptAt])
+  @@map("inbox_events")
+}

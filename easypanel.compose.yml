@@ -1,0 +1,43 @@
+# Despliegue en EasyPanel (servicio Compose desde Git): Build Path "/" y este archivo.
+# EasyPanel escribe las variables del servicio en /.env (Environment → "Create .env file").
+# Sin `ports` ni `container_name`: el dominio de EasyPanel enruta a `web:80`.
+x-backend: &backend
+  build:
+    context: .
+    dockerfile: deploy/backend.Dockerfile
+  restart: unless-stopped
+  env_file: .env
+  environment: &urls
+    AUTH_JWKS_URL: http://auth:3000/.well-known/jwks.json
+    AUTH_URL: http://auth:3000
+    SIAGIE_URL: http://siagie:3001
+    ALERTA_URL: http://alerta:3002
+    SIMON_URL: http://simon:3003
+
+services:
+  auth:
+    <<: *backend
+    environment:
+      <<: *urls
+      SERVICE: ms-auth
+      PORT: "3000"
+      # Confía solo en el X-Forwarded-For de proxies de la red privada (nginx y el de EasyPanel).
+      TRUST_PROXY: uniquelocal
+  siagie:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-siagie, PORT: "3001" }
+  alerta:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-alerta, PORT: "3002" }
+  simon:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-simon, PORT: "3003" }
+  escale:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-escale, PORT: "3004" }
+  web:
+    build:
+      context: .
+      dockerfile: deploy/web.Dockerfile
+    restart: unless-stopped
+    depends_on: [auth, siagie, alerta, simon, escale]

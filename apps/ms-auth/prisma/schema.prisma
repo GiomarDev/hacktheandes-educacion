@@ -1,0 +1,132 @@
+// ms-auth: identidad y acceso (spec, sección 4.0).
+// school_id, ugel_id y dre_id apuntan a ms-siagie: son referencias sin FK.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DocumentType {
+  DNI
+  CE
+  PASSPORT
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  LOCKED
+}
+
+enum Role {
+  MINEDU_ADMIN
+  DRE_SPECIALIST
+  UGEL_SPECIALIST
+  DIRECTOR
+  SECRETARY
+  TUTOR
+  TEACHER
+  AUXILIAR
+  PSYCHOLOGIST
+}
+
+enum AuthEventType {
+  LOGIN_OK
+  LOGIN_FAILED
+  LOCKED
+  LOGOUT
+  REFRESH
+  TOKEN_REUSE_DETECTED
+  PASSWORD_CHANGED
+}
+
+model User {
+  id                  String       @id @default(uuid(7)) @db.Uuid
+  documentType        DocumentType @map("document_type")
+  documentNumber      String       @map("document_number") @db.VarChar(15)
+  firstName           String       @map("first_name") @db.VarChar(100)
+  lastName            String       @map("last_name") @db.VarChar(100)
+  email               String?      @unique @db.VarChar(150)
+  phone               String?      @db.VarChar(20)
+  passwordHash        String       @map("password_hash") @db.VarChar(255)
+  status              UserStatus   @default(ACTIVE)
+  mustChangePassword  Boolean      @default(false) @map("must_change_password")
+  failedLoginAttempts Int          @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime?    @map("locked_until") @db.Timestamptz(6)
+  lastLoginAt         DateTime?    @map("last_login_at") @db.Timestamptz(6)
+  // Roles cuyo recorrido de bienvenida ya terminó (o saltó) la persona: se muestra una vez por rol.
+  onboardedRoles      Role[]       @default([]) @map("onboarded_roles")
+  createdAt           DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  roles         UserRole[]
+  refreshTokens RefreshToken[]
+
+  @@unique([documentType, documentNumber])
+  @@map("users")
+}
+
+model UserRole {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  role      Role
+  schoolId  String?  @map("school_id") @db.Uuid
+  ugelId    String?  @map("ugel_id") @db.Uuid
+  dreId     String?  @map("dre_id") @db.Uuid
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role, schoolId, ugelId, dreId])
+  @@map("user_roles")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash") @db.VarChar(255)
+  familyId  String    @map("family_id") @db.Uuid
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  ip        String?   @db.VarChar(64)
+  userAgent String?   @map("user_agent") @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([familyId])
+  @@map("refresh_tokens")
+}
+
+model SigningKey {
+  id                  String    @id @default(uuid(7)) @db.Uuid
+  kid                 String    @unique @db.VarChar(40)
+  publicKey           String    @map("public_key")
+  privateKeyEncrypted String    @map("private_key_encrypted")
+  isActive            Boolean   @default(true) @map("is_active")
+  rotatedAt           DateTime? @map("rotated_at") @db.Timestamptz(6)
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("signing_keys")
+}
+
+model AuthEvent {
+  id         String        @id @default(uuid(7)) @db.Uuid
+  userId     String?       @map("user_id") @db.Uuid
+  type       AuthEventType
+  ip         String?       @db.VarChar(64)
+  userAgent  String?       @map("user_agent") @db.VarChar(255)
+  occurredAt DateTime      @default(now()) @map("occurred_at") @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([ip, occurredAt])
+  @@map("auth_events")
+}

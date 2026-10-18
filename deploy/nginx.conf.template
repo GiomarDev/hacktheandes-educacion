@@ -1,0 +1,44 @@
+# Igual que el proxy de Vite en desarrollo: /api/<servicio>/ruta → <servicio>/ruta.
+# nginx sustituye ${..._UPSTREAM} al arrancar (plantillas de la imagen oficial).
+server {
+  listen 80;
+  server_name _;
+  root /usr/share/nginx/html;
+
+  # El navegador solo ve este origen: sin CORS en los servicios.
+  # Un add_header dentro de un location anula los del server: por eso se repiten abajo.
+  add_header X-Content-Type-Options nosniff always;
+  add_header Referrer-Policy same-origin always;
+  add_header X-Frame-Options DENY always;
+  client_max_body_size 10m;
+
+  proxy_http_version 1.1;
+  proxy_set_header Host $host;
+  # ms-auth limita el login por IP: necesita la del cliente (TRUST_PROXY en compose).
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+
+  # Las rutas internas (x-internal-key) nunca se exponen al navegador.
+  location ~ ^/api/[a-z]+/internal/ { return 404; }
+  location ~ ^/api/[a-z]+/webhooks/ { return 404; }
+
+  location /api/auth/   { proxy_pass ${AUTH_UPSTREAM}/; }
+  location /api/siagie/ { proxy_pass ${SIAGIE_UPSTREAM}/; }
+  location /api/alerta/ { proxy_pass ${ALERTA_UPSTREAM}/; }
+  location /api/simon/  { proxy_pass ${SIMON_UPSTREAM}/; }
+  location /api/escale/ { proxy_pass ${ESCALE_UPSTREAM}/; }
+
+  location /assets/ {
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    add_header X-Content-Type-Options nosniff always;
+    try_files $uri =404;
+  }
+  # Rutas del cliente (react-router): todo lo demás sirve index.html sin caché.
+  location / {
+    add_header Cache-Control "no-cache";
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy same-origin always;
+    add_header X-Frame-Options DENY always;
+    try_files $uri /index.html;
+  }
+}

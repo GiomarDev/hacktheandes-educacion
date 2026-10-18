@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "rootDir": "../../",
+    "outDir": "../../dist/apps/ms-auth"
+  },
+  "include": ["src/**/*", "prisma/seed.ts", "../../libs/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}

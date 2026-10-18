@@ -1,0 +1,46 @@
+# Despliegue completo: cinco microservicios y el frontend detrás de nginx (puerto 8080).
+# Uso (desde la raíz): docker compose -f deploy/compose.yml --env-file .env up --build
+# El .env aporta las URLs de base de datos y los secretos (ver .env.example).
+x-backend: &backend
+  build:
+    context: ..
+    dockerfile: deploy/backend.Dockerfile
+  image: amauti-backend
+  restart: unless-stopped
+  env_file: ../.env
+  environment: &urls
+    AUTH_JWKS_URL: http://auth:3000/.well-known/jwks.json
+    AUTH_URL: http://auth:3000
+    SIAGIE_URL: http://siagie:3001
+    ALERTA_URL: http://alerta:3002
+    SIMON_URL: http://simon:3003
+
+services:
+  auth:
+    <<: *backend
+    environment:
+      <<: *urls
+      SERVICE: ms-auth
+      PORT: "3000"
+      # Solo confía en el X-Forwarded-For que pone nginx dentro de la red de compose.
+      TRUST_PROXY: uniquelocal
+  siagie:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-siagie, PORT: "3001" }
+  alerta:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-alerta, PORT: "3002" }
+  simon:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-simon, PORT: "3003" }
+  escale:
+    <<: *backend
+    environment: { <<: *urls, SERVICE: ms-escale, PORT: "3004" }
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/web.Dockerfile
+    restart: unless-stopped
+    depends_on: [auth, siagie, alerta, simon, escale]
+    ports:
+      - "8080:80"
