@@ -178,12 +178,20 @@ for (const [service, port] of Object.entries(PORTS)) {
 console.log('Servicios en 3000–3004');
 
 // Indicadores: datos abiertos de docs/ y agregados de los días simulados (como MINEDU).
-const login = await fetch('http://localhost:3000/auth/login', {
-  method: 'POST',
-  headers: { 'content-type': 'application/json' },
-  body: JSON.stringify({ documentNumber: SEED_IDS.documents.admin, password }),
-});
-if (login.ok) {
+// Reintenta: recién arrancado, la primera consulta a una base remota puede expirar.
+let login: Response | undefined;
+for (let attempt = 0; attempt < 5 && !login?.ok; attempt++) {
+  if (attempt) await sleep(2000);
+  login = await fetch('http://localhost:3000/auth/login', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      documentNumber: SEED_IDS.documents.admin,
+      password,
+    }),
+  }).catch(() => undefined);
+}
+if (login?.ok) {
   const { accessToken } = (await login.json()) as { accessToken: string };
   const post = (path: string, body: unknown) =>
     fetch(`http://localhost:3004${path}`, {
@@ -211,7 +219,7 @@ if (login.ok) {
   console.log('Agregados diarios e indicadores por UGEL calculados');
 } else {
   console.log(
-    'No se pudo iniciar sesión como admin de demo: indicadores sin cargar',
+    `No se pudo iniciar sesión como admin de demo (${login?.status ?? 'sin respuesta'}): indicadores sin cargar`,
   );
 }
 console.log(
