@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Amauti — Sistema de Continuidad Educativa y Alerta Temprana</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#ffffff",
+            "on-primary-container": "#7ea4e8",
+            "on-error": "#ffffff",
+            "secondary": "#bb0019",
+            "surface": "#f9f9ff",
+            "primary-fixed-dim": "#abc7ff",
+            "on-secondary-fixed": "#410003",
+            "surface-container": "#e7eeff",
+            "on-tertiary-fixed": "#281900",
+            "inverse-surface": "#283140",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#ffdeac",
+            "on-secondary-fixed-variant": "#930011",
+            "primary": "#00234e",
+            "inverse-primary": "#abc7ff",
+            "surface-dim": "#d1daef",
+            "primary-container": "#003876",
+            "on-background": "#131c2a",
+            "surface-bright": "#f9f9ff",
+            "on-primary": "#ffffff",
+            "tertiary": "#322000",
+            "tertiary-fixed-dim": "#ffba38",
+            "outline-variant": "#c3c6d2",
+            "on-primary-fixed-variant": "#194684",
+            "surface-tint": "#365e9e",
+            "on-secondary-container": "#fffbff",
+            "surface-variant": "#dae3f7",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#ffdad6",
+            "on-surface-variant": "#434750",
+            "on-primary-fixed": "#001b3f",
+            "on-tertiary-container": "#d79600",
+            "secondary-fixed-dim": "#ffb3ad",
+            "surface-container-highest": "#dae3f7",
+            "secondary-container": "#e41d2a",
+            "outline": "#737781",
+            "on-tertiary-fixed-variant": "#604100",
+            "surface-container-low": "#f0f3ff",
+            "primary-fixed": "#d7e3ff",
+            "surface-container-lowest": "#ffffff",
+            "inverse-on-surface": "#ecf1ff",
+            "on-error-container": "#93000a",
+            "tertiary-container": "#4e3400",
+            "background": "#f9f9ff",
+            "on-surface": "#131c2a",
+            "surface-container-high": "#dfe8fd"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "space-md": "0.875rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.25rem",
+            "space-xs": "0.25rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.25rem",
+            "gutter-mobile": "0.75rem"
+          },
+          "fontFamily": {
+            "label-numeric": ["Plus Jakarta Sans", "sans-serif"],
+            "label-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "display-lg": ["Newsreader", "serif"],
+            "headline-md": ["Newsreader", "serif"],
+            "display-lg-mobile": ["Newsreader", "serif"],
+            "headline-lg": ["Newsreader", "serif"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "title-md": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          "fontSize": {
+            "label-numeric": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "label-lg": ["13px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    .amber-accent-bar {
+      width: 36px;
+      height: 3px;
+      background-color: #E6A316;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased selection:bg-primary-container selection:text-white">
+<!-- ================= 1. TOP STICKY NAVBAR ================= -->
+<header class="sticky top-0 w-full z-50 bg-surface shadow-sm border-b border-outline-variant">
+<div class="flex justify-between items-center px-6 md:px-12 py-3 w-full max-w-7xl mx-auto">
+<!-- Left brand identity -->
+<div class="flex items-center gap-3">
+<!-- Vertical Peruvian Flag (Red-White-Red) -->
+<div class="flex h-5 w-4.5 rounded-sm overflow-hidden shadow-xs border border-outline-variant/60">
+<div class="w-1.5 h-full bg-[#D91023]"></div>
+<div class="w-1.5 h-full bg-white"></div>
+<div class="w-1.5 h-full bg-[#D91023]"></div>
+</div>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">Amauti</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-label-md font-semibold bg-[#F0F3F7] text-on-surface-variant border border-outline-variant">Piloto</span>
+</div>
+<!-- Center navigation links -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant hover:text-primary font-body-md text-body-md transition-colors duration-150" href="#espejo">El punto ciego</a>
+<a class="text-on-surface-variant hover:text-primary font-body-md text-body-md transition-colors duration-150" href="#tesis">Por qué Amauti</a>
+<a class="text-on-surface-variant hover:text-primary font-body-md text-body-md transition-colors duration-150" href="#piezas">De la señal al rescate</a>
+<a class="text-on-surface-variant hover:text-primary font-body-md text-body-md transition-colors duration-150" href="#prueba">Impacto real</a>
+<a class="text-on-surface-variant hover:text-primary font-body-md text-body-md transition-colors duration-150" href="#preguntas">Preguntas</a>
+</nav>
+<!-- Right Actions -->
+<div class="flex items-center gap-3">
+<span class="hidden lg:inline-flex items-center px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-high text-on-primary-fixed-variant border border-outline-variant/70">
+          Piloto educativo · Hack the Andes
+        </span>
+<a class="inline-flex items-center justify-center px-3.5 py-2 rounded-lg bg-primary-container text-white text-label-lg font-label-lg hover:bg-primary transition-colors duration-150 shadow-xs" href="#demostracion">
+          Ingresar a la plataforma
+        </a>
+</div>
+</div>
+</header>
+<main>
+<!-- ================= 2. HERO SECTION ================= -->
+<section class="w-full max-w-7xl mx-auto px-6 md:px-12 pt-8 pb-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Left Column (Institutional Dark Navy Panel) -->
+<div class="lg:col-span-7 bg-[#1A2332] text-white rounded-xl p-6 sm:p-10 flex flex-col justify-between border border-[#2E3C52] shadow-sm relative overflow-hidden">
+<!-- Top-left Amber Bar -->
+<div class="absolute top-0 left-0 w-24 h-1 bg-[#E6A316]"></div>
+<div class="space-y-4">
+<!-- Urgent Kicker -->
+<div class="flex items-center gap-2">
+<span class="text-[#E6A316] font-bold">—</span>
+<p class="font-label-lg text-label-lg text-[#B4BCC9] tracking-normal">Cada 24 horas, 375 alumnos abandonan para siempre el colegio</p>
+</div>
+<!-- H1 Editorial -->
+<h1 class="font-display-lg text-display-lg text-white leading-tight">
+              ¿En qué minuto exacto perdimos la oportunidad de retenerlos? Cierra el ciclo completo entre la señal y el rescate.
+            </h1>
+<!-- Subtitle -->
+<p class="font-body-md text-body-md text-[#B4BCC9] leading-relaxed">
+              No los perdimos el día que dejaron de ir, sino semanas atrás en un punto ciego de 60 días. Con un audio de 10 segundos en WhatsApp, el docente registra lo que pasa en clase y Amauti agiliza sus trámites, bitacoriza sus observaciones y le alerta qué alumnos están en riesgo — devolviéndole el tiempo para intervenir y manteniendo al director, a la UGEL y al Ministerio sincronizados en tiempo real.
+            </p>
+<!-- Buttons -->
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container hover:bg-[#002957] border border-white/20 text-white font-label-lg text-label-lg transition-all duration-150 shadow-sm" href="#demostracion">
+<span>Ver demostración en vivo</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</a>
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-white/20 text-white/90 hover:bg-white/10 font-label-lg text-label-lg transition-all duration-150" href="#piezas">
+                Explorar el ciclo de rescate
+              </a>
+</div>
+</div>
+<!-- Mascot integration inside rounded arch -->
+<div class="mt-8 pt-6 border-t border-[#2E3C52]/80 flex items-center gap-4 bg-[#243043]/80 p-4 rounded-xl border border-white/10">
+<!-- Illustrated Yellow Pencil Mascot Arch -->
+<div class="w-14 h-14 rounded-full bg-[#E6A316]/20 border border-[#E6A316]/40 flex items-center justify-center shrink-0">
+<div class="relative w-8 h-10 flex flex-col items-center">
+<!-- Red eraser -->
+<div class="w-4 h-2 bg-[#D91023] rounded-t-sm"></div>
+<!-- Silver ferrule -->
+<div class="w-4 h-1 bg-slate-300"></div>
+<!-- Yellow body with face -->
+<div class="w-4 h-5 bg-[#E6A316] flex flex-col items-center justify-center text-[7px] text-[#1A2332] font-black leading-none">
+<span>• ‿ •</span>
+</div>
+<!-- Pencil tip -->
+<div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[#D99B26]"></div>
+</div>
+</div>
+<div>
+<p class="font-body-sm text-body-sm text-[#F5F7FA] italic leading-snug">
+                «¡Hola! Soy Amauti. Cierro el ciclo completo entre la señal en el aula y el rescate, devolviéndole el tiempo a nuestro principal agente de cambio: el profesor.»
+              </p>
+<span class="text-label-md font-label-md text-[#E6A316] font-semibold mt-1 inline-block">Mascota pedagógica oficial</span>
+</div>
+</div>
+</div>
+<!-- Right Column (Interactive Demonstration Card) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl p-6 sm:p-8 border border-outline-variant shadow-sm flex flex-col justify-between" id="demostracion">
+<div class="space-y-4">
+<div>
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-label-md font-label-md bg-surface-container text-primary-container mb-2 font-semibold">
+<span class="w-2 h-2 rounded-full bg-[#15803D]"></span>
+                ENTORNO SIMULADO ACTIVO
+              </div>
+<h3 class="font-headline-md text-headline-md text-primary">Demostración en vivo: de la señal al rescate</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                Explora cómo se sincronizan el docente, el director, la UGEL y el Ministerio en tiempo real.
+              </p>
+</div>
+<!-- Role Selector Pills -->
+<div class="space-y-2">
+<label class="block text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Selecciona la vista de gestión:</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="px-3 py-2 text-left rounded-lg text-label-lg font-label-lg bg-primary-container text-white border border-primary-container shadow-xs flex items-center justify-between" type="button">
+<span>MINEDU · Nacional</span>
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</button>
+<button class="px-3 py-2 text-left rounded-lg text-label-lg font-label-lg bg-surface hover:bg-surface-container text-on-surface border border-outline-variant transition-colors" type="button">
+                  UGEL · Territorial
+                </button>
+<button class="px-3 py-2 text-left rounded-lg text-label-lg font-label-lg bg-surface hover:bg-surface-container text-on-surface border border-outline-variant transition-colors" type="button">
+                  Dirección · Escuela
+                </button>
+<button class="px-3 py-2 text-left rounded-lg text-label-lg font-label-lg bg-surface hover:bg-surface-container text-on-surface border border-outline-variant transition-colors" type="button">
+                  Tutoría · Aula
+                </button>
+</div>
+</div>
+<!-- Form Inputs -->
+<div class="space-y-3 pt-2">
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-1">Número de documento (DNI)</label>
+<div class="relative">
+<input class="w-full h-10 px-3 bg-surface border border-outline-variant rounded-lg text-body-md font-label-numeric text-on-surface focus:outline-none focus:border-primary-container" readonly="" type="text" value="70281902"/>
+<span class="absolute right-2.5 top-2.5 px-2 py-0.5 rounded text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-[#BBF7D0]">
+                    Validado RENIEC
+                  </span>
+</div>
+</div>
+<div>
+<label class="block text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-1">Rol de demostración pre-cargado</label>
+<select class="w-full h-10 px-3 bg-white border border-outline-variant rounded-lg text-body-md font-body-md text-on-surface focus:outline-none focus:border-primary-container">
+<option selected="">Especialista de Monitoreo Nacional — DIGC-MINEDU</option>
+<option>Especialista Territorial — UGEL 04 Comas</option>
+<option>Director de I.E. — Colegio 2053 Francisco Bolognesi</option>
+<option>Docente Tutor — 3ro de Secundaria (WhatsApp Bot)</option>
+</select>
+</div>
+</div>
+</div>
+<div class="pt-6 space-y-3">
+<button class="w-full h-11 bg-primary-container hover:bg-primary text-white rounded-lg font-label-lg text-label-lg flex items-center justify-center gap-2 transition-colors shadow-sm" type="button">
+<span>Ingresar al entorno en vivo</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline">verified_user</span>
+<p class="font-body-sm text-[11px] text-on-surface-variant">
+                Autenticación RBAC con JWKS · Diagnósticos sensibles cifrados con AES-256.
+              </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Hero Ecosystem Strip -->
+<div class="mt-6 w-full bg-surface-container-lowest rounded-xl p-4 border border-outline-variant shadow-xs flex flex-wrap items-center justify-between gap-3">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+          Sincronizado en tiempo real con estándares e indicadores oficiales:
+        </span>
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#E8F3EC] text-[#1F6E30] text-label-md font-semibold border border-[#BBF7D0]">
+<span class="material-symbols-outlined text-[15px]">chat</span>
+            WhatsApp (Audio 10s en Aula)
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container text-primary text-label-md font-semibold border border-outline-variant">
+            SIAGIE (Asistencia y Notas)
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container text-primary text-label-md font-semibold border border-outline-variant">
+            ESCALE (Serie Histórica)
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container text-primary text-label-md font-semibold border border-outline-variant">
+            Alerta Escuela (Reglas de Riesgo)
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container text-primary text-label-md font-semibold border border-outline-variant">
+            SIMON (Monitoreo)
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container text-primary text-label-md font-semibold border border-outline-variant">
+            CNEB (Competencias)
+          </span>
+</div>
+</div>
+</section>
+<!-- ================= 3. SECTION 1: EL PUNTO CIEGO DE 60 DÍAS ================= -->
+<section class="w-full bg-[#F5F7FA] border-y border-outline-variant py-16" id="espejo">
+<div class="max-w-7xl mx-auto px-6 md:px-12">
+<!-- Section Header -->
+<div class="max-w-3xl space-y-2 mb-10">
+<p class="font-label-lg text-label-lg uppercase tracking-wider text-secondary font-bold">
+            El conflicto en el aula · 60 días a ciegas
+          </p>
+<h2 class="font-display-lg text-display-lg text-primary leading-tight">
+            No lo perdimos el día que dejó de ir. Lo perdimos semanas atrás, mientras para el sistema todo seguía «normal».
+          </h2>
+<div class="amber-accent-bar my-3"></div>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+            Cuando falló en matemáticas, empezó a faltar y se apagó al fondo del salón, los sistemas oficiales miraban hacia otro lado: haciendo autopsias en lugar de rescates y ahogando al profesor en trámites.
+          </p>
+</div>
+<!-- 2-Column Split: Quotes vs Response Card -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Left: 5 Quote Cards -->
+<div class="lg:col-span-6 space-y-3">
+<!-- Active Card -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border-l-4 border-l-primary-container border border-outline-variant shadow-xs">
+<span class="text-label-md font-label-md text-secondary font-bold">REALIDAD 01 · SEÑALES INVISIBLES</span>
+<p class="font-headline-sm text-headline-sm text-on-surface mt-1">
+                «Falló en matemáticas, empezó a faltar y se apagó al fondo del salón… pero para el sistema oficial todo seguía 'normal'»
+              </p>
+</div>
+<div class="bg-surface-container-lowest/80 hover:bg-surface-container-lowest p-4 rounded-xl border border-outline-variant transition-colors">
+<span class="text-label-md font-label-md text-outline font-semibold">REALIDAD 02 · REPORTE TARDÍO</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+                «Los pocos sistemas del Estado hacen autopsias, no rescates: avisan tras 60 días de punto ciego»
+              </p>
+</div>
+<div class="bg-surface-container-lowest/80 hover:bg-surface-container-lowest p-4 rounded-xl border border-outline-variant transition-colors">
+<span class="text-label-md font-label-md text-outline font-semibold">REALIDAD 03 · BUROCRACIA ASFIXIANTE</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+                «Ahogan a nuestro principal agente de cambio —el profesor— en trámites institucionales y sin tiempo para intervenir»
+              </p>
+</div>
+<div class="bg-surface-container-lowest/80 hover:bg-surface-container-lowest p-4 rounded-xl border border-outline-variant transition-colors">
+<span class="text-label-md font-label-md text-outline font-semibold">REALIDAD 04 · BARRERA DE INFRAESTRUCTURA</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+                «En el aula el docente está solo y sin computadora… salvo por la tecnología que ya tiene en su bolsillo: WhatsApp»
+              </p>
+</div>
+<div class="bg-surface-container-lowest/80 hover:bg-surface-container-lowest p-4 rounded-xl border border-outline-variant transition-colors">
+<span class="text-label-md font-label-md text-outline font-semibold">REALIDAD 05 · FRACTURA INSTITUCIONAL</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+                «El director, la UGEL y el Ministerio operan desconectados pidiendo Excels cuando el alumno ya abandonó»
+              </p>
+</div>
+</div>
+<!-- Right: Response Card -->
+<div class="lg:col-span-6 bg-surface-container-lowest p-6 sm:p-8 rounded-xl border border-outline-variant shadow-sm space-y-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#E6EEF5] text-primary-container text-label-md font-bold tracking-wide">
+<span class="material-symbols-outlined text-[16px]">sync_saved_locally</span>
+              LA RESPUESTA DE AMAUTI · CIERRA EL CICLO ENTRE LA SEÑAL Y EL RESCATE
+            </div>
+<h3 class="font-headline-lg text-headline-lg text-primary">
+              De un punto ciego de 60 días a un audio de 10 segundos en WhatsApp.
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Con un audio de 10 segundos en WhatsApp, el docente registra lo que pasa en clase sin salir de su rutina. Amauti agiliza sus trámites institucionales, bitacoriza sus observaciones y le alerta qué alumnos están en riesgo, devolviéndole el tiempo para intervenir antes de que el estudiante abandone el colegio.
+            </p>
+<div class="space-y-2.5 pt-2">
+<div class="flex items-center gap-3 p-3 rounded-lg bg-[#E8F3EC] border border-[#BBF7D0]">
+<span class="material-symbols-outlined text-[#1F6E30]">mic</span>
+<span class="text-label-lg font-label-lg text-[#1F6E30]">🎙️ Audio de 10s en WhatsApp → Bitácora + Trámite listo</span>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg bg-[#FFEEF0] border border-[#F8B4B4]">
+<span class="material-symbols-outlined text-[#C8102E]">warning</span>
+<span class="text-label-lg font-label-lg text-[#C8102E]">Alerta de Riesgo Inmediato · Protocolo de Rescate en 48 h</span>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg bg-surface-container border border-outline-variant">
+<span class="material-symbols-outlined text-primary-container">hub</span>
+<span class="text-label-lg font-label-lg text-primary-container">Sincronizado con Dirección, UGEL y MINEDU sin duplicar Excels</span>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface border border-outline-variant flex items-center justify-between">
+<div>
+<p class="font-title-md text-title-md text-primary">¿Por qué Amauti hace la diferencia real frente a las herramientas tradicionales del Estado?</p>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Revisa la tesis de rescate y métricas de impacto</span>
+</div>
+<a class="inline-flex items-center gap-1 text-label-lg font-label-lg text-primary-container hover:underline font-bold shrink-0 ml-4" href="#tesis">
+                Ver la tesis de rescate →
+              </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= 4. SECTION 2: LA TESIS ================= -->
+<section class="w-full bg-surface-container-lowest py-16" id="tesis">
+<div class="max-w-7xl mx-auto px-6 md:px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<!-- Left Column -->
+<div class="lg:col-span-6 space-y-4">
+<span class="font-label-lg text-label-lg uppercase tracking-wider text-secondary font-bold">¿Por qué Amauti hace la diferencia real?</span>
+<h2 class="font-display-lg text-display-lg text-primary leading-tight">
+              Los sistemas tradicionales hacen autopsias, no rescates. Amauti cierra el ciclo completo entre la señal y el rescate.
+            </h2>
+<div class="amber-accent-bar"></div>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+              Devolvemos el tiempo y el respaldo a nuestro principal agente de cambio —el profesor— a través de la única tecnología que ya tiene en su bolsillo:
+            </p>
+<div class="space-y-4 pt-2">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-[#E8F3EC] text-[#1F6E30] flex items-center justify-center shrink-0 border border-[#BBF7D0]">
+<span class="material-symbols-outlined text-[18px]">mic</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Un audio de 10 segundos en WhatsApp</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Bitácora viva y trámites administrativos estructurados automáticamente con procesamiento de voz nativo en quechua y español.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-[#FFEEF0] text-[#C8102E] flex items-center justify-center shrink-0 border border-[#F8B4B4]">
+<span class="material-symbols-outlined text-[18px]">crisis_alert</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Detección en el minuto exacto, sin puntos ciegos</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Cruce de señales tempranas: correlaciona inasistencias consecutivas y caídas de rendimiento antes de que el corte bimestral formalice la deserción.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container text-primary-container flex items-center justify-center shrink-0 border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">lan</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Director, UGEL y Ministerio sincronizados en tiempo real</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Sin solicitar reportes en Excel ni duplicar carpetas de papel. La intervención comunitaria se activa automáticamente en 48 horas.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column (Metric Duel) -->
+<div class="lg:col-span-6 bg-[#FAFBFD] p-6 sm:p-8 rounded-xl border border-outline-variant shadow-sm space-y-6">
+<!-- Top Urgent Banner -->
+<div class="p-3.5 bg-[#FFF5F5] border-l-4 border-l-[#C8102E] border border-[#F8B4B4] rounded-r-lg">
+<p class="font-title-md text-title-md text-[#C8102E] font-bold">
+                ⚠️ 375 escolares cada 24 horas habrán abandonado para siempre el colegio mientras los sistemas oficiales esperan al cierre bimestral.
+              </p>
+</div>
+<!-- Side-by-side Duelo -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Amauti Rescate -->
+<div class="p-4 rounded-xl bg-white border border-[#BBF7D0] shadow-xs flex flex-col justify-between space-y-3">
+<span class="text-label-md font-label-md uppercase text-[#1F6E30] font-bold">CICLO AMAUTI</span>
+<div>
+<p class="font-display-lg text-display-lg text-[#2B8A3E] font-black">10 s</p>
+<p class="font-label-lg text-label-lg text-primary-container mt-1">en WhatsApp</p>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Para que el profesor registre lo que pasa en clase, agilice trámites, bitacorice observaciones y active el rescate en Amauti.
+                </p>
+</div>
+<!-- Tradicional Autopsia -->
+<div class="p-4 rounded-xl bg-white border border-[#F8B4B4] shadow-xs flex flex-col justify-between space-y-3">
+<span class="text-label-md font-label-md uppercase text-[#C8102E] font-bold">SISTEMA TRADICIONAL</span>
+<div>
+<p class="font-display-lg text-display-lg text-[#8A95A8] font-black">60 días</p>
+<p class="font-label-lg text-label-lg text-[#C8102E] mt-1">a ciegas</p>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  De punto ciego en las herramientas oficiales donde todo parece «normal» hasta que el abandono es irreversible.
+                </p>
+</div>
+</div>
+<!-- Footnote -->
+<div class="border-t border-outline-variant pt-3 text-center">
+<span class="font-label-numeric text-label-numeric text-outline">
+                Fuente: Microdatos oficiales SIAGIE / ESCALE y validación operativa con docentes de aula de Lima Metropolitana y Regiones.
+              </span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= 5. SECTION 3: LAS PIEZAS DEL SISTEMA ================= -->
+<section class="w-full bg-[#F5F7FA] border-y border-outline-variant py-16" id="piezas">
+<div class="max-w-7xl mx-auto px-6 md:px-12 space-y-10">
+<!-- Header -->
+<div class="max-w-3xl space-y-2">
+<p class="font-label-lg text-label-lg uppercase tracking-wider text-secondary font-bold">El ciclo completo entre la señal y el rescate</p>
+<h2 class="font-display-lg text-display-lg text-primary leading-tight">
+            Un audio de 10 segundos en el aula. Cuatro niveles sincronizados en tiempo real.
+          </h2>
+<div class="amber-accent-bar my-3"></div>
+</div>
+<!-- Top Showcase Pair -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Left: Narrative (4 cols) -->
+<div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined">dashboard</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Intervención de precisión multi-actor</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Amauti elimina la fricción burocrática conectando la voz del profesor con tableros ejecutivos auditables.
+              </p>
+<div class="space-y-2 pt-2">
+<div class="flex items-center gap-2 text-on-surface font-body-sm text-body-sm">
+<span class="text-[#15803D] font-bold">✓</span>
+<span>Agiliza trámites y bitacoriza con un audio de 10s</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface font-body-sm text-body-sm">
+<span class="text-[#15803D] font-bold">✓</span>
+<span>Devuelve al profesor el tiempo para intervenir</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface font-body-sm text-body-sm">
+<span class="text-[#15803D] font-bold">✓</span>
+<span>Director, UGEL y MINEDU sincronizados en vivo</span>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant mt-4">
+<span class="font-label-md text-label-md text-outline uppercase">Arquitectura GovTech</span>
+<p class="font-label-numeric text-label-numeric text-primary-container mt-1">Microservicios NestJS · Cifrado AES-256 · SIAGIE Sync</p>
+</div>
+</div>
+<!-- Right: Mockup frame (8 cols) -->
+<div class="lg:col-span-8 bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-sm space-y-4">
+<!-- Window Bar -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-[#E41D2A]/80"></div>
+<div class="w-3 h-3 rounded-full bg-[#E6A316]/80"></div>
+<div class="w-3 h-3 rounded-full bg-[#22C55E]/80"></div>
+<span class="text-label-md font-label-md text-outline ml-2 font-mono">amauti.gob.pe/tablero/continuidad</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E8F3EC] text-[#1F6E30]">En Línea · Tiempo Real</span>
+</div>
+<!-- Alert Strip -->
+<div class="px-4 py-2.5 bg-[#FFF5F5] border border-[#F8B4B4] rounded-lg flex items-center justify-between text-secondary">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">notification_important</span>
+<span class="font-label-lg text-label-lg font-bold">1 institución educativa con alertas abiertas · 8 alertas críticas · 8 casos en curso</span>
+</div>
+<span class="font-label-numeric text-label-numeric uppercase bg-white px-2 py-0.5 rounded border border-[#F8B4B4]">UGEL 04</span>
+</div>
+<!-- 4 KPI Cards -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<div class="p-3 bg-surface rounded-lg border border-outline-variant">
+<span class="text-label-md font-label-md text-outline">DESERCIÓN SECUNDARIA</span>
+<p class="font-headline-sm text-headline-sm text-secondary font-black">2.54%</p>
+<span class="font-label-numeric text-[11px] text-on-surface-variant">72,282 estudiantes</span>
+</div>
+<div class="p-3 bg-surface rounded-lg border border-outline-variant">
+<span class="text-label-md font-label-md text-outline">DESERCIÓN PRIMARIA</span>
+<p class="font-headline-sm text-headline-sm text-[#B47806] font-black">1.73%</p>
+<span class="font-label-numeric text-[11px] text-on-surface-variant">64,463 estudiantes</span>
+</div>
+<div class="p-3 bg-surface rounded-lg border border-outline-variant">
+<span class="text-label-md font-label-md text-outline">TASA INTERANUAL</span>
+<p class="font-headline-sm text-headline-sm text-primary font-black">2.70%</p>
+<span class="font-label-numeric text-[11px] text-on-surface-variant">Línea base ESCALE</span>
+</div>
+<div class="p-3 bg-surface rounded-lg border border-outline-variant">
+<span class="text-label-md font-label-md text-outline">ALERTAS CRÍTICAS</span>
+<p class="font-headline-sm text-headline-sm text-[#D91023] font-black">1 IE</p>
+<span class="font-label-numeric text-[11px] text-on-surface-variant">Intervención prioritaria</span>
+</div>
+</div>
+<!-- Cartogram Map Grid of Regions -->
+<div class="p-4 bg-surface rounded-lg border border-outline-variant">
+<div class="flex justify-between items-center mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant font-bold uppercase">Cartograma de Tasa de Abandono por Región (Muestra 25 Dptos.)</span>
+<span class="text-[11px] font-mono text-outline font-label-numeric">TD = [Mt - (Mt ∩ Mt+1) - ASSt - Ft] / Mt * 100</span>
+</div>
+<div class="grid grid-cols-4 sm:grid-cols-8 gap-1.5 text-center font-mono">
+<div class="p-1.5 bg-[#FDF2F2] border border-[#F8B4B4] rounded">
+<span class="text-[10px] block font-bold text-[#D91023]">UCA</span>
+<span class="text-[11px] font-bold text-[#D91023]">5.1%</span>
+</div>
+<div class="p-1.5 bg-[#FDF2F2] border border-[#F8B4B4] rounded">
+<span class="text-[10px] block font-bold text-[#D91023]">CAL</span>
+<span class="text-[11px] font-bold text-[#D91023]">3.6%</span>
+</div>
+<div class="p-1.5 bg-[#FEF9EE] border border-[#FCE5B2] rounded">
+<span class="text-[10px] block font-bold text-[#B47806]">TUM</span>
+<span class="text-[11px] font-bold text-[#B47806]">3.4%</span>
+</div>
+<div class="p-1.5 bg-[#FEF9EE] border border-[#FCE5B2] rounded">
+<span class="text-[10px] block font-bold text-[#B47806]">LOR</span>
+<span class="text-[11px] font-bold text-[#B47806]">3.2%</span>
+</div>
+<div class="p-1.5 bg-[#FEF9EE] border border-[#FCE5B2] rounded">
+<span class="text-[10px] block font-bold text-[#B47806]">PIU</span>
+<span class="text-[11px] font-bold text-[#B47806]">3.1%</span>
+</div>
+<div class="p-1.5 bg-[#F0FDF4] border border-[#BBF7D0] rounded">
+<span class="text-[10px] block font-bold text-[#15803D]">ARE</span>
+<span class="text-[11px] font-bold text-[#15803D]">0.9%</span>
+</div>
+<div class="p-1.5 bg-[#F0FDF4] border border-[#BBF7D0] rounded">
+<span class="text-[10px] block font-bold text-[#15803D]">TAC</span>
+<span class="text-[11px] font-bold text-[#15803D]">0.9%</span>
+</div>
+<div class="p-1.5 bg-[#F0FDF4] border border-[#BBF7D0] rounded">
+<span class="text-[10px] block font-bold text-[#15803D]">PUN</span>
+<span class="text-[11px] font-bold text-[#15803D]">0.6%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom 4-Card Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="space-y-2">
+<span class="text-label-md font-label-md text-outline font-bold">PIEZA 01 · EL PROFESOR</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Audio de 10s en WhatsApp y Cero Trámites</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Convierte mensajes de voz comunes en actas y reportes oficiales sin duplicar papeleo.</p>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="font-display-lg text-[28px] font-black text-[#2B8A3E]">10 seg</span>
+<span class="material-symbols-outlined text-[#2B8A3E]">mic</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="space-y-2">
+<span class="text-label-md font-label-md text-outline font-bold">PIEZA 02 · RESCATE TEMPRANO</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Bitácora Viva y Alertas de Alumnos en Riesgo</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Algoritmo predictivo que cruza ausencias con bajas de notas para activar el auxilio.</p>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="font-display-lg text-[28px] font-black text-[#C8102E]">48 horas</span>
+<span class="material-symbols-outlined text-[#C8102E]">timer</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-outline-variant shadow-xs flex flex-col justify-between">
+<div class="space-y-2">
+<span class="text-label-md font-label-md text-outline font-bold">PIEZA 03 · PSICOLOGÍA &amp; DIRECCIÓN</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Expediente CNEB y Planes de Rescate</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Carpetas psicopedagógicas protegidas bajo estándares de reserva del Estado.</p>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="font-display-lg text-[28px] font-black text-primary-container">AES-256</span>
+<span class="material-symbols-outlined text-primary-container">lock</span>
+</div>
+</div>
+<!-- Card 4 (Highlighted) -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-2 border-primary-container shadow-xs flex flex-col justify-between">
+<div class="space-y-2">
+<span class="text-label-md font-label-md text-primary font-bold">PIEZA 04 · GOBERNANZA REAL</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Director, UGEL y Ministerio Sincronizados</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Monitoreo continuo que asigna presupuesto y apoyo asistencial donde más duele.</p>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant">
+<a class="inline-flex items-center gap-1 text-label-lg font-label-lg text-primary-container font-bold hover:underline" href="#demostracion">
+<span>Demostrar sincronización en vivo</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= 6. SECTION 4: EVIDENCIA E IMPACTO ================= -->
+<section class="w-full bg-surface-container-lowest py-16" id="prueba">
+<div class="max-w-7xl mx-auto px-6 md:px-12 space-y-10">
+<!-- Header -->
+<div class="max-w-3xl space-y-2">
+<p class="font-label-lg text-label-lg uppercase tracking-wider text-secondary font-bold">Del rescate en el aula a la evidencia nacional</p>
+<h2 class="font-display-lg text-display-lg text-primary leading-tight">
+            Lo que ocurre cuando liberas al profesor de los trámites y sincronizas a todo el Estado.
+          </h2>
+<div class="amber-accent-bar my-3"></div>
+</div>
+<!-- 2 Testimonial Quotes with gold left accent -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="p-6 rounded-xl bg-surface border border-outline-variant border-l-4 border-l-[#E6A316] space-y-3">
+<span class="material-symbols-outlined text-[#E6A316]">format_quote</span>
+<p class="font-body-lg text-body-lg text-on-surface italic">
+              «Antes me tomaba 2 horas cada viernes transcribir faltas y justificaciones al sistema, y cuando por fin reportaba a un chico en peligro, ya era demasiado tarde. Con un simple audio mientras camino al recreo, Amauti redacta el informe y dirección interviene el mismo día.»
+            </p>
+<div class="pt-2">
+<span class="font-title-md text-title-md text-primary block font-bold">Docente de Aula (Secundaria y Primaria)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">I.E. 2053 — Red Territorial Lima Norte</span>
+</div>
+</div>
+<div class="p-6 rounded-xl bg-surface border border-outline-variant border-l-4 border-l-[#E6A316] space-y-3">
+<span class="material-symbols-outlined text-[#E6A316]">format_quote</span>
+<p class="font-body-lg text-body-lg text-on-surface italic">
+              «La UGEL solía enterarse del abandono escolar cuando las actas bimestrales cerraban con casilleros vacíos. Amauti nos alertó de 8 casos en tiempo real antes de que se consumara el retiro, permitiéndonos enviar asistencia psicológica comunitaria.»
+            </p>
+<div class="pt-2">
+<span class="font-title-md text-title-md text-primary block font-bold">Gestión Educativa Sincronizada</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Dirección, UGEL y MINEDU</span>
+</div>
+</div>
+</div>
+<!-- 5-Card Bento Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+<!-- Card 1 -->
+<div class="p-5 rounded-xl bg-surface border border-outline-variant">
+<span class="text-label-md font-label-md text-secondary font-bold">PÉRDIDA DIARIA</span>
+<p class="font-display-lg text-[36px] font-black text-secondary mt-1">375 / 24 h</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">
+              72,282 en secundaria + 64,463 en primaria que abandonan sin que el Estado reaccione a tiempo.
+            </p>
+</div>
+<!-- Card 2 -->
+<div class="p-5 rounded-xl bg-surface border border-outline-variant">
+<span class="text-label-md font-label-md text-primary-container font-bold">VELOCIDAD DE CAPTURA</span>
+<p class="font-display-lg text-[36px] font-black text-primary-container mt-1">60 d → 10 s</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">
+              Reducción del punto ciego a cero segundos. Detección en regiones críticas como Ucayali (5.1%).
+            </p>
+</div>
+<!-- Card 3 -->
+<div class="p-5 rounded-xl bg-surface border border-outline-variant">
+<span class="text-label-md font-label-md text-[#15803D] font-bold">CONFIABILIDAD TÉCNICA</span>
+<p class="font-display-lg text-[36px] font-black text-[#15803D] mt-1">448</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">
+              Microdatos verificados con checksum SHA-256 integrando SIAGIE, ESCALE y SIMON.
+            </p>
+</div>
+<!-- Card 4 -->
+<div class="p-5 rounded-xl bg-surface border border-outline-variant">
+<span class="text-label-md font-label-md text-outline font-bold">INFRAESTRUCTURA ROBUSTA</span>
+<p class="font-display-lg text-[36px] font-black text-primary mt-1">5 Serv.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">
+              Arquitectura de microservicios con NestJS, PostgreSQL relacional y seguridad RBAC JWKS.
+            </p>
+</div>
+<!-- Card 5 (Wide) -->
+<div class="sm:col-span-2 lg:col-span-4 p-6 rounded-xl bg-surface border border-outline-variant flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="space-y-1">
+<span class="text-label-md font-label-md text-primary-container font-bold uppercase">CICLO COMPLETO EN TIEMPO REAL</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">El Profesor en WhatsApp → El Director en Escuela → La UGEL en Territorio → El MINEDU en la Nación</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Un único hilo digital que convierte cada señal de aula en una acción institucional orquestada.</p>
+</div>
+<a class="shrink-0 px-4 py-2.5 rounded-lg bg-primary text-white font-label-lg text-label-lg hover:bg-primary-container transition-colors shadow-xs" href="#demostracion">
+              Explorar datos del piloto
+            </a>
+</div>
+</div>
+</div>
+</section>
+<!-- ================= 7. CLOSING BANNER & FAQS ================= -->
+<section class="w-full bg-[#F5F7FA] border-t border-outline-variant py-16" id="preguntas">
+<div class="max-w-7xl mx-auto px-6 md:px-12 space-y-12">
+<!-- Closing Banner Container -->
+<div class="bg-[#1A2332] text-white rounded-xl p-8 sm:p-12 relative overflow-hidden border border-[#2E3C52] shadow-sm">
+<!-- Top Amber Accent -->
+<div class="absolute top-0 left-0 w-28 h-1 bg-[#E6A316]"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-9 space-y-4">
+<h2 class="font-display-lg text-display-lg text-white leading-tight">
+                No hagamos más autopsias después de 60 días. Cerremos hoy el ciclo entre la señal y el rescate.
+              </h2>
+<p class="font-body-lg text-body-lg text-[#B4BCC9] leading-relaxed max-w-3xl">
+                Cada 24 horas, 375 alumnos abandonan el colegio. Prueba en vivo cómo un audio de 10 segundos en WhatsApp le devuelve al profesor el tiempo para intervenir y sincroniza al director, a la UGEL y al Ministerio.
+              </p>
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<a class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary-container hover:bg-[#002957] text-white font-label-lg text-label-lg border border-white/20 transition-all shadow-sm" href="#demostracion">
+<span>Probar Demostración en Vivo (amauti.keoit.com)</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+<a class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-white/20 text-white/90 hover:bg-white/10 font-label-lg text-label-lg transition-all" href="https://github.com" rel="noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Ver repositorio y arquitectura</span>
+</a>
+</div>
+</div>
+<!-- Pencil Mascot Flourish -->
+<div class="lg:col-span-3 flex justify-center lg:justify-end">
+<div class="w-24 h-24 rounded-full bg-[#243043] border border-[#E6A316]/50 flex items-center justify-center p-4 shadow-inner">
+<div class="relative w-12 h-16 flex flex-col items-center">
+<div class="w-6 h-3 bg-[#D91023] rounded-t-sm"></div>
+<div class="w-6 h-1.5 bg-slate-300"></div>
+<div class="w-6 h-8 bg-[#E6A316] flex flex-col items-center justify-center text-[10px] text-[#1A2332] font-black">
+<span>^ ‿ ^</span>
+</div>
+<div class="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[12px] border-t-[#D99B26]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FAQ Accordion -->
+<div class="max-w-4xl mx-auto space-y-4">
+<div class="text-center space-y-1 mb-8">
+<span class="font-label-lg text-label-lg uppercase tracking-wider text-secondary font-bold">Respuestas para directores, especialistas y docentes</span>
+<h3 class="font-display-lg text-display-lg text-primary">Preguntas Frecuentes</h3>
+<div class="amber-accent-bar mx-auto my-2"></div>
+</div>
+<!-- FAQ Item 1 -->
+<details class="group bg-surface-container-lowest rounded-xl border border-outline-variant p-5 open:shadow-xs transition-all">
+<summary class="flex justify-between items-center cursor-pointer list-none font-title-md text-title-md text-primary font-bold">
+<span>¿Cómo un audio de 10 segundos en WhatsApp agiliza los trámites y bitacoriza las observaciones del docente?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-body-md text-on-surface-variant leading-relaxed border-t border-outline-variant/60 mt-3">
+              El docente envía un mensaje de voz al bot oficial de Amauti en WhatsApp (por ejemplo: «Juan Pérez faltó por tercera vez y no presentó la tarea de trigonometría»). El motor de procesamiento de lenguaje natural transcribe, clasifica la señal bajo los criterios del CNEB, actualiza la bitácora escolar del estudiante y genera automáticamente el borrador del acta de incidencia listo para firma digital del tutor.
+            </div>
+</details>
+<!-- FAQ Item 2 -->
+<details class="group bg-surface-container-lowest rounded-xl border border-outline-variant p-5 open:shadow-xs transition-all">
+<summary class="flex justify-between items-center cursor-pointer list-none font-title-md text-title-md text-primary font-bold">
+<span>¿Cómo elimina Amauti el punto ciego de 60 días cuando un alumno falla en cursos clave o empieza a faltar?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-body-md text-on-surface-variant leading-relaxed border-t border-outline-variant/60 mt-3">
+              Tradicionalmente, las alertas de deserción se gatillan al consolidar las notas bimestrales en SIAGIE (aproximadamente cada 60 días). Amauti correlaciona micro-señales continuas: 2 inasistencias no justificadas continuas sumadas a una baja abrupta en evaluaciones formativas disparan una alerta preventiva que reduce el tiempo de rescate a menos de 48 horas.
+            </div>
+</details>
+<!-- FAQ Item 3 -->
+<details class="group bg-surface-container-lowest rounded-xl border border-outline-variant p-5 open:shadow-xs transition-all">
+<summary class="flex justify-between items-center cursor-pointer list-none font-title-md text-title-md text-primary font-bold">
+<span>¿Cómo se sincronizan en tiempo real el director, la UGEL y el Ministerio sin pedirle Excels al profesor?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-body-md text-on-surface-variant leading-relaxed border-t border-outline-variant/60 mt-3">
+              Al quedar registrada la señal en el aula, los tableros de gestión institucional se actualizan en tiempo real a través de APIs REST seguras. El director ve el caso en su lista de tutelados, la UGEL identifica la tendencia territorial de la escuela y MINEDU visualiza el indicador macro, eliminando los requerimientos periódicos de archivos Excel.
+            </div>
+</details>
+<!-- FAQ Item 4 -->
+<details class="group bg-surface-container-lowest rounded-xl border border-outline-variant p-5 open:shadow-xs transition-all">
+<summary class="flex justify-between items-center cursor-pointer list-none font-title-md text-title-md text-primary font-bold">
+<span>¿Cómo se protege la confidencialidad de la bitácora y los diagnósticos psicopedagógicos?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-body-md text-on-surface-variant leading-relaxed border-t border-outline-variant/60 mt-3">
+              Toda la información personal de menores y expedientes socioemocionales se procesa bajo la Ley de Protección de Datos Personales del Perú (Ley 29733). Los registros sensibles se cifran con estándar bancario AES-256 en reposo y en tránsito, y el acceso está regido por políticas estrictas de Control de Acceso Basado en Roles (RBAC) con tokens JWKS.
+            </div>
+</details>
+<!-- FAQ Item 5 -->
+<details class="group bg-surface-container-lowest rounded-xl border border-outline-variant p-5 open:shadow-xs transition-all">
+<summary class="flex justify-between items-center cursor-pointer list-none font-title-md text-title-md text-primary font-bold">
+<span>¿De dónde provienen la métrica de 375 alumnos cada 24 horas y las series oficiales de SIAGIE/ESCALE?</span>
+<span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180 text-on-surface-variant">expand_more</span>
+</summary>
+<div class="pt-3 font-body-md text-body-md text-on-surface-variant leading-relaxed border-t border-outline-variant/60 mt-3">
+              La cifra proviene de la agregación oficial de microdatos anuales del Ministerio de Educación (136,745 estudiantes que interrumpieron sus estudios regulares al año entre primaria y secundaria, equivalente a 375 escolares por cada período de 24 horas), procesada a partir de los censos escolares ESCALE y reportes consolidados de matrícula SIAGIE.
+            </div>
+</details>
+</div>
+</div>
+</section>
+</main>
+<!-- ================= 8. INSTITUTIONAL FOOTER ================= -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-6 md:px-12 py-8 w-full max-w-7xl mx-auto gap-4">
+<!-- Left info -->
+<div class="space-y-1 text-center md:text-left">
+<p class="font-headline-md text-[18px] font-bold text-primary">Amauti — Continuidad Educativa</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">
+          © 2025 Ministerio de Educación (MINEDU) · Plataforma de Continuidad Educativa Amauti. Fuentes integradas: SIAGIE, ESCALE, Alerta Escuela, SIMON.
+        </p>
+<p class="font-label-numeric text-[11px] text-outline">
+          SIAGIE · Alerta Escuela · SIMON · ESCALE — Datos sintéticos de demostración y microdatos abiertos oficiales MINEDU.
+        </p>
+</div>
+<!-- Right info -->
+<div class="flex flex-col md:flex-row items-center gap-3">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded text-[11px] font-mono bg-surface-container text-primary-container border border-outline-variant font-bold">v0.1.0 · piloto</span>
+<span class="text-label-md font-label-md text-on-surface-variant">Hack the Andes</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
