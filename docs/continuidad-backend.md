@@ -4,7 +4,7 @@ Relevo de Claude a Codex, 17 de octubre de 2026. Rama: `feat/backend-fundacion`.
 
 ## Alcance recuperado
 
-El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). **F3 — ms-simon** continúa con reportes, planes cifrados y visitas, según su [plan](superpowers/plans/2026-10-17-ms-simon.md) y [contratos](ms-simon.md). **F4 — ms-escale** lo continuó Claude según su [plan](superpowers/plans/2026-10-17-ms-escale.md) y [contratos](ms-escale.md). El frontend sigue pendiente.
+El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). **F3 — ms-simon** continúa con reportes, planes cifrados y visitas, según su [plan](superpowers/plans/2026-10-17-ms-simon.md) y [contratos](ms-simon.md). **F4 — ms-escale** lo continuó Claude según su [plan](superpowers/plans/2026-10-17-ms-escale.md) y [contratos](ms-escale.md). El frontend y la puesta en marcha se describen al final.
 
 Al iniciar el relevo, las tareas 1–12 ya estaban en Git; el último commit era `8feaff1`. La tarea 13 tenía archivos sin commit: seeds de ambos servicios, IDs compartidos, resumen del estudiante y prueba entre servicios. El registro local de Claude está en `.superpowers/sdd/2026-10-17-backend-fundacion-auth-siagie/progress.md` (ignorado por Git).
 
@@ -104,7 +104,7 @@ Una revisión independiente de F4 no encontró nada crítico y sí cuatro puntos
 - `POST /stats/compute` no calcula hoy ni fechas futuras, y al recalcular un día pasado se conservan sus casos.
 - Los días fuera de los periodos académicos no cuentan como aulas en silencio.
 
-Hallazgos menores que quedan pendientes:
+Hallazgos menores (resueltos en el relevo del 17/10 por la noche, ver abajo):
 - Columnas de periodo repetidas y sin tope en el CSV de ESCALE.
 - Dos importaciones o cálculos simultáneos responden con un 409 genérico.
 - Un día que falla no se reintenta solo después de la medianoche.
@@ -138,18 +138,36 @@ Verificación del frontend:
 - Tipos y build sin errores.
 - Recorrido visual con Playwright a 1440 px y 390 px con los roles de tutor, UGEL y dirección: login, pase de lista guardado, alertas, caso, panorama, escuela y reporte generado.
 
+## Continuación — relevo del 17/10/2026 (noche)
+
+Se retomó la rama en otra máquina con Node 26 (nvm). npm 11 bloquea los scripts de instalación sin `allowScripts`; se ejecutan con `npm rebuild` sin tocar `package.json`.
+
+Puesta en marcha, con autorización explícita del responsable:
+- Migraciones aplicadas en los schemas reales: `siagie` (outbox), `alerta`, `simon`, `escale` y el índice nuevo de `auth`.
+- Seeds sintéticos ejecutados en `auth`, `siagie` y `alerta` reales (10 usuarios, una IE con 2 secciones y 60 estudiantes, reglas iniciales).
+- CSV oficiales importados en `escale` real.
+
+Correcciones:
+- Test de nómina desactualizado: desde `9bafa39` el docente sin carga en la sección recibe 403.
+- F4, los cuatro hallazgos menores: periodos repetidos, no consecutivos o más de 40 rechazados; importaciones y cálculos mensuales serializados con candado (el duplicado responde "Este archivo ya fue importado"); el job reintenta días fallidos hasta una semana; se confirmó que `migrate diff` no ve diferencias con el índice `NULLS NOT DISTINCT`, así que `migrate dev` no lo quita.
+- Seguridad: dos refresh simultáneos del mismo token dejaban vigente el token nuevo del ganador. La rotación de cada familia ahora va bajo un candado transaccional. Solo se reproducía con una base rápida (falla 5/5 antes, pasa 5/5 después).
+- La demo reintenta el login del admin antes de cargar indicadores.
+- `apps/web/vite.config.ts` declara `process`: el build aislado (Docker, CI) no tenía `@types/node`.
+
+Nuevo backend:
+- ms-auth: límite de login por IP (20 fallos en 15 minutos → 429 con `Retry-After`, contado en `auth_events`); `TRUST_PROXY` para leer `X-Forwarded-For`; `GET /users` lista cuentas por IE, UGEL o DRE según el ámbito.
+- ms-siagie: `GET /schools/:id/periods`, `GET /sections/:id/areas` y `GET /grades` (registro de un área, sección y periodo).
+
+Nuevo frontend: registro de notas (`/notas`), reporte bimestral, planes de apoyo (`/planes`), visitas de monitoreo (`/visitas`) y administración de cuentas, roles y reglas (`/admin`); menú "Más" en el móvil. Recorrido en Chrome como docente, tutor y dirección: notas guardadas y recalculadas, plan creado, versión aprobada y plan activado, visita agendada, observada y con devolución, reporte bimestral generado; sin scroll horizontal a 390 px.
+
+Despliegue y CI: `deploy/` (imagen única de backend, nginx con el build estático, compose en el puerto 8080) verificado con Docker sobre los schemas reales y los jobs apagados; `.github/workflows/ci.yml` con Postgres propio.
+
+Verificación final contra un PostgreSQL 17 local (el servidor compartido da `SocketTimeout` intermitentes en suites largas): lint y tipos sin errores, **100 unitarias**, **171 e2e en 22 archivos** y arranque compilado de los cinco servicios; frontend con 21 pruebas y build de producción.
+
 ## Pendientes ordenados
 
-1. **Carga de demo en schemas reales:** paso 4 de la tarea 13. Requiere confirmación explícita; no es requisito para probar ni desarrollar sobre los schemas de test.
-2. **Puesta en marcha de F2:** aplicar las migraciones nuevas en los schemas reales cuando se autorice esa puesta en marcha. El desarrollo y las verificaciones usan los schemas de prueba. Los contratos y límites de la demo están en `docs/ms-alerta.md`.
-3. **Puesta en marcha de F3:** aplicar la migración de SIMON en su schema real cuando se autorice; conservar la clave propia de cifrado de diagnóstico. No se requiere para seguir desarrollando sobre tests.
-4. **Puesta en marcha de F4:** agregar `ESCALE_DATABASE_URL` al `.env`, aplicar la migración de ms-escale en su schema real cuando se autorice e importar los dos CSV con `POST /imports`. Los hallazgos menores de la revisión están listados en la sección de F4.
-5. **Frontend, siguientes módulos:**
-   - Calificaciones (faltan rutas de lectura de periodos y competencias).
-   - Reporte bimestral (falta una ruta pública de periodos).
-   - Planes de apoyo y visitas SIMON.
-   - Administración de usuarios y reglas.
-   - Despliegue del build estático detrás de un proxy hacia los servicios.
-6. **Operación:** definir despliegue, CI y limitación por IP de autenticación. La limitación por cuenta ya existe; la limitación por IP quedó diferida en el registro de Claude.
-7. **Validación de dominio:** confirmar código oficial del estudiante y cálculo oficial de notas. La moda con desempate por última columna es una decisión provisional del plan, no una regla oficial validada.
-8. **Entorno:** al actualizar el runtime, elegir una versión de Node admitida por las herramientas del CLI; Node 25.8.1 produce advertencias de engines en Angular Devkit aunque las verificaciones del proyecto funcionan.
+1. **Validación de dominio:** confirmar el código oficial del estudiante y el cálculo oficial de notas. La moda con desempate por la columna más reciente es una decisión provisional del plan; la pantalla de notas lo advierte.
+2. **Despliegue real:** elegir el servidor o la nube, HTTPS delante de nginx y la gestión de secretos. Las imágenes y el compose ya están listos; falta publicarlas (registro de contenedores) y definir quién aplica las migraciones en cada versión.
+3. **Operación:** respaldos de la base `school`, monitoreo de `/health` y alertas por fallas de los jobs.
+4. **Frontend, mejoras:** importar el calendario de periodos (hoy los crea el seed), restablecer contraseñas desde administración y crear reglas nuevas (hoy solo se editan las existentes).
+5. **Servidor compartido:** las suites e2e largas contra `panel.keoit.com` sufren timeouts de red; para una corrida completa conviene un PostgreSQL local, como en CI.

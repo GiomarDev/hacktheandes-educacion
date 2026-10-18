@@ -10,10 +10,10 @@ Implementados `ms-auth`, `ms-siagie`, `ms-alerta`, `ms-simon` y `ms-escale`: aut
 
 ### Preparación
 
-Se recomienda Node.js 26 o una versión admitida por las dependencias del CLI de Nest. El entorno inicial usa Node 25.8.1; funciona en las verificaciones, pero npm avisa que algunas herramientas de Angular Devkit no declaran soporte para esa versión.
+Se recomienda Node.js 26 (con nvm: `nvm install 26 && nvm use 26`). npm 11 no ejecuta los scripts de instalación de las dependencias sin un `allowScripts` en `package.json`; `npm rebuild` los ejecuta (Prisma, argon2, SWC, esbuild) sin modificar ese archivo. Haz lo mismo en `apps/web`.
 
 ```sh
-npm ci
+npm ci && npm rebuild
 cp .env.example .env
 # Completar las variables del .env antes de continuar.
 npm run auth:generate
@@ -97,9 +97,9 @@ La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No e
 
 | Rol | Pantalla de inicio | Módulos |
 | --- | --- | --- |
-| Tutor, docente o auxiliar | **Hoy** | Alumnos con alertas, pendientes, pase de lista diario, ficha del estudiante, casos propios |
-| Dirección, secretaría o psicología | **Escuela** | Secciones y asistencia, factores de riesgo, alertas y casos, reportes SIMON |
-| Especialista UGEL o DRE, MINEDU | **Panorama** | Mapa de deserción oficial por región, tendencia ESCALE, indicadores por UGEL, IEs del ámbito, revisión de reportes, fuentes de datos |
+| Tutor, docente o auxiliar | **Hoy** | Alumnos con alertas, pendientes, pase de lista diario, ficha del estudiante, casos propios; tutor y docente también **registro de notas**, **planes de apoyo** y sus **visitas de monitoreo** |
+| Dirección, secretaría o psicología | **Escuela** | Secciones y asistencia, factores de riesgo, alertas y casos, notas, reportes SIMON (mensuales y **bimestral**), planes de apoyo; dirección además agenda **visitas** y **administra** cuentas, roles y reglas de alerta |
+| Especialista UGEL o DRE, MINEDU | **Panorama** | Mapa de deserción oficial por región, tendencia ESCALE, indicadores por UGEL, IEs del ámbito, revisión de reportes, visitas, fuentes de datos; UGEL y MINEDU administran cuentas |
 
 Demo local completa, con datos sintéticos en los schemas `_test`, sin tocar los reales:
 
@@ -110,7 +110,20 @@ npm --prefix apps/web ci    # una vez
 npm run web:dev             # http://localhost:5173
 ```
 
-Los usuarios de demo usan los DNI `70000100` (MINEDU), `70000101` (UGEL), `70000102` (dirección), `70000104` (tutor) y `70000108` (auxiliar). La contraseña es la de `SEED_PASSWORD`. En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
+Los usuarios de demo usan los DNI `70000100` (MINEDU), `70000101` (UGEL), `70000102` (dirección), `70000104` (tutor), `70000106` (docente de Matemática), `70000107` (docente de Comunicación) y `70000108` (auxiliar). Si el puerto 5173 está ocupado, Vite usa el siguiente libre (lo indica al arrancar). La contraseña es la de `SEED_PASSWORD`. En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
+
+### Despliegue con Docker
+
+`deploy/backend.Dockerfile` construye una imagen para los cinco servicios (la variable `SERVICE` elige cuál arranca) y `deploy/web.Dockerfile` sirve el build estático con nginx, que enruta `/api/<servicio>` como el proxy de Vite, bloquea las rutas `/internal` y `/webhooks` y pasa la IP del cliente a ms-auth para el límite de login por IP (`TRUST_PROXY`).
+
+```sh
+docker compose -f deploy/compose.yml up --build      # http://localhost:8080, con las bases y secretos del .env
+docker compose -f deploy/compose.yml run --rm auth npx prisma migrate deploy --config apps/ms-auth/prisma.config.ts   # migraciones, una por servicio
+```
+
+### Integración continua
+
+`.github/workflows/ci.yml` corre en cada push y pull request: lint, tipos, pruebas unitarias, build, e2e y arranque compilado contra un PostgreSQL propio del job (sin tocar el servidor compartido), pruebas y build del frontend, y el build de ambas imágenes. Los secretos de cifrado se generan en cada ejecución.
 
 ---
 

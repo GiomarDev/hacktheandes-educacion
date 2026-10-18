@@ -10,17 +10,18 @@ Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú
 
 ## Stack
 
-Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. El frontend `apps/web` (Centinela Escolar: React 19 + Vite + TanStack Query + Tailwind) es un paquete propio con su `package.json`; en desarrollo Vite enruta `/api/<servicio>` a cada puerto. Despliegue pendiente.
+Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. El frontend `apps/web` (Centinela Escolar: React 19 + Vite + TanStack Query + Tailwind) es un paquete propio con su `package.json`; en desarrollo Vite enruta `/api/<servicio>` a cada puerto y en producción lo hace nginx (`deploy/`). CI en `.github/workflows/ci.yml`.
 
 | Tarea        | Comando |
 |--------------|---------|
-| Instalar     | `npm ci`, `npm run auth:generate`, `npm run siagie:generate` `npm run alerta:generate`, `npm run simon:generate` y `npm run escale:generate` |
+| Instalar     | Node 26; `npm ci && npm rebuild` (npm 11 omite los scripts de instalación sin `allowScripts`), `npm run auth:generate`, `npm run siagie:generate` `npm run alerta:generate`, `npm run simon:generate` y `npm run escale:generate` |
 | Desarrollo   | `npm run start:auth`, `npm run start:siagie` `npm run start:alerta`, `npm run start:simon` y `npm run start:escale` en terminales separadas |
 | Tests        | `npm test`, `npm run test:e2e`, `npm run test:smoke` (requiere build previo) |
 | Lint/format  | `npm run lint`, `npm run typecheck`, `npm run format` |
 | Build        | `npm run build` |
 | Demo local   | `npm run build && npm run demo:stack` (schemas `_test`) y `npm run web:dev` |
-| Frontend     | `npm --prefix apps/web ci`, `npm run web:test`, `npm run web:build` |
+| Frontend     | `npm --prefix apps/web ci` (y `npm rebuild` dentro), `npm run web:test`, `npm run web:build` |
+| Despliegue   | `docker compose -f deploy/compose.yml up --build` (puerto 8080) |
 
 - Configuración en `.env.example`; nunca mostrar ni commitear los secretos del `.env`.
 - Las pruebas solo usan `auth_test`, `siagie_test`, `alerta_test`, `simon_test` y `escale_test` (derivado de la URL de prueba de SIMON si falta `ESCALE_TEST_DATABASE_URL`). `test/test-databases.ts` aborta ante otro schema. No ejecutar suites de integración simultáneas: comparten tablas de prueba y las limpian entre casos.
