@@ -81,10 +81,18 @@ export interface AlertReportSnapshot {
   alertsDetected: number;
   casesOpened: number;
   currentlyOpenCases: number;
+  currentlyContactedOpenCases: number;
   firstContacts: number;
   averageDaysToFirstContact: number | null;
   casesByStatus: Record<string, number>;
   actionsByType: Record<string, number>;
   notificationsByStatus: Record<string, number>;
   guardianResponses: number;
+}
+export interface EscaleSchool {
+  id: string;
+  modularCode: string;
+  name: string;
+  ugel: { id: string; code: string; name: string };
+  dre: { id: string; code: string; name: string };
 }

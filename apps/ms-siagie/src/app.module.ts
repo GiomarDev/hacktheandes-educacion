@@ -1,4 +1,5 @@
 import { SimonContextController } from './internal/simon-context.controller.js';
+import { EscaleContextController } from './internal/escale-context.controller.js';
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import {
@@ -30,6 +31,7 @@ import { OutboxService } from './events/outbox.service.js';
 @Module({
   controllers: [
     SimonContextController,
+    EscaleContextController,
     HealthController,
     GeoController,
     InternalController,

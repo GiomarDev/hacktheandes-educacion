@@ -20,6 +20,7 @@ export class ReportingController {
       alertsDetected,
       cases,
       currentlyOpenCases,
+      currentlyContactedOpenCases,
       firstContacts,
       actions,
       notifications,
@@ -34,6 +35,13 @@ export class ReportingController {
       }),
       this.prisma.case.count({
         where: { schoolId: q.schoolId, closedAt: null },
+      }),
+      this.prisma.case.count({
+        where: {
+          schoolId: q.schoolId,
+          closedAt: null,
+          firstContactAt: { not: null },
+        },
       }),
       this.prisma.case.count({
         where: { schoolId: q.schoolId, firstContactAt: timestamps },
@@ -69,6 +77,7 @@ export class ReportingController {
       alertsDetected,
       casesOpened: cases.length,
       currentlyOpenCases,
+      currentlyContactedOpenCases,
       firstContacts,
       averageDaysToFirstContact: contacted.length
         ? Math.round(

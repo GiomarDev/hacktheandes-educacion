@@ -1,4 +1,5 @@
 import {
+  IsDateString,
   IsIn,
   IsOptional,
   IsString,
@@ -26,4 +27,8 @@ export class IndicatorQuery {
   @IsOptional() @IsString() @Length(1, 20) period?: string;
   // "none" devuelve solo los totales (sin dimensión).
   @IsOptional() @IsString() @Length(1, 30) dimension?: string;
+}
+
+export class ComputeStatsDto {
+  @IsDateString({ strict: true }) @Matches(/^\d{4}-\d{2}-\d{2}$/) date: string;
 }
