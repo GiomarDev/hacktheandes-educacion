@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { CurrentUser, Roles } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { UsersService } from './users.service.js';
-import { CreateUserDto, GrantRoleDto, ListUsersQuery } from './dto/users.dto.js';
+import { CreateUserDto, GrantRoleDto, ListUsersQuery, UpdatePhoneDto } from './dto/users.dto.js';
 
 @Controller('users')
 @Roles('MINEDU_ADMIN', 'UGEL_SPECIALIST', 'DIRECTOR')
@@ -23,6 +23,11 @@ export class UsersController {
   @Post(':id/roles')
   grant(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string, @Body() dto: GrantRoleDto) {
     return this.users.grantRole(user, id, dto);
+  }
+
+  @Patch(':id/phone')
+  updatePhone(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdatePhoneDto) {
+    return this.users.updatePhone(user, id, dto);
   }
 
   @Delete(':id/roles/:roleId')

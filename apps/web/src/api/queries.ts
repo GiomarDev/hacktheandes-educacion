@@ -492,6 +492,23 @@ export function useRevokeRole() {
   });
 }
 
+// Celular del personal: lo edita quien administra sus roles (dirección, UGEL o MINEDU).
+export function useUpdatePhone() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, phone }: { userId: string; phone: string }) =>
+      apiFetch<{ id: string; phone: string }>(
+        'auth',
+        `/users/${seg(userId)}/phone`,
+        {
+          method: 'PATCH',
+          body: { phone },
+        },
+      ),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['users'] }),
+  });
+}
+
 // DOCUMENTOS (SIMON): papeleo generado desde WhatsApp y su revisión.
 export const useDocuments = (status?: DocumentStatus) =>
   useQuery({

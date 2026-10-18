@@ -289,6 +289,7 @@ export interface UserAccount {
   firstName: string;
   lastName: string;
   email: string | null;
+  phone: string | null;
   status: 'ACTIVE' | 'INACTIVE' | 'LOCKED';
   mustChangePassword: boolean;
   lastLoginAt: string | null;

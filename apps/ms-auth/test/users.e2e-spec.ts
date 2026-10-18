@@ -139,6 +139,7 @@ describe('alta de usuarios y roles', () => {
         firstName: 'Nombre72000001',
         lastName: 'Apellido',
         email: null,
+        phone: null,
         status: 'ACTIVE',
         mustChangePassword: false,
         lastLoginAt: null,
@@ -171,6 +172,54 @@ describe('alta de usuarios y roles', () => {
 
     it('un ámbito inexistente: 422', async () => {
       await asDirector(http().get('/users')).query({ schoolId: MISSING }).expect(422);
+    });
+  });
+
+  describe('PATCH /users/:id/phone', () => {
+    const person = async (documentNumber: string, roles: { role: string; schoolId?: string; ugelId?: string }[]) =>
+      prisma.user.create({
+        data: {
+          documentType: 'DNI',
+          documentNumber,
+          firstName: `Nombre${documentNumber}`,
+          lastName: 'Apellido',
+          passwordHash: 'x',
+          roles: { create: roles as { role: 'TEACHER' }[] },
+        },
+      });
+    const phone = (id: string, value: string, token = directorToken) =>
+      http().patch(`/users/${id}/phone`).set('Authorization', `Bearer ${token}`).send({ phone: value });
+
+    it('dirección actualiza el celular de un docente de su IE y queda en el listado', async () => {
+      const teacher = await person('73000001', [{ role: 'TEACHER', schoolId: SCHOOL_A }]);
+      const { body } = await phone(teacher.id, '987 654 321').expect(200);
+      expect(body).toEqual({ id: teacher.id, phone: '+51987654321' });
+      const { body: list } = await asDirector(http().get('/users')).query({ schoolId: SCHOOL_A }).expect(200);
+      expect(list.find((u: { id: string }) => u.id === teacher.id).phone).toBe('+51987654321');
+      await phone(teacher.id, '+51912345678').expect(200);
+    });
+
+    it('rechaza números que no son celulares peruanos', async () => {
+      const teacher = await person('73000002', [{ role: 'TEACHER', schoolId: SCHOOL_A }]);
+      for (const bad of ['12345', '812345678', '+1 555 123 4567', '']) await phone(teacher.id, bad).expect(400);
+    });
+
+    it('dirección no edita personal de otra IE, a otro director ni su propio número', async () => {
+      const other = await person('73000003', [{ role: 'TEACHER', schoolId: SCHOOL_B }]);
+      const director = await person('73000004', [{ role: 'DIRECTOR', schoolId: SCHOOL_A }]);
+      await phone(other.id, '987654321').expect(403);
+      await phone(director.id, '987654321').expect(403);
+      const me = await prisma.user.findFirstOrThrow({ where: { documentNumber: '70000001' } });
+      await phone(me.id, '987654321').expect(403);
+      await phone('019a0000-0000-7000-8000-00000000dead', '987654321').expect(404);
+    });
+
+    it('el especialista UGEL edita al personal de las IEs de su UGEL', async () => {
+      const teacher = await person('73000005', [{ role: 'TEACHER', schoolId: SCHOOL_B }]);
+      const specialist = await createTestUser(prisma, { documentNumber: '73000006' });
+      await prisma.userRole.updateMany({ where: { userId: specialist.id }, data: { role: 'UGEL_SPECIALIST', schoolId: null, ugelId: UGEL_1 } });
+      const ugel = (await http().post('/auth/login').send({ documentNumber: '73000006', password: TEST_PASSWORD }).expect(200)).body.accessToken as string;
+      await phone(teacher.id, '987654321', ugel).expect(200);
     });
   });
 });

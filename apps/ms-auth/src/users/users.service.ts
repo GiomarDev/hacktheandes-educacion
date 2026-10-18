@@ -4,7 +4,7 @@ import type { AuthUser } from '@app/common';
 import { PrismaService } from '../prisma.service.js';
 import { SiagieClient } from '../siagie/siagie.client.js';
 import { canGrant, canViewScope, scopeError } from './role-grant.policy.js';
-import { CreateUserDto, GrantRoleDto, ListUsersQuery } from './dto/users.dto.js';
+import { CreateUserDto, GrantRoleDto, ListUsersQuery, UpdatePhoneDto } from './dto/users.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -42,6 +42,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         email: true,
+        phone: true,
         status: true,
         mustChangePassword: true,
         lastLoginAt: true,
@@ -67,6 +68,23 @@ export class UsersService {
     return this.prisma.userRole.create({
       data: { userId, role: grant.role, schoolId: grant.schoolId, ugelId: grant.ugelId, dreId: grant.dreId },
     });
+  }
+
+  // El celular del personal lo edita quien administra alguno de sus roles activos (dirección en su
+  // IE, UGEL en su ámbito, MINEDU todo). Como con los roles, nadie edita el suyo salvo MINEDU.
+  async updatePhone(editor: AuthUser, userId: string, dto: UpdatePhoneDto) {
+    const isAdmin = editor.roles.some((r) => r.role === 'MINEDU_ADMIN');
+    if (userId === editor.id && !isAdmin) throw new ForbiddenException('No puede editar su propio número desde aquí');
+    const target = await this.prisma.user.findUnique({ where: { id: userId }, include: { roles: { where: { isActive: true } } } });
+    if (!target) throw new NotFoundException('Usuario no encontrado');
+    let allowed = isAdmin;
+    for (const role of target.roles) {
+      if (allowed) break;
+      const claim = { role: role.role, schoolId: role.schoolId ?? undefined, ugelId: role.ugelId ?? undefined, dreId: role.dreId ?? undefined };
+      allowed = canGrant(editor, claim, await this.resolveTarget(claim));
+    }
+    if (!allowed) throw new ForbiddenException('No administra a esta persona');
+    return this.prisma.user.update({ where: { id: userId }, data: { phone: dto.phone }, select: { id: true, phone: true } });
   }
 
   async revokeRole(granter: AuthUser, userId: string, roleId: string): Promise<void> {

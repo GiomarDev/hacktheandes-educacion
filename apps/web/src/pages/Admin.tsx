@@ -12,9 +12,11 @@ import {
   useSchools,
   useUpdateRule,
   useUsers,
+  useUpdatePhone,
 } from '../api/queries';
 import type { RiskRule, UserAccount } from '../api/types';
 import { formatDate, SEVERITY } from '../lib/format';
+import { PhoneEditor } from '../features/PhoneEditor';
 import {
   Badge,
   Button,
@@ -200,6 +202,7 @@ function UserRow({
 }) {
   const grant = useGrantRole();
   const revoke = useRevokeRole();
+  const updatePhone = useUpdatePhone();
   const missing = grantable.filter(
     (r) => !account.roles.some((x) => x.role === r),
   );
@@ -220,6 +223,21 @@ function UserRow({
             {account.lastLoginAt
               ? `último ingreso ${formatDate(account.lastLoginAt)}`
               : 'nunca ingresó'}
+          </div>
+          <div className="mt-1">
+            {self ? (
+              <span className="text-[0.9375rem] text-faint">
+                Celular: {account.phone ?? 'sin registrar'}
+              </span>
+            ) : (
+              <PhoneEditor
+                name={account.firstName}
+                phone={account.phone}
+                onSave={(phone) =>
+                  updatePhone.mutateAsync({ userId: account.id, phone })
+                }
+              />
+            )}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-1">
