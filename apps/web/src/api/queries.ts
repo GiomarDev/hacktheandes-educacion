@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, seg } from './client';
+import type { Role } from '../auth/roles';
 import type {
   Alert,
   AlertStatus,
@@ -11,6 +12,11 @@ import type {
   GradeSheet,
   IndicatorValue,
   LiteralGrade,
+  MonitoringVisit,
+  RiskRule,
+  SupportPlan,
+  SupportPlanDetail,
+  UserAccount,
   Report,
   School,
   Section,
@@ -161,6 +167,30 @@ export function useUpdateAlert() {
     onSuccess: () => client.invalidateQueries({ queryKey: ['alerts'] }),
   });
 }
+export const useRules = () =>
+  useQuery({
+    queryKey: ['rules'],
+    queryFn: () => apiFetch<RiskRule[]>('alerta', '/rules'),
+  });
+export function useUpdateRule() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...body
+    }: {
+      id: string;
+      params?: Record<string, number>;
+      severity?: string;
+      isActive?: boolean;
+    }) =>
+      apiFetch<RiskRule>('alerta', `/rules/${seg(id)}`, {
+        method: 'PATCH',
+        body,
+      }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['rules'] }),
+  });
+}
 export function useCaseAction(caseId: string) {
   const client = useQueryClient();
   return useMutation({
@@ -243,5 +273,199 @@ export function useReportTransition() {
         body,
       }),
     onSuccess: () => client.invalidateQueries({ queryKey: ['reports'] }),
+  });
+}
+
+type PlanContent = { barriers: string; strengths?: string; diagnosis?: string };
+type VersionContent = {
+  goals: string[];
+  adjustments: string[];
+  strategies: string[];
+  progressNotes?: string;
+};
+export const usePlans = (params: { schoolId?: string; year?: number }) =>
+  useQuery({
+    queryKey: ['plans', params],
+    queryFn: () =>
+      apiFetch<SupportPlan[]>(
+        'simon',
+        `/support-plans${qs({ limit: 100, ...params })}`,
+      ),
+  });
+// Cada lectura con diagnóstico queda auditada: no se recarga sola al volver a la pestaña.
+export const usePlan = (id?: string) =>
+  useQuery({
+    queryKey: ['plan', id],
+    queryFn: () =>
+      apiFetch<SupportPlanDetail>('simon', `/support-plans/${seg(id)}`),
+    enabled: !!id,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+function usePlanMutation<T, R = unknown>(fn: (body: T) => Promise<R>) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: fn,
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['plans'] });
+      void client.invalidateQueries({ queryKey: ['plan'] });
+    },
+  });
+}
+export const useCreatePlan = () =>
+  usePlanMutation(
+    (
+      body: PlanContent & { schoolId: string; studentId: string; year: number },
+    ) =>
+      apiFetch<SupportPlan>('simon', '/support-plans', {
+        method: 'POST',
+        body,
+      }),
+  );
+export const useUpdatePlan = (id: string) =>
+  usePlanMutation((body: PlanContent) =>
+    apiFetch('simon', `/support-plans/${seg(id)}`, { method: 'PATCH', body }),
+  );
+export const usePlanStatus = (id: string) =>
+  usePlanMutation((status: 'ACTIVE' | 'ARCHIVED') =>
+    apiFetch('simon', `/support-plans/${seg(id)}/status`, {
+      method: 'PATCH',
+      body: { status },
+    }),
+  );
+export const useCreateVersion = (id: string) =>
+  usePlanMutation((body: VersionContent & { periodId: string }) =>
+    apiFetch('simon', `/support-plans/${seg(id)}/versions`, {
+      method: 'POST',
+      body,
+    }),
+  );
+export const useUpdateVersion = (id: string) =>
+  usePlanMutation(
+    ({ versionId, ...body }: VersionContent & { versionId: string }) =>
+      apiFetch(
+        'simon',
+        `/support-plans/${seg(id)}/versions/${seg(versionId)}`,
+        { method: 'PATCH', body },
+      ),
+  );
+export const useApproveVersion = (id: string) =>
+  usePlanMutation(
+    ({
+      versionId,
+      expectedUpdatedAt,
+    }: {
+      versionId: string;
+      expectedUpdatedAt: string;
+    }) =>
+      apiFetch(
+        'simon',
+        `/support-plans/${seg(id)}/versions/${seg(versionId)}/approve`,
+        { method: 'POST', body: { expectedUpdatedAt } },
+      ),
+  );
+
+export const useVisits = (params: { schoolId?: string; year?: number }) =>
+  useQuery({
+    queryKey: ['visits', params],
+    queryFn: () =>
+      apiFetch<MonitoringVisit[]>(
+        'simon',
+        `/monitoring-visits${qs({ limit: 100, ...params })}`,
+      ),
+  });
+export function useCreateVisit() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      schoolId: string;
+      sectionId: string;
+      observedTeacherUserId: string;
+      visitedAt: string;
+      protocolVersion: string;
+    }) =>
+      apiFetch<MonitoringVisit>('simon', '/monitoring-visits', {
+        method: 'POST',
+        body,
+      }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['visits'] }),
+  });
+}
+export function useUpdateVisit() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...body
+    }: {
+      id: string;
+      status: 'DONE' | 'FEEDBACK_GIVEN';
+      observations?: string;
+      feedback?: string;
+      improvementCommitment?: string;
+    }) =>
+      apiFetch<MonitoringVisit>('simon', `/monitoring-visits/${seg(id)}`, {
+        method: 'PATCH',
+        body,
+      }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['visits'] }),
+  });
+}
+
+// AUTH: cuentas por ámbito (dirección su IE; UGEL, DRE y MINEDU su territorio)
+export type UserScope = { schoolId?: string; ugelId?: string; dreId?: string };
+export const useUsers = (scope: UserScope, enabled = true) =>
+  useQuery({
+    queryKey: ['users', scope],
+    queryFn: () => apiFetch<UserAccount[]>('auth', `/users${qs(scope)}`),
+    enabled: enabled && !!(scope.schoolId || scope.ugelId || scope.dreId),
+  });
+export function useCreateUser() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      grant,
+      ...body
+    }: {
+      documentType: 'DNI' | 'CE' | 'PASSPORT';
+      documentNumber: string;
+      firstName: string;
+      lastName: string;
+      email?: string;
+      temporaryPassword: string;
+      grant: { role: Role } & UserScope;
+    }) => {
+      const created = await apiFetch<{ id: string }>('auth', '/users', {
+        method: 'POST',
+        body,
+      });
+      await apiFetch('auth', `/users/${seg(created.id)}/roles`, {
+        method: 'POST',
+        body: grant,
+      });
+      return created;
+    },
+    onSettled: () => client.invalidateQueries({ queryKey: ['users'] }),
+  });
+}
+export function useGrantRole() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      userId,
+      ...body
+    }: { userId: string; role: Role } & UserScope) =>
+      apiFetch('auth', `/users/${seg(userId)}/roles`, { method: 'POST', body }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['users'] }),
+  });
+}
+export function useRevokeRole() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, roleId }: { userId: string; roleId: string }) =>
+      apiFetch('auth', `/users/${seg(userId)}/roles/${seg(roleId)}`, {
+        method: 'DELETE',
+      }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['users'] }),
   });
 }

@@ -1,3 +1,5 @@
+import type { Role } from '../auth/roles';
+
 // Formas de respuesta de los microservicios (solo los campos que usa la interfaz).
 export interface School {
   id: string;
@@ -220,4 +222,86 @@ export interface GradeSheet {
   period: { id: string; type: string; number: number; year: number };
   competencies: Competency[];
   rows: GradeSheetRow[];
+}
+
+export type PlanStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED';
+export interface SupportPlan {
+  id: string;
+  studentId: string;
+  schoolId: string;
+  year: number;
+  tutorUserId: string;
+  status: PlanStatus;
+  barriers: string;
+  strengths: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface SupportPlanVersion {
+  id: string;
+  planId: string;
+  periodId: string;
+  version: number;
+  goals: string[];
+  adjustments: string[];
+  strategies: string[];
+  progressNotes: string | null;
+  generatedBy: 'HUMAN' | 'AI_ASSISTED';
+  approvedByUserId: string | null;
+  approvedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+// "diagnosis" solo llega a quien puede leerlo (tutor asignado, psicología, dirección).
+export interface SupportPlanDetail extends SupportPlan {
+  diagnosis?: string | null;
+  versions: SupportPlanVersion[];
+}
+
+export type VisitStatus = 'SCHEDULED' | 'DONE' | 'FEEDBACK_GIVEN';
+export interface MonitoringVisit {
+  id: string;
+  schoolId: string;
+  sectionId: string;
+  observerUserId: string;
+  observedTeacherUserId: string;
+  visitedAt: string;
+  protocolVersion: string;
+  observations: string;
+  feedback: string;
+  improvementCommitment: string;
+  status: VisitStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserRoleGrant {
+  id: string;
+  role: Role;
+  schoolId: string | null;
+  ugelId: string | null;
+  dreId: string | null;
+}
+export interface UserAccount {
+  id: string;
+  documentType: 'DNI' | 'CE' | 'PASSPORT';
+  documentNumber: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  status: 'ACTIVE' | 'INACTIVE' | 'LOCKED';
+  mustChangePassword: boolean;
+  lastLoginAt: string | null;
+  roles: UserRoleGrant[];
+}
+
+export interface RiskRule {
+  id: string;
+  code: string;
+  type: string;
+  params: Record<string, number>;
+  severity: Severity;
+  schoolId: string | null;
+  isActive: boolean;
+  updatedAt: string;
 }

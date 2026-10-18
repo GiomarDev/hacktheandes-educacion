@@ -19,6 +19,7 @@ import {
   REPORT_STATUS,
   REPORT_TYPE,
   todayInLima,
+  plural,
 } from '../lib/format';
 import {
   Badge,
@@ -28,6 +29,7 @@ import {
   Empty,
   ErrorNote,
   Field,
+  controlClass,
   inputClass,
   Loading,
   PageHeader,
@@ -190,11 +192,11 @@ export function ReportesPage() {
             : 'Reportes generados automáticamente con los registros de SIAGIE y Alerta: revisa y envía a tu UGEL'
         }
       />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
         <Card>
           <CardHeader
             title={`Reportes ${year}`}
-            subtitle={`${reports.data?.length ?? 0} reportes`}
+            subtitle={plural(reports.data?.length ?? 0, 'reporte', 'reportes')}
           />
           {reports.isPending ? (
             <Loading />
@@ -277,7 +279,7 @@ export function ReportesPage() {
                                 Dar conformidad
                               </Button>
                               <input
-                                className={`${inputClass} max-w-xs flex-1`}
+                                className={`${controlClass} h-9 max-w-xs min-w-0 flex-1`}
                                 placeholder="Observación (obligatoria para observar)"
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}

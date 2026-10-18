@@ -14,6 +14,7 @@ import {
   gradeLabel,
   periodLabel,
   todayInLima,
+  plural,
 } from '../lib/format';
 import {
   Badge,
@@ -141,7 +142,7 @@ export function NotasPage() {
           }
           subtitle={
             sheet.data
-              ? `${sheet.data.rows.length} estudiantes con matrícula activa`
+              ? `${plural(sheet.data.rows.length, 'estudiante', 'estudiantes')} con matrícula activa`
               : undefined
           }
           action={

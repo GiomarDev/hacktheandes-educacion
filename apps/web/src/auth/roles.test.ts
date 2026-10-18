@@ -17,6 +17,8 @@ describe('roles', () => {
       '/docente/aula',
       '/notas',
       '/alertas',
+      '/planes',
+      '/visitas',
     ]);
     expect(paths({ role: 'AUXILIAR', schoolId: 's' })).toEqual([
       '/docente',
@@ -28,6 +30,7 @@ describe('roles', () => {
       '/docente/aula',
       '/notas',
       '/reportes',
+      '/planes',
     ]);
     expect(paths({ role: 'DIRECTOR', schoolId: 's' })).toEqual([
       '/escuelas/s',
@@ -35,14 +38,24 @@ describe('roles', () => {
       '/notas',
       '/alertas',
       '/reportes',
+      '/planes',
+      '/visitas',
+      '/admin',
     ]);
     expect(paths({ role: 'UGEL_SPECIALIST', ugelId: 'u' })).toEqual([
       '/panorama',
       '/alertas',
       '/escuelas',
       '/reportes',
+      '/visitas',
+      '/admin',
     ]);
     expect(paths({ role: 'MINEDU_ADMIN' })).toContain('/fuentes');
+    expect(paths({ role: 'PSYCHOLOGIST', schoolId: 's' })).toEqual([
+      '/escuelas/s',
+      '/alertas',
+      '/planes',
+    ]);
   });
 
   it('etiqueta el rol en español', () => {

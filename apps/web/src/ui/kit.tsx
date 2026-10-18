@@ -234,5 +234,7 @@ export function Field({
   );
 }
 
-export const inputClass =
-  'h-9 w-full rounded border border-line bg-card px-3 text-[13px] text-ink placeholder:text-faint focus:border-gob focus:outline-none';
+// Sin alto ni ancho: para controles compactos que fijan los suyos (Tailwind no resuelve h-9/h-8 ni w-full/w-auto juntos).
+export const controlClass =
+  'rounded border border-line bg-card px-3 text-[13px] text-ink placeholder:text-faint focus:border-gob focus:outline-none disabled:bg-soft disabled:text-muted';
+export const inputClass = `h-9 w-full ${controlClass}`;

@@ -56,6 +56,9 @@ describe('Shell', () => {
       '/notas',
       '/alertas',
       '/reportes',
+      '/planes',
+      '/visitas',
+      '/admin',
     ]);
     expect(within(nav).getByText('2')).toBeInTheDocument();
   });
@@ -75,5 +78,26 @@ describe('Shell', () => {
       '/panorama',
     );
     expect(within(nav).queryByRole('link', { name: /Aulas/ })).toBeNull();
+  });
+
+  it('en el móvil muestra 4 accesos y el resto en el menú Más', async () => {
+    state.roleIndex = 0;
+    renderShell();
+    const mobile = screen.getByRole('navigation', { name: 'Principal móvil' });
+    expect(within(mobile).getAllByRole('link')).toHaveLength(4);
+    expect(
+      screen.queryByRole('navigation', { name: 'Más secciones' }),
+    ).toBeNull();
+    await userEvent.click(within(mobile).getByRole('button', { name: /Más/ }));
+    const more = screen.getByRole('navigation', { name: 'Más secciones' });
+    expect(
+      within(more)
+        .getAllByRole('link')
+        .map((a) => a.getAttribute('href')),
+    ).toEqual(['/reportes', '/planes', '/visitas', '/admin']);
+    await userEvent.click(within(more).getByRole('link', { name: /Planes/ }));
+    expect(
+      screen.queryByRole('navigation', { name: 'Más secciones' }),
+    ).toBeNull();
   });
 });

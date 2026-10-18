@@ -101,7 +101,7 @@ export function GradeSheet({
         <table className="w-full min-w-max text-[12.5px]">
           <thead>
             <tr className="text-left text-[11px] text-faint">
-              <th className="sticky left-0 bg-card px-4 py-2 font-medium">
+              <th className="sticky left-0 bg-card px-4 py-2 font-medium md:w-full">
                 Estudiante
               </th>
               {Array.from({ length: columns }, (_, i) => (

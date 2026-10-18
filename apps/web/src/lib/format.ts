@@ -187,3 +187,24 @@ export function currentPeriod<T extends { startDate: string; endDate: string }>(
     sorted[0]
   );
 }
+
+export const PLAN_STATUS: Record<string, { label: string; tone: Tone }> = {
+  DRAFT: { label: 'Borrador', tone: 'neutral' },
+  ACTIVE: { label: 'Activo', tone: 'stable' },
+  ARCHIVED: { label: 'Archivado', tone: 'neutral' },
+};
+export const VISIT_STATUS: Record<string, { label: string; tone: Tone }> = {
+  SCHEDULED: { label: 'Agendada', tone: 'gob' },
+  DONE: { label: 'Observada', tone: 'medium' },
+  FEEDBACK_GIVEN: { label: 'Con devolución', tone: 'stable' },
+};
+
+// Listas editadas como texto: una entrada por línea.
+export const toLines = (text: string) =>
+  text
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+export const plural = (n: number, one: string, many: string) =>
+  `${n} ${n === 1 ? one : many}`;

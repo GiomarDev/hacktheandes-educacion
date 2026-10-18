@@ -7,11 +7,14 @@ import {
   ClipboardList,
   Database,
   FileText,
+  Eye,
   GraduationCap,
+  HeartHandshake,
   LayoutDashboard,
   LogOut,
   MoreHorizontal,
   School,
+  Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useSession } from '../auth/AuthProvider';
@@ -30,6 +33,9 @@ const ICONS: Record<NavIcon, LucideIcon> = {
   schools: School,
   reports: FileText,
   sources: Database,
+  plans: HeartHandshake,
+  visits: Eye,
+  admin: Settings,
 };
 
 function initials(name: string) {

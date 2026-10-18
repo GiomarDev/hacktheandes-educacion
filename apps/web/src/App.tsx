@@ -20,6 +20,10 @@ import { EscuelaPage } from './pages/Escuela';
 import { ReportesPage } from './pages/Reportes';
 import { FuentesPage } from './pages/Fuentes';
 import { NotasPage } from './pages/Notas';
+import { PlanesPage } from './pages/Planes';
+import { PlanPage } from './pages/Plan';
+import { VisitasPage } from './pages/Visitas';
+import { AdminPage } from './pages/Admin';
 import { Empty, Loading } from './ui/kit';
 
 function Home() {
@@ -53,6 +57,10 @@ const routes = [
       { path: 'escuelas/:id', element: <EscuelaPage /> },
       { path: 'reportes', element: <ReportesPage /> },
       { path: 'fuentes', element: <FuentesPage /> },
+      { path: 'planes', element: <PlanesPage /> },
+      { path: 'planes/:id', element: <PlanPage /> },
+      { path: 'visitas', element: <VisitasPage /> },
+      { path: 'admin', element: <AdminPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },

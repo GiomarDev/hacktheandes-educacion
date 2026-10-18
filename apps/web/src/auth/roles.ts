@@ -51,6 +51,18 @@ const ALERT_READERS: Role[] = [
 const REPORT_USERS: Role[] = [...TERRITORIAL, 'DIRECTOR', 'SECRETARY'];
 // Coincide con ms-siagie: el registro lo leen dirección, tutoría y quien dicta (el auxiliar no).
 const GRADE_READERS: Role[] = ['DIRECTOR', 'SECRETARY', 'TUTOR', 'TEACHER'];
+// Coinciden con ms-simon: planes para el personal de la IE (no auxiliar ni autoridades);
+// visitas para quien agenda y para el docente observado.
+const PLAN_READERS: Role[] = [
+  'DIRECTOR',
+  'PSYCHOLOGIST',
+  'SECRETARY',
+  'TUTOR',
+  'TEACHER',
+];
+const VISIT_USERS: Role[] = [...TERRITORIAL, 'DIRECTOR', 'TUTOR', 'TEACHER'];
+// Coincide con ms-auth: administran cuentas MINEDU, UGEL y dirección.
+const ADMINS: Role[] = ['MINEDU_ADMIN', 'UGEL_SPECIALIST', 'DIRECTOR'];
 
 export type NavIcon =
   | 'today'
@@ -60,6 +72,9 @@ export type NavIcon =
   | 'panorama'
   | 'schools'
   | 'reports'
+  | 'plans'
+  | 'visits'
+  | 'admin'
   | 'sources';
 export interface NavItem {
   to: string;
@@ -98,7 +113,13 @@ export function navFor(claim: RoleClaim): NavItem[] {
     items.push({ to: '/escuelas', label: 'Escuelas', icon: 'schools' });
   if (REPORT_USERS.includes(role))
     items.push({ to: '/reportes', label: 'Reportes', icon: 'reports' });
+  if (PLAN_READERS.includes(role))
+    items.push({ to: '/planes', label: 'Planes', icon: 'plans' });
+  if (VISIT_USERS.includes(role))
+    items.push({ to: '/visitas', label: 'Visitas', icon: 'visits' });
   if (role === 'MINEDU_ADMIN')
     items.push({ to: '/fuentes', label: 'Fuentes', icon: 'sources' });
+  if (ADMINS.includes(role))
+    items.push({ to: '/admin', label: 'Admin', icon: 'admin' });
   return items;
 }
