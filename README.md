@@ -110,7 +110,9 @@ Si el puerto 5173 está ocupado, Vite usa el siguiente libre (lo indica al arran
 
 ### Cuentas y roles para probar
 
-Acceso local: **http://127.0.0.1:5173/**. Se inicia sesión con el DNI de la tabla y la contraseña configurada en **`SEED_PASSWORD` del `.env` local**. No publicar esa contraseña en este archivo. Los diez accesos y sus roles se comprobaron contra `/auth/login` y `/auth/me`; el [resultado de la verificación](docs/testing/2026-10-18-demo-data.json) no contiene contraseñas ni tokens.
+Demo publicada: **https://amauti.keoit.com** · local: **http://127.0.0.1:5173/**.
+
+**Contraseña de todas las cuentas de demo: `Demo-Escuela-2026`** (es el `SEED_PASSWORD` de la demo; ingresa con el DNI de la tabla). Son cuentas y datos sintéticos: no reutilizar esta contraseña en otro sistema ni cargar datos reales en la demo. Los diez accesos y sus roles se comprobaron contra `/auth/login` y `/auth/me`; el [resultado de la verificación](docs/testing/2026-10-18-demo-data.json) no contiene contraseñas ni tokens.
 
 | DNI sintético | Rol de la cuenta    | Ámbito y recorrido sugerido                                                                                                                                                       |
 | ------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
