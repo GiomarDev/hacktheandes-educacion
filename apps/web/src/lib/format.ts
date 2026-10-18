@@ -169,3 +169,21 @@ export function alertEvidence(data: Record<string, unknown>): string | null {
     parts.push(`brecha de ${data.gap} estudiantes`);
   return parts.length ? parts.join(' · ') : null;
 }
+
+export const periodLabel = (p: { type: string; number: number }) =>
+  `${p.number}.° ${p.type === 'TRIMESTER' ? 'trimestre' : 'bimestre'}`;
+
+// El periodo en curso; si hoy no cae en ninguno (vacaciones), el último ya iniciado; si no, el primero.
+export function currentPeriod<T extends { startDate: string; endDate: string }>(
+  periods: T[],
+  today: string,
+): T | undefined {
+  const sorted = [...periods].sort((a, b) =>
+    a.startDate.localeCompare(b.startDate),
+  );
+  return (
+    sorted.find((p) => p.startDate <= today && today <= p.endDate) ??
+    sorted.filter((p) => p.startDate <= today).at(-1) ??
+    sorted[0]
+  );
+}

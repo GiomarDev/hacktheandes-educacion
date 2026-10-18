@@ -6,11 +6,15 @@ import type {
   AttendanceStatus,
   CaseDetail,
   CaseRecord,
+  AcademicPeriod,
   Enrollment,
+  GradeSheet,
   IndicatorValue,
+  LiteralGrade,
   Report,
   School,
   Section,
+  SectionArea,
   StudentSummary,
 } from './types';
 
@@ -72,6 +76,56 @@ export function useSaveAttendance() {
   });
 }
 
+export const useSchoolPeriods = (schoolId?: string, year?: number) =>
+  useQuery({
+    queryKey: ['periods', schoolId, year],
+    queryFn: () =>
+      apiFetch<AcademicPeriod[]>(
+        'siagie',
+        `/schools/${seg(schoolId)}/periods${qs({ year })}`,
+      ),
+    enabled: !!schoolId,
+    staleTime: 10 * 60_000,
+  });
+export const useSectionAreas = (sectionId?: string) =>
+  useQuery({
+    queryKey: ['section-areas', sectionId],
+    queryFn: () =>
+      apiFetch<SectionArea[]>('siagie', `/sections/${seg(sectionId)}/areas`),
+    enabled: !!sectionId,
+  });
+export const useGradeSheet = (params: {
+  sectionId?: string;
+  areaId?: string;
+  periodId?: string;
+}) =>
+  useQuery({
+    queryKey: ['grade-sheet', params],
+    queryFn: () =>
+      apiFetch<GradeSheet>(
+        'siagie',
+        `/grades${qs({
+          sectionId: seg(params.sectionId),
+          areaId: seg(params.areaId),
+          periodId: seg(params.periodId),
+        })}`,
+      ),
+    enabled: !!(params.sectionId && params.areaId && params.periodId),
+  });
+export function useRecordGrade() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      enrollmentId: string;
+      competencyId: string;
+      periodId: string;
+      columnNumber: number;
+      value: LiteralGrade | null;
+    }) => apiFetch('siagie', '/grades/entries', { method: 'POST', body }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['grade-sheet'] }),
+  });
+}
+
 // ALERTA
 export const useAlerts = (
   params: { schoolId?: string; status?: AlertStatus; limit?: number } = {},
@@ -111,7 +165,10 @@ export function useCaseAction(caseId: string) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (body: { type: string; notes: string; status?: string }) =>
-      apiFetch('alerta', `/cases/${seg(caseId)}/actions`, { method: 'POST', body }),
+      apiFetch('alerta', `/cases/${seg(caseId)}/actions`, {
+        method: 'POST',
+        body,
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['case', caseId] });
       void client.invalidateQueries({ queryKey: ['cases'] });

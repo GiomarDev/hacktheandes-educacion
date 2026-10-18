@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import {
   AlertTriangle,
@@ -6,8 +7,10 @@ import {
   ClipboardList,
   Database,
   FileText,
+  GraduationCap,
   LayoutDashboard,
   LogOut,
+  MoreHorizontal,
   School,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -21,6 +24,7 @@ import { cx } from '../ui/kit';
 const ICONS: Record<NavIcon, LucideIcon> = {
   today: CalendarCheck,
   classroom: ClipboardList,
+  grades: GraduationCap,
   alerts: AlertTriangle,
   panorama: LayoutDashboard,
   schools: School,
@@ -43,6 +47,10 @@ export function Shell() {
   const canSeeAlerts = items.some((i) => i.to === '/alertas');
   const openAlerts = useAlerts({ status: 'OPEN' });
   const alertCount = canSeeAlerts ? (openAlerts.data?.length ?? 0) : 0;
+  // En el móvil caben 5 accesos: si hay más, los 4 primeros y un menú "Más" con el resto.
+  const [moreOpen, setMoreOpen] = useState(false);
+  const mobileItems = items.length > 5 ? items.slice(0, 4) : items;
+  const moreItems = items.length > 5 ? items.slice(4) : [];
 
   return (
     <div className="flex min-h-screen bg-canvas text-ink">
@@ -190,17 +198,51 @@ export function Shell() {
       </div>
 
       {/* Barra inferior (móvil) */}
+      {moreOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-ink/20 md:hidden"
+          onClick={() => setMoreOpen(false)}
+          aria-hidden
+        />
+      )}
+      {moreOpen && (
+        <nav
+          aria-label="Más secciones"
+          className="fixed inset-x-3 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+8px)] z-30 rounded-md border border-line bg-card py-1 shadow-lg md:hidden"
+        >
+          {moreItems.map((item) => {
+            const Icon = ICONS[item.icon];
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={() => setMoreOpen(false)}
+                className={({ isActive }) =>
+                  cx(
+                    'flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium',
+                    isActive ? 'text-peru' : 'text-ink',
+                  )
+                }
+              >
+                <Icon className="size-5" strokeWidth={1.7} aria-hidden />
+                {item.label}
+              </NavLink>
+            );
+          })}
+        </nav>
+      )}
       <nav
         aria-label="Principal móvil"
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
       >
-        {items.slice(0, 5).map((item) => {
+        {mobileItems.map((item) => {
           const Icon = ICONS[item.icon];
           return (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === '/docente'}
+              onClick={() => setMoreOpen(false)}
               className={({ isActive }) =>
                 cx(
                   'relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium',
@@ -218,6 +260,20 @@ export function Shell() {
             </NavLink>
           );
         })}
+        {moreItems.length > 0 && (
+          <button
+            type="button"
+            aria-expanded={moreOpen}
+            onClick={() => setMoreOpen((o) => !o)}
+            className={cx(
+              'flex h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium',
+              moreOpen ? 'text-peru' : 'text-muted',
+            )}
+          >
+            <MoreHorizontal className="size-5" strokeWidth={1.7} aria-hidden />
+            Más
+          </button>
+        )}
       </nav>
     </div>
   );

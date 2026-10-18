@@ -50,7 +50,13 @@ describe('Shell', () => {
       within(nav)
         .getAllByRole('link')
         .map((a) => a.getAttribute('href')),
-    ).toEqual(['/escuelas/s1', '/docente/aula', '/alertas', '/reportes']);
+    ).toEqual([
+      '/escuelas/s1',
+      '/docente/aula',
+      '/notas',
+      '/alertas',
+      '/reportes',
+    ]);
     expect(within(nav).getByText('2')).toBeInTheDocument();
   });
 

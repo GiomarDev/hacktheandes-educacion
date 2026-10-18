@@ -15,16 +15,24 @@ describe('roles', () => {
     expect(paths({ role: 'TEACHER', schoolId: 's' })).toEqual([
       '/docente',
       '/docente/aula',
+      '/notas',
+      '/alertas',
+    ]);
+    expect(paths({ role: 'AUXILIAR', schoolId: 's' })).toEqual([
+      '/docente',
+      '/docente/aula',
       '/alertas',
     ]);
     expect(paths({ role: 'SECRETARY', schoolId: 's' })).toEqual([
       '/escuelas/s',
       '/docente/aula',
+      '/notas',
       '/reportes',
     ]);
     expect(paths({ role: 'DIRECTOR', schoolId: 's' })).toEqual([
       '/escuelas/s',
       '/docente/aula',
+      '/notas',
       '/alertas',
       '/reportes',
     ]);

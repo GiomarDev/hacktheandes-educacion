@@ -49,10 +49,13 @@ const ALERT_READERS: Role[] = [
   ...CLASSROOM,
 ];
 const REPORT_USERS: Role[] = [...TERRITORIAL, 'DIRECTOR', 'SECRETARY'];
+// Coincide con ms-siagie: el registro lo leen dirección, tutoría y quien dicta (el auxiliar no).
+const GRADE_READERS: Role[] = ['DIRECTOR', 'SECRETARY', 'TUTOR', 'TEACHER'];
 
 export type NavIcon =
   | 'today'
   | 'classroom'
+  | 'grades'
   | 'alerts'
   | 'panorama'
   | 'schools'
@@ -87,6 +90,8 @@ export function navFor(claim: RoleClaim): NavItem[] {
     if (role !== 'PSYCHOLOGIST')
       items.push({ to: '/docente/aula', label: 'Aulas', icon: 'classroom' });
   }
+  if (GRADE_READERS.includes(role))
+    items.push({ to: '/notas', label: 'Notas', icon: 'grades' });
   if (ALERT_READERS.includes(role))
     items.push({ to: '/alertas', label: 'Alertas', icon: 'alerts' });
   if (TERRITORIAL.includes(role))

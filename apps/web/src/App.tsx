@@ -19,6 +19,7 @@ import { EscuelasPage } from './pages/Escuelas';
 import { EscuelaPage } from './pages/Escuela';
 import { ReportesPage } from './pages/Reportes';
 import { FuentesPage } from './pages/Fuentes';
+import { NotasPage } from './pages/Notas';
 import { Empty, Loading } from './ui/kit';
 
 function Home() {
@@ -44,6 +45,7 @@ const routes = [
       { path: 'docente', element: <DocenteHoyPage /> },
       { path: 'docente/aula', element: <AulaPage /> },
       { path: 'estudiantes/:id', element: <EstudiantePage /> },
+      { path: 'notas', element: <NotasPage /> },
       { path: 'alertas', element: <AlertasPage /> },
       { path: 'casos/:id', element: <CasoPage /> },
       { path: 'panorama', element: <PanoramaPage /> },

@@ -164,3 +164,60 @@ export interface Report {
   reviewNotes: string | null;
   createdAt: string;
 }
+
+export interface AcademicPeriod {
+  id: string;
+  schoolId: string;
+  year: number;
+  type: 'BIMESTER' | 'TRIMESTER';
+  number: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface Competency {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface SectionArea {
+  id: string;
+  code: string;
+  name: string;
+  level: string;
+  competencies: Competency[];
+  teacherUserIds: string[];
+  mine: boolean;
+}
+
+export type LiteralGrade = 'AD' | 'A' | 'B' | 'C';
+
+export interface GradeSheetRow {
+  enrollmentId: string;
+  student: {
+    id: string;
+    firstName: string;
+    paternalLastName: string;
+    maternalLastName: string;
+  };
+  entries: {
+    competencyId: string;
+    columnNumber: number;
+    value: LiteralGrade | null;
+    isCompensatory: boolean;
+  }[];
+  periodGrades: {
+    competencyId: string;
+    value: LiteralGrade | null;
+    calculationMethod: string;
+    attendanceRate: number;
+  }[];
+}
+
+export interface GradeSheet {
+  area: { id: string; code: string; name: string };
+  period: { id: string; type: string; number: number; year: number };
+  competencies: Competency[];
+  rows: GradeSheetRow[];
+}
