@@ -7,7 +7,14 @@ import { AuthFrame } from '@/features/auth/components/AuthFrame';
 
 export function LoginPage() {
   const { login } = useAuth();
-  const [documentNumber, setDocumentNumber] = useState('');
+  // La landing precarga el DNI de la cuenta de demostración elegida (?dni=...).
+  const [documentNumber, setDocumentNumber] = useState(
+    () =>
+      new URLSearchParams(window.location.search)
+        .get('dni')
+        ?.replace(/\D/g, '')
+        .slice(0, 15) ?? '',
+  );
   const [password, setPassword] = useState('');
   const [error, setError] = useState<unknown>(null);
   const [busy, setBusy] = useState(false);
@@ -34,6 +41,12 @@ export function LoginPage() {
           : '¡Hola! Soy Amauti. Ingresa y te muestro cómo funciona todo.'
       }
     >
+      <a
+        href="/"
+        className="mb-5 inline-flex min-h-11 items-center gap-1.5 text-[0.9375rem] font-medium text-gob hover:underline"
+      >
+        ← Volver a la presentación
+      </a>
       <div className="mb-6">
         <h1 className="page-heading">Ingresa a tu cuenta</h1>
         <p className="page-description mt-3 text-[1rem] text-muted">

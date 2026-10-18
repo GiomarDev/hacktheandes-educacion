@@ -48,6 +48,8 @@ const routes = [
         errorElement: <RouteError />,
         children: [
           { index: true, element: <Home /> },
+          // Con sesión iniciada, /ingresar lleva a la pantalla de inicio del rol.
+          { path: 'ingresar', element: <Home /> },
           {
             path: 'docente',
             lazy: page(
