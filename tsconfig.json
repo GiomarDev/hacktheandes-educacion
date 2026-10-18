@@ -43,6 +43,9 @@
     },
     {
       "path": "./apps/ms-alerta/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/ms-simon/tsconfig.app.json"
     }
   ]
 }

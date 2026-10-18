@@ -46,6 +46,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/ms-alerta/tsconfig.app.json"
       }
+    },
+    "ms-simon": {
+      "type": "application",
+      "root": "apps/ms-simon",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms-simon/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms-simon/tsconfig.app.json"
+      }
     }
   }
 }

@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
+datasource db {
+  provider = "postgresql"
+}
+enum ReportType {
+  MONTHLY_FOLLOWUP
+  BIMESTER_ATTENDANCE
+  ATTENTION_GOAL
+  DROPOUT_JUSTIFICATION
+}
+enum ReportStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+  OBSERVED
+}
+enum PlanStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+enum GeneratedBy {
+  HUMAN
+  AI_ASSISTED
+}
+enum VisitStatus {
+  SCHEDULED
+  DONE
+  FEEDBACK_GIVEN
+}
+
+model SelfReport {
+  id String @id @default(uuid(7)) @db.Uuid
+  schoolId String @map("school_id") @db.Uuid
+  periodId String? @map("period_id") @db.Uuid
+  year Int @db.SmallInt
+  type ReportType
+  month Int? @db.SmallInt
+  payload Json
+  status ReportStatus @default(DRAFT)
+  revision Int @default(1)
+  dedupeKey String @unique @map("dedupe_key") @db.Char(64)
+  generatedAt DateTime @default(now()) @map("generated_at") @db.Timestamptz(6)
+  submittedByUserId String? @map("submitted_by_user_id") @db.Uuid
+  submittedAt DateTime? @map("submitted_at") @db.Timestamptz(6)
+  reviewedByUserId String? @map("reviewed_by_user_id") @db.Uuid
+  reviewedAt DateTime? @map("reviewed_at") @db.Timestamptz(6)
+  reviewNotes String? @map("review_notes") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  @@index([schoolId, year, status])
+  @@map("self_reports")
+}
+
+model SupportPlan {
+  id String @id @default(uuid(7)) @db.Uuid
+  studentId String @map("student_id") @db.Uuid
+  schoolId String @map("school_id") @db.Uuid
+  year Int @db.SmallInt
+  tutorUserId String @map("tutor_user_id") @db.Uuid
+  status PlanStatus @default(DRAFT)
+  barriers String @db.Text
+  diagnosisEncrypted String? @map("diagnosis") @db.Text
+  strengths String? @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  versions SupportPlanVersion[]
+  @@unique([studentId, year])
+  @@index([schoolId, year])
+  @@map("support_plans")
+}
+
+model SupportPlanVersion {
+  id String @id @default(uuid(7)) @db.Uuid
+  planId String @map("plan_id") @db.Uuid
+  periodId String @map("period_id") @db.Uuid
+  version Int @db.SmallInt
+  goals Json
+  adjustments Json
+  strategies Json
+  progressNotes String? @map("progress_notes") @db.Text
+  generatedBy GeneratedBy @default(HUMAN) @map("generated_by")
+  aiModel String? @map("ai_model") @db.VarChar(60)
+  approvedByUserId String? @map("approved_by_user_id") @db.Uuid
+  approvedAt DateTime? @map("approved_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  plan SupportPlan @relation(fields: [planId], references: [id])
+  @@unique([planId, periodId])
+  @@unique([planId, version])
+  @@map("support_plan_versions")
+}
+
+model MonitoringVisit {
+  id String @id @default(uuid(7)) @db.Uuid
+  schoolId String @map("school_id") @db.Uuid
+  sectionId String @map("section_id") @db.Uuid
+  observerUserId String @map("observer_user_id") @db.Uuid
+  observedTeacherUserId String @map("observed_teacher_user_id") @db.Uuid
+  visitedAt DateTime @map("visited_at") @db.Timestamptz(6)
+  protocolVersion String @map("protocol_version") @db.VarChar(20)
+  observations String @default("") @db.Text
+  feedback String @default("") @db.Text
+  improvementCommitment String @default("") @map("improvement_commitment") @db.Text
+  status VisitStatus @default(SCHEDULED)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  @@index([schoolId, status])
+  @@map("monitoring_visits")
+}
+
+model AuditLog {
+  id String @id @default(uuid(7)) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  action String @db.VarChar(60)
+  entityId String @map("entity_id") @db.Uuid
+  metadata Json @default("{}")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  @@index([entityId, createdAt])
+  @@map("audit_logs")
+}

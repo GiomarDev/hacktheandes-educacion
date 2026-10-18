@@ -1,6 +1,6 @@
 # Diseño del backend — auth + 4 microservicios (NestJS + Prisma + PostgreSQL)
 
-**Estado:** diseño de referencia del backend. Fundación (`ms-auth`/`ms-siagie`) y F2 (`ms-alerta`) implementadas y verificadas sobre schemas de prueba. F3/F4 y las decisiones de dominio de la sección 8 siguen pendientes. Ver [continuidad-backend.md](../../continuidad-backend.md) para estado de migraciones y resultados de pruebas.
+**Estado:** diseño de referencia del backend. Fundación (`ms-auth`/`ms-siagie`), F2 (`ms-alerta`) y F3 (`ms-simon`) implementadas y verificadas sobre schemas de prueba. F4 y las decisiones de dominio de la sección 8 siguen pendientes. Ver [continuidad-backend.md](../../continuidad-backend.md) para estado de migraciones y resultados de pruebas.
 **Fecha:** 2026-10-17
 **Fuentes:** reunión con la docente Maritta Carrión (17 oct 2026), diagrama y tabla "Lo que hoy existe en MINEDU" del equipo, `docs/soluciones_y_preguntas_clave.md`, `docs/alerta_escuela_documentacion.md`.
 
@@ -450,6 +450,8 @@ Convenciones: `id uuid PK` en todas las tablas; `created_at` y `updated_at times
 
 ### 4.3 Schema `simon` (ms-simon): reportes, planes de apoyo y monitoreo
 
+Implementación y contratos de F3 en [ms-simon.md](../../ms-simon.md). Se incorporaron año y revisión del reporte; las versiones manuales se aprueban por el tutor asignado y comprueban que el contenido leído siga vigente.
+
 **`self_reports`**: autorreporte de la IE a la UGEL, **generado automáticamente**
 | Columna | Tipo | Notas |
 |---|---|---|
@@ -556,7 +558,7 @@ Convenciones: `id uuid PK` en todas las tablas; `created_at` y `updated_at times
 | ms-auth | `POST /auth/login` · `POST /auth/refresh` · `POST /auth/logout` · `GET /auth/me` · `POST /auth/change-password` · `GET /.well-known/jwks.json` · `POST /users` y `POST /users/:id/roles` (director para su IE, UGEL para su ámbito, MINEDU_ADMIN para todo) |
 | ms-siagie | CRUD de `schools`, `sections`, `students`, `guardians`, `enrollments` · `POST /attendance/bulk` (pase de lista de una sección) · `POST /access-events` (lector QR) · `POST /grades/entries` · `GET /students/:id/summary` |
 | ms-alerta | `POST /internal/events` · `GET /alerts` · `PATCH /alerts/:id` · `GET /cases` · `GET /cases/:id` · `POST /cases/:id/actions` · `POST /cases/:id/send-message` · `POST /webhooks/notifications` (respuesta de la familia) · job cada hora: reglas y escalamiento |
-| ms-simon | `POST /reports/generate` · `GET /reports` · `PATCH /reports/:id/submit` · `PATCH /reports/:id/review` · CRUD de `support-plans` y versiones · CRUD de `monitoring-visits` |
+| ms-simon | `POST /reports/generate` · `GET /reports` · `POST /reports/:id/submit` · `POST /reports/:id/review` · CRUD de `support-plans` y versiones · CRUD de `monitoring-visits` |
 | ms-escale | `POST /imports` (CSV) · `GET /indicators?geo_level=&geo_code=&period=` · job diario: `school_daily_stats` e indicadores calculados |
 
 Todas las rutas, salvo login, refresh y jwks, exigen JWT. Cada consulta se filtra por el **alcance del rol**: un director solo ve su IE y un especialista de UGEL solo su UGEL.

@@ -1,3 +1,4 @@
+import { SimonContextController } from './internal/simon-context.controller.js';
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import {
@@ -28,6 +29,7 @@ import { OutboxService } from './events/outbox.service.js';
 
 @Module({
   controllers: [
+    SimonContextController,
     HealthController,
     GeoController,
     InternalController,

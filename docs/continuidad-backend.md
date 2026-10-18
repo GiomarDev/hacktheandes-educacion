@@ -4,7 +4,7 @@ Relevo de Claude a Codex, 17 de octubre de 2026. Rama: `feat/backend-fundacion`.
 
 ## Alcance recuperado
 
-El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). `ms-simon`, `ms-escale` y el frontend siguen pendientes.
+El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). **F3 — ms-simon** continúa con reportes, planes cifrados y visitas, según su [plan](superpowers/plans/2026-10-17-ms-simon.md) y [contratos](ms-simon.md). `ms-escale` y el frontend siguen pendientes.
 
 Al iniciar el relevo, las tareas 1–12 ya estaban en Git; el último commit era `8feaff1`. La tarea 13 tenía archivos sin commit: seeds de ambos servicios, IDs compartidos, resumen del estudiante y prueba entre servicios. El registro local de Claude está en `.superpowers/sdd/2026-10-17-backend-fundacion-auth-siagie/progress.md` (ignorado por Git).
 
@@ -74,11 +74,21 @@ Después del último ajuste, la suite específica de F2 pasó **18 de 18 pruebas
 
 Los escenarios verificados incluyen entrega repetida y simultánea sin duplicados, caída de alerta sin perder el pase de lista, reintento de inbox, permisos de IE y UGEL, cambio de responsable, psicólogo disponible, consentimiento revocado, avisos de ingreso/salida, nota sin asistencia, cierre y respuesta tardía, y restricciones de destinatarios en PostgreSQL. La prueba de arranque se ejecuta por separado de las suites e2e, porque iniciar alerta también inicializa reglas globales faltantes.
 
+## Continuación F3 — ms-simon
+
+Cuarto servicio NestJS/Prisma en puerto 3003, con schema propio `simon`. Genera cuatro tipos de reporte a partir de APIs internas de SIAGIE y Alerta; dirección envía y UGEL revisa/observa con control de revisión e independencia respecto al remitente. Los agregados no incluyen datos personales ni diagnóstico. Las limitaciones de cobertura y las instantáneas actuales se declaran en el payload.
+
+Planes únicos por estudiante/año, contexto de matrícula y asignaciones validado en SIAGIE, diagnóstico cifrado AES-256-GCM con clave independiente y contexto autenticado. Solo tutor asignado, psicología y dirección lo leen, con auditoría; secretaría/docentes asignados reciben datos sin diagnóstico. Versiones manuales por bimestre, colaboración docente y aprobación exclusiva del tutor, comprobando la fecha de la versión leída. Planes archivados y versiones aprobadas inmutables. Visitas con docente validado, observador fijo y transiciones auditadas de observación a devolución.
+
+Migración `apps/ms-simon/prisma/migrations/20261018010000_init`: **aplicada exclusivamente a `simon_test`**. Sin migraciones ni carga de demo nuevas en schemas reales. Protección de URLs de prueba y comprobación de arranque ampliadas a cuatro servicios. El detalle de APIs y límites está en [ms-simon.md](ms-simon.md).
+
+Verificación dirigida: **73 unitarias y 13 e2e de F3 aprobadas**, sin saltos. Lint, tipos y compilación de los cuatro servicios correctos. La primera ejecución unitaria dentro del sandbox no pudo abrir el servidor local JWKS; la repetición con acceso a red aprobó las 73 pruebas. **Suite completa: 125 e2e aprobadas en 18 archivos**, sin saltos (94 de fundación + 18 de F2 + 13 de F3). Junto con las 73 unitarias, son **198 pruebas únicas**. Los cuatro ejecutables compilados arrancan y responden `/health`; los procesos se detienen al terminar la prueba. Formato y `git diff --check` correctos.
+
 ## Pendientes ordenados
 
 1. **Carga de demo en schemas reales:** paso 4 de la tarea 13. Requiere confirmación explícita; no es requisito para probar ni desarrollar sobre los schemas de test.
 2. **Puesta en marcha de F2:** aplicar las migraciones nuevas en los schemas reales cuando se autorice esa puesta en marcha. El desarrollo y las verificaciones usan los schemas de prueba. Los contratos y límites de la demo están en `docs/ms-alerta.md`.
-3. **F3 — ms-simon:** reportes mensuales y de meta de atención; planes de apoyo manuales y control de información sensible.
+3. **Puesta en marcha de F3:** aplicar la migración de SIMON en su schema real cuando se autorice; conservar la clave propia de cifrado de diagnóstico. No se requiere para seguir desarrollando sobre tests.
 4. **F4 — ms-escale:** importar CSV oficiales del repositorio y construir agregados e indicadores verificables por UGEL.
 5. **Frontend:** recuperar los prototipos que el README menciona bajo `STICH_ITERATION_1/` (esa carpeta no está en este checkout), conectar Stitch y construir la interfaz sobre APIs verificadas.
 6. **Operación:** definir despliegue, CI y limitación por IP de autenticación. La limitación por cuenta ya existe; la limitación por IP quedó diferida en el registro de Claude.

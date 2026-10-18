@@ -20,6 +20,12 @@ export const TEST_DATABASES = [
     testVar: 'ALERTA_TEST_DATABASE_URL',
     schema: 'alerta_test',
   },
+  {
+    service: 'ms-simon',
+    envVar: 'SIMON_DATABASE_URL',
+    testVar: 'SIMON_TEST_DATABASE_URL',
+    schema: 'simon_test',
+  },
 ] as const;
 
 export function pointToTestDatabases(): void {

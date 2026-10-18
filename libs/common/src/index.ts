@@ -10,3 +10,5 @@ export * from './internal/internal-key.guard.js';
 export * from './http/prisma-error.filter.js';
 export * from './time/lima-date.js';
 export * from './events/school-event.js';
+export * from './reporting/contracts.js';
+export * from './reporting/range.js';

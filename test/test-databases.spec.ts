@@ -3,6 +3,14 @@ import { pointToTestDatabases } from './test-databases.js';
 describe('aislamiento de las bases de prueba', () => {
   beforeEach(() => {
     vi.stubEnv(
+      'SIMON_TEST_DATABASE_URL',
+      'postgresql://test:fake@localhost/school?schema=simon_test',
+    );
+    vi.stubEnv(
+      'SIMON_DATABASE_URL',
+      'postgresql://test:fake@localhost/school?schema=simon',
+    );
+    vi.stubEnv(
       'ALERTA_TEST_DATABASE_URL',
       'postgresql://test:fake@localhost/school?schema=alerta_test',
     );
@@ -30,8 +38,11 @@ describe('aislamiento de las bases de prueba', () => {
 
   afterEach(() => vi.unstubAllEnvs());
 
-  it('redirige ambos servicios exclusivamente a sus schemas de prueba', () => {
+  it('redirige todos los servicios exclusivamente a sus schemas de prueba', () => {
     pointToTestDatabases();
+    expect(process.env.SIMON_DATABASE_URL).toBe(
+      process.env.SIMON_TEST_DATABASE_URL,
+    );
     expect(process.env.AUTH_DATABASE_URL).toBe(
       process.env.AUTH_TEST_DATABASE_URL,
     );
@@ -43,7 +54,7 @@ describe('aislamiento de las bases de prueba', () => {
     );
   });
 
-  it.each(['AUTH', 'SIAGIE', 'ALERTA'])(
+  it.each(['AUTH', 'SIAGIE', 'ALERTA', 'SIMON'])(
     'rechaza el schema real de %s',
     (service) => {
       vi.stubEnv(

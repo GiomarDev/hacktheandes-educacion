@@ -10,6 +10,7 @@ for (const [variable, schema] of [
   ['AUTH_TEST_DATABASE_URL', 'auth_test'],
   ['SIAGIE_TEST_DATABASE_URL', 'siagie_test'],
   ['ALERTA_TEST_DATABASE_URL', 'alerta_test'],
+  ['SIMON_TEST_DATABASE_URL', 'simon_test'],
 ]) {
   assert.equal(
     new URL(process.env[variable]).searchParams.get('schema'),
@@ -29,7 +30,7 @@ async function unusedPort() {
   return port;
 }
 
-for (const service of ['ms-auth', 'ms-siagie', 'ms-alerta']) {
+for (const service of ['ms-auth', 'ms-siagie', 'ms-alerta', 'ms-simon']) {
   const port = await unusedPort();
   const child = spawn(process.execPath, [`dist/apps/${service}/main.js`], {
     env: {
@@ -38,6 +39,7 @@ for (const service of ['ms-auth', 'ms-siagie', 'ms-alerta']) {
       AUTH_DATABASE_URL: process.env.AUTH_TEST_DATABASE_URL,
       SIAGIE_DATABASE_URL: process.env.SIAGIE_TEST_DATABASE_URL,
       ALERTA_DATABASE_URL: process.env.ALERTA_TEST_DATABASE_URL,
+      SIMON_DATABASE_URL: process.env.SIMON_TEST_DATABASE_URL,
       BACKGROUND_JOBS_ENABLED: 'false',
     },
     stdio: ['ignore', 'ignore', 'pipe'],

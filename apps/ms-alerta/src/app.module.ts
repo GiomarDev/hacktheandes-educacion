@@ -1,3 +1,4 @@
+import { ReportingController } from './reporting.controller.js';
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import {
@@ -24,7 +25,12 @@ import {
 import { JobsService } from './jobs.service.js';
 
 @Module({
-  controllers: [HealthController, ApiController, InternalController],
+  controllers: [
+    ReportingController,
+    HealthController,
+    ApiController,
+    InternalController,
+  ],
   providers: [
     PrismaService,
     SiagieClient,
