@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Source+Sans+3:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,700;8..60,800&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
     /* ──────── Paleta Oficial (palette.md) ──────── */
     :root {
@@ -635,6 +634,26 @@
       color: var(--ink);
     }
 
+    /* ════════ SLIDE 3: TRACCIÓN + GROWTH ════════ */
+    .s3-traction { display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 56px; align-items: start; }
+    .tr-col { display: flex; flex-direction: column; gap: 18px; }
+    .tr-label { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-mid); }
+    .tr-person { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 20px; }
+    .tr-person .member-avatar { width: 52px; height: 52px; font-size: 1.2rem; }
+    .tr-name { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--ink); }
+    .tr-role { font-size: 1.05rem; color: var(--ink-mid); }
+    .tr-steps { list-style: none; counter-reset: tr; display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+    .tr-steps li { counter-increment: tr; display: flex; gap: 12px; align-items: baseline; font-size: 1.25rem; color: var(--ink); }
+    .tr-steps li::before { content: counter(tr); font-family: var(--font-mono); font-weight: 700; color: var(--gob-rojo); }
+    .gm-north { display: flex; align-items: center; gap: 16px; background: var(--nav-bg); color: #fff; border-radius: 16px; padding: 18px 22px; }
+    .gm-tag { font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; background: var(--amauti); color: var(--ink); border-radius: 99px; padding: 6px 14px; white-space: nowrap; }
+    .gm-text { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+    .gm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .gm-card { display: flex; flex-direction: column; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gob-azul); border-radius: 12px; padding: 12px 16px; }
+    .gm-stage { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--gob-azul); }
+    .gm-desc { font-size: 1.1rem; line-height: 1.3; color: var(--ink); }
+    @media (max-width: 1200px) { .s3-traction { grid-template-columns: 1fr; gap: 28px; } }
+
     /* ──────── Puntos de Navegación ──────── */
     .bottom-dots {
       position: fixed;
@@ -697,70 +716,13 @@
       <span class="flag"><i></i><i></i><i></i></span>
       Amauti
     </div>
-    <div class="counter" id="counter">01 / 05</div>
+    <div class="counter" id="counter">01 / 03</div>
   </header>
 
   <main class="deck">
 
-    <!-- ══════════════════ SLIDE 1: PORTADA AMAUTI + INTEGRANTES ══════════════════ -->
+    <!-- ══════════════════ SLIDE 1: 375 ALUMNOS + EL PUNTO CIEGO DE 60 DÍAS ══════════════════ -->
     <section class="slide active">
-      <div class="s1-cover">
-        <div>
-          <div class="kicker">Hack the Andes 2026 · Reto Educación Escolar</div>
-          <h1 class="project-title">Amauti<span>.</span></h1>
-          <p class="project-subtitle">Continuidad educativa, alerta temprana y reporting sin fricción en el aula escolar.</p>
-
-          <div class="team-section">
-            <div class="team-badge">
-              <span>👥</span> Equipo: Futuro Agéntico
-            </div>
-            <div class="team-grid">
-              <div class="member-pill">
-                <span class="member-avatar">AH</span>
-                <span class="member-name">Augusto Huerta</span>
-              </div>
-              <div class="member-pill">
-                <span class="member-avatar">XD</span>
-                <span class="member-name">Alexander Delgado</span>
-              </div>
-              <div class="member-pill">
-                <span class="member-avatar">GL</span>
-                <span class="member-name">Giomar Limo</span>
-              </div>
-              <div class="member-pill">
-                <span class="member-avatar">RV</span>
-                <span class="member-name">Ronaldinho Villanueva</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="visual-showcase">
-          <img class="clean-shot" src="./screenshots/01_panorama_nacional_secundaria.png" alt="Panorama Nacional de Deserción" />
-          <svg class="floating-mascot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 340">
-            <ellipse cx="120" cy="318" rx="65" ry="9" fill="#0F172A" opacity=".12"/>
-            <g data-part="pencil">
-              <path d="M103 277 L99 311 L85 311" fill="none" stroke="#0F172A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M137 277 L143 311 L156 311" fill="none" stroke="#0F172A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M73 165 Q46 177 36 207" fill="none" stroke="#0F172A" stroke-width="9" stroke-linecap="round"/><circle cx="36" cy="207" r="9" fill="#0F172A"/>
-              <path d="M167 165 Q194 177 204 207" fill="none" stroke="#0F172A" stroke-width="9" stroke-linecap="round"/><circle cx="204" cy="207" r="9" fill="#0F172A"/>
-              <path d="M70 66 V43 Q70 22 92 22 H148 Q170 22 170 43 V66Z" fill="#C8102E"/>
-              <path d="M69 61 Q120 55 171 61 V85 H69Z" fill="#0F172A"/>
-              <path d="M70 231 Q91 247 120 286 Q149 247 170 231Z" fill="#F5D7B6"/>
-              <path d="M105 267 Q120 261 135 267 L120 287Z" fill="#0F172A"/>
-              <path d="M70 81 H170 V231 Q170 245 159 240 L145 230 Q137 225 129 234 Q120 244 111 234 Q102 225 94 232 L81 241 Q70 247 70 231Z" fill="#FFD21F"/>
-              <ellipse cx="97" cy="153" rx="6" ry="8" fill="#0F172A"/><circle cx="99" cy="150" r="1.6" fill="white"/>
-              <ellipse cx="143" cy="153" rx="6" ry="8" fill="#0F172A"/><circle cx="145" cy="150" r="1.6" fill="white"/>
-              <ellipse cx="86" cy="172" rx="10" ry="6" fill="#F58A91"/><ellipse cx="154" cy="172" rx="10" ry="6" fill="#F58A91"/>
-              <path d="M108 174 Q120 179 132 174 Q130 192 120 192 Q110 192 108 174Z" fill="#0F172A"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════ SLIDE 2: 375 ALUMNOS + EL PUNTO CIEGO DE 60 DÍAS ══════════════════ -->
-    <section class="slide">
       <div class="s2-combined-layout">
         <!-- Columna Izquierda: El Hook de 375 -->
         <div class="s2-stat-col">
@@ -815,7 +777,7 @@
       </div>
     </section>
 
-    <!-- ══════════════════ SLIDE 3: SEÑAL ➔ RESCATE (WHATSAPP ➔ PLATAFORMA) ══════════════════ -->
+    <!-- ══════════════════ SLIDE 2: SEÑAL ➔ RESCATE (WHATSAPP ➔ PLATAFORMA) ══════════════════ -->
     <section class="slide">
       <div class="kicker">La Diferencia Amauti</div>
       <h2 class="title" style="margin-bottom: 28px;">Cierra el ciclo <span style="color: var(--gob-azul);">entre la señal y el rescate.</span></h2>
@@ -855,58 +817,50 @@
       </div>
     </section>
 
-    <!-- ══════════════════ SLIDE 4: ARQUITECTURA VISUAL ══════════════════ -->
+    <!-- ══════════════════ SLIDE 3: TRACCIÓN + MÉTRICAS DE GROWTH ══════════════════ -->
     <section class="slide">
-      <div class="kicker">Ingeniería Real</div>
-      <h2 class="title" style="margin-bottom: 36px;">5 Microservicios Desacoplados</h2>
+      <div class="kicker">Tracción y Growth</div>
+      <h2 class="title" style="margin-bottom: 32px;">Empezamos <span style="color: var(--gob-azul);">con docentes reales.</span></h2>
 
-      <div class="s4-arch-layout">
-        <div class="arch-nodes">
-          <div class="arch-pill">
-            <span class="arch-dot">ms-auth</span>
-            <span class="arch-text">RBAC Multinivel · JWKS</span>
+      <div class="s3-traction">
+        <div class="tr-col">
+          <div class="tr-label">Primeros usuarios</div>
+          <div class="tr-person">
+            <span class="member-avatar">MC</span>
+            <div>
+              <div class="tr-name">Maritta Carrión</div>
+              <div class="tr-role">Docente, directiva y especialista en inclusión educativa</div>
+            </div>
           </div>
-          <div class="arch-pill">
-            <span class="arch-dot">ms-siagie</span>
-            <span class="arch-text">Asistencia · Notas CNEB</span>
+          <div class="tr-person">
+            <span class="member-avatar">SE</span>
+            <div>
+              <div class="tr-name">Saúl Elgera</div>
+              <div class="tr-role">Investigador del IEP · evaluación de proyectos educativos</div>
+            </div>
           </div>
-          <div class="arch-pill">
-            <span class="arch-dot">ms-alerta</span>
-            <span class="arch-text">Motor Determinista · 48h</span>
-          </div>
-          <div class="arch-pill">
-            <span class="arch-dot">ms-simon</span>
-            <span class="arch-text">Reportes · Cifrado AES-256</span>
-          </div>
-          <div class="arch-pill">
-            <span class="arch-dot">ms-escale</span>
-            <span class="arch-text">Datos Oficiales SHA-256</span>
-          </div>
+          <ol class="tr-steps">
+            <li><span><b>Entrevistas</b> en profundidad con ambos</span></li>
+            <li><span><b>Más docentes</b> contactados para sumarse</span></li>
+            <li><span><b>Validando la hipótesis:</b> WhatsApp en el aula, tablero para la IE y la UGEL</span></li>
+          </ol>
         </div>
 
-        <img class="clean-shot" src="./screenshots/14_fuentes_datos_abiertos_csv.png" alt="Auditoría SHA-256 de Datos Oficiales" />
-      </div>
-    </section>
-
-    <!-- ══════════════════ SLIDE 5: HOY VS FUTURO ══════════════════ -->
-    <section class="slide">
-      <div class="kicker">Decisiones y Visión</div>
-      <h2 class="title" style="margin-bottom: 36px;">Cada día en el aula <span style="color: var(--gob-rojo);">cuenta.</span></h2>
-
-      <div class="s5-closing">
-        <div class="roadmap-steps">
-          <div class="rm-row">
-            <span class="rm-tag now">Hoy en vivo</span>
-            <div class="rm-title">Reglas Auditables + Tiempo libre para que el profesor intervenga</div>
+        <div class="tr-col">
+          <div class="tr-label">Métricas de growth del piloto</div>
+          <div class="gm-north">
+            <span class="gm-tag">North Star</span>
+            <span class="gm-text">Estudiantes en riesgo contactados en&nbsp;≤&nbsp;48&nbsp;h desde la primera señal</span>
           </div>
-
-          <div class="rm-row">
-            <span class="rm-tag next">Siguiente Paso</span>
-            <div class="rm-title">Planes concretos de nivelación y tutoría desde la bitácora</div>
+          <div class="gm-grid">
+            <div class="gm-card"><span class="gm-stage">Activación</span><span class="gm-desc">Docentes que envían su primera bitácora por WhatsApp en la semana 1</span></div>
+            <div class="gm-card"><span class="gm-stage">Retención</span><span class="gm-desc">Docentes activos semana a semana</span></div>
+            <div class="gm-card"><span class="gm-stage">Valor</span><span class="gm-desc">Horas de papeleo ahorradas por docente al mes</span></div>
+            <div class="gm-card"><span class="gm-stage">Referidos</span><span class="gm-desc">Docentes que invitan a un colega de su IE</span></div>
+            <div class="gm-card"><span class="gm-stage">Expansión</span><span class="gm-desc">IE → UGEL que adoptan el tablero</span></div>
+            <div class="gm-card"><span class="gm-stage">Impacto</span><span class="gm-desc">Casos cerrados con el estudiante de vuelta en el aula</span></div>
           </div>
         </div>
-
-        <img class="clean-shot" src="./screenshots/16_admin_reglas_alerta_umbrales.png" alt="Motor de Reglas Configurables" />
       </div>
     </section>
 
@@ -916,8 +870,6 @@
     <button class="dot active" onclick="go(0)"></button>
     <button class="dot" onclick="go(1)"></button>
     <button class="dot" onclick="go(2)"></button>
-    <button class="dot" onclick="go(3)"></button>
-    <button class="dot" onclick="go(4)"></button>
   </nav>
 
   <script>
@@ -939,13 +891,6 @@
       if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); }
     });
 
-    gsap.to('[data-part="pencil"]', {
-      y: -10,
-      duration: 1.5,
-      repeat: -1,
-      yoyo: true,
-      ease: 'sine.inOut'
-    });
   </script>
 </body>
 </html>
