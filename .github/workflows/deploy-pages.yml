@@ -1,0 +1,55 @@
+name: Deploy Pitch Presentation to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/pitch/**'
+      - 'docs/presentacion/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build Presentation Site
+        run: |
+          mkdir -p _site
+          cp docs/pitch/presentacion.html _site/index.html
+          mkdir -p _site/screenshots
+          cp docs/pitch/screenshots/01_panorama_nacional_secundaria.png _site/screenshots/
+          cp docs/pitch/screenshots/17_docente_hoy_tablero_diario_limpio.png _site/screenshots/
+          cp docs/pitch/screenshots/14_fuentes_datos_abiertos_csv.png _site/screenshots/
+          cp docs/pitch/screenshots/16_admin_reglas_alerta_umbrales.png _site/screenshots/
+          mkdir -p _site/presentacion
+          cp docs/presentacion/mockup_phone_full.png _site/presentacion/
+          cp docs/presentacion/mockup_phone_full.png _site/mockup_phone_full.png
+          sed -i 's|\.\./presentacion/mockup_phone_full\.png|\./presentacion/mockup_phone_full\.png|g' _site/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
