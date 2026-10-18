@@ -6,6 +6,7 @@ import 'dotenv/config';
 import { execSync, spawn } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
+import { connect } from 'node:net';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { dateOnly, pgConnectionFromUrl, todayInLima } from '@app/common';
 import { SEED_IDS } from '@app/fixtures';
@@ -36,6 +37,27 @@ if (!password) throw new Error('Falta la variable de entorno SEED_PASSWORD');
 for (const service of Object.keys(PORTS))
   if (!existsSync(`dist/apps/${service}/main.js`))
     throw new Error(`Falta el build de ${service}: ejecute npm run build`);
+
+// Otro programa en estos puertos (aunque sea solo por IPv4 o IPv6) recibiría parte de las peticiones a
+// localhost: los servicios y el login de la demo hablarían con él. Mejor detenerse y avisarlo.
+const answers = (host: string, port: number) =>
+  new Promise<boolean>((resolve) => {
+    const socket = connect({ host, port });
+    socket.setTimeout(500);
+    const done = (inUse: boolean) => {
+      socket.destroy();
+      resolve(inUse);
+    };
+    socket.once('connect', () => done(true));
+    socket.once('error', () => done(false));
+    socket.once('timeout', () => done(false));
+  });
+for (const port of Object.values(PORTS))
+  for (const host of ['127.0.0.1', '::1'])
+    if (await answers(host, port))
+      throw new Error(
+        `El puerto ${port} ya está en uso (${host}): detén ese proceso antes de la demo (lsof -nP -iTCP:${port} -sTCP:LISTEN)`,
+      );
 
 for (const db of TEST_DATABASES)
   execSync(
