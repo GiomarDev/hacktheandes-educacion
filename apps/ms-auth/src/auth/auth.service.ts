@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma.service.js';
 import { ACCESS_TOKEN_TTL_SECONDS, hashRefreshToken, RequestMeta, TokensService } from './tokens.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import type { AuthEventType } from '../generated/prisma/client.js';
+import type { Role } from '@app/common';
 
 export const MAX_FAILED_ATTEMPTS = 5;
 export const LOCK_MINUTES = 15;
@@ -99,6 +100,22 @@ export class AuthService implements OnModuleInit {
     });
     if (!limiting) return 0;
     return Math.max(1, Math.ceil((limiting.occurredAt.getTime() + IP_WINDOW_MS - now.getTime()) / 1000));
+  }
+
+  async onboarding(userId: string): Promise<{ completedRoles: Role[] }> {
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { onboardedRoles: true } });
+    return { completedRoles: user.onboardedRoles };
+  }
+
+  // Lectura y escritura bajo un candado por cuenta, para no perder un rol si llegan dos a la vez.
+  async setOnboarded(userId: string, role: Role, done: boolean): Promise<{ completedRoles: Role[] }> {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`onboarding:${userId}`}))`;
+      const { onboardedRoles } = await tx.user.findUniqueOrThrow({ where: { id: userId }, select: { onboardedRoles: true } });
+      const next = done ? [...new Set([...onboardedRoles, role])] : onboardedRoles.filter((r) => r !== role);
+      const saved = await tx.user.update({ where: { id: userId }, data: { onboardedRoles: next }, select: { onboardedRoles: true } });
+      return { completedRoles: saved.onboardedRoles };
+    });
   }
 
   async event(userId: string | null, type: AuthEventType, meta: RequestMeta): Promise<void> {

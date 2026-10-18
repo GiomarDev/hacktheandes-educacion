@@ -1,7 +1,7 @@
 import { IsEmail, IsIn, IsOptional, IsString, IsUUID, Length } from 'class-validator';
 import type { Role } from '@app/common';
 
-const ROLES: Role[] = ['MINEDU_ADMIN', 'DRE_SPECIALIST', 'UGEL_SPECIALIST', 'DIRECTOR', 'SECRETARY', 'TUTOR', 'TEACHER', 'AUXILIAR', 'PSYCHOLOGIST'];
+export const ROLES: Role[] = ['MINEDU_ADMIN', 'DRE_SPECIALIST', 'UGEL_SPECIALIST', 'DIRECTOR', 'SECRETARY', 'TUTOR', 'TEACHER', 'AUXILIAR', 'PSYCHOLOGIST'];
 
 export class CreateUserDto {
   @IsIn(['DNI', 'CE', 'PASSPORT']) documentType: 'DNI' | 'CE' | 'PASSPORT';
