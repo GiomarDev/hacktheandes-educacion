@@ -11,10 +11,22 @@ export function isChunkLoadError(error: unknown): boolean {
   return error instanceof Error && CHUNK_ERROR.test(error.message);
 }
 
+// La capa app/ informa a dónde se estaba navegando, para recargar directo en esa pantalla.
+let pendingNavigation: () => string | null = () => null;
+export function setPendingNavigation(read: () => string | null) {
+  pendingNavigation = read;
+}
+export const reloadTarget = () => pendingNavigation();
+function reloadToTarget() {
+  const target = reloadTarget();
+  if (target) window.location.assign(target);
+  else window.location.reload();
+}
+
 // Recarga una sola vez: si el error se repite enseguida (p. ej. el servidor no responde),
 // no entra en un bucle y deja que se muestre la pantalla de error.
 export function reloadForNewVersion(
-  reload: () => void = () => window.location.reload(),
+  reload: () => void = reloadToTarget,
 ): boolean {
   let last = 0;
   try {

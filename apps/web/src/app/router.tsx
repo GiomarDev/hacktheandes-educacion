@@ -6,6 +6,7 @@ import { Shell } from '@/app/layout/Shell';
 import { RouteError } from '@/app/RouteError';
 import { Empty } from '@/shared/ui/kit';
 import { PageSkeleton } from '@/shared/ui/motion';
+import { setPendingNavigation } from '@/shared/lib/app-version';
 
 function Home() {
   const { active } = useAuth();
@@ -167,4 +168,12 @@ const routes = [
 ];
 
 // Un router por sesión y rol activo: arranca en la URL actual (que login y cambio de rol llevan a "/").
-export const createAppRouter = () => createBrowserRouter(routes);
+export function createAppRouter() {
+  const router = createBrowserRouter(routes);
+  // Si la pantalla destino es de una versión anterior, la recarga entra directo en ella.
+  setPendingNavigation(() => {
+    const next = router.state.navigation.location;
+    return next ? next.pathname + next.search : null;
+  });
+  return router;
+}

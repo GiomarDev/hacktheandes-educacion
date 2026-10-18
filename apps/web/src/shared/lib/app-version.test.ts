@@ -54,3 +54,14 @@ describe('versión publicada', () => {
     expect(entryFromHtml('<html></html>')).toBeNull();
   });
 });
+
+describe('destino de la recarga', () => {
+  it('si había una navegación en curso, la recarga apunta a esa pantalla', async () => {
+    const { reloadTarget, setPendingNavigation } =
+      await import('./app-version');
+    expect(reloadTarget()).toBeNull();
+    setPendingNavigation(() => '/documentos?tab=1');
+    expect(reloadTarget()).toBe('/documentos?tab=1');
+    setPendingNavigation(() => null);
+  });
+});
