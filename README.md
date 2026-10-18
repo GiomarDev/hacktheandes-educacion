@@ -280,7 +280,7 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
 
-> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` con estos archivos se retiró del repositorio. El frontend implementado (Amauti) sigue el bosquejo de Claude Design descrito en la sección Frontend.
+> Registro de prototipado previo: los archivos 01–04 se retiraron del repositorio; en `STICH_ITERATION_1/` queda la pantalla 05. El frontend implementado (Amauti) sigue el bosquejo de Claude Design descrito en la sección Frontend.
 
 Como parte de la fase de prototipado y validación de la solución, se diseñó la primera versión interactiva de **AmautaIA — Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero**. Los prototipos fueron generados e iterados a través de la integración agéntica con **Google Stitch MCP** en el proyecto `Hack The Andes Test` (`projects/1503192843636542264`), bajo el sistema de diseño semántico **AmautaIA Institucional Claro (MINEDU GovTech)** (`assets/764693782689717926`).
 
@@ -290,6 +290,7 @@ Como parte de la fase de prototipado y validación de la solución, se diseñó 
 | **02** | **Espacio del Docente + Copiloto Anti-Burocracia** | `Desktop` | `38e7bd2903a4485bb9dc396029042af1` | `02_vista_docente_copiloto.html` | Agrupación automática de alumnos por micro-paso fallado, guías de mentoría de 10 min y generación automática de sesiones CNEB y conclusiones SIAGIE. |
 | **03** | **Interacción WhatsApp del Docente con el Agente** | `Mobile` | `73981077ba2c49c4a3c3d11b4c201c9b` | `03_interaccion_whatsapp_agente.html` | Interfaz móvil cero fricción: el docente envía una foto del registro o nota de voz y el agente actualiza asistencia, detecta riesgo y redacta los informes. |
 | **04** | **Torre de Control Territorial UGEL / MINEDU** | `Desktop` | `271be7b380054fba8bfafc2747b9b73a` | `04_torre_control_ugel_minedu.html` | Visor geoespacial en tiempo real sin pedir reportes manuales, auditoría SIAGIE vs. Aprendizaje Real y fiscalización del despliegue de psicólogos. |
+| **05** | **Landing Institucional Amauti (Estructura Platzi)** | `Desktop` | `a172f53ee740427f822834eb073fe680` | [`05_landing_amauti_institucional.html`](STICH_ITERATION_1/05_landing_amauti_institucional.html) | Landing de alta fidelidad basada en la estructura de Platzi Business: El Espejo (pestañas de dolor), Duelo de métricas (10s/48h vs 60d), 4 piezas del sistema y Bento Grid oficial. |
 
 ---
 
@@ -322,15 +323,18 @@ Como parte de la fase de prototipado y validación de la solución, se diseñó 
 │   └── web/                 # Frontend Amauti: landing pública y plataforma
 ├── libs/                    # Autorización, contratos de eventos y fixtures sintéticos
 ├── test/                    # Entornos y protección de los schemas de prueba
-├── scripts/                 # Base de datos, demo local, publicación de la demo y arranque compilado
+├── scripts/                 # Base de datos, demo, arranque compilado, deck del pitch y capturas (screenshots/)
 ├── deploy/                  # Dockerfiles, compose local y plantilla de nginx
 ├── easypanel.compose.yml    # Despliegue de producción en EasyPanel
 ├── docs/                    # Investigación, datasets, contratos, diseño, pitch y transcripciones
-│   ├── pitch/               # Guion del pitch
+│   ├── pitch/               # Guía, guion, deck y fuentes del pitch
+│   ├── presentacion/        # Flujo de WhatsApp del docente (pptx e HTML interactivo)
 │   ├── design/              # Prompt y decisiones de diseño y tipografía
 │   ├── testing/             # Evidencia de verificación de la demo (sin secretos)
 │   └── superpowers/         # Especificación y plan del backend
 ├── Augus_workstation/       # Minutas y planes de trabajo del equipo
+├── STICH_ITERATION_1/       # Prototipo de landing generado en Google Stitch
+├── palette.md               # Paleta institucional del pitch
 ├── notas_sesión_1.md        # Notas de ideación y entrevista a docente
 ├── AGENTS.md                # Guía para agentes de IA
 ├── CLAUDE.md                # Instrucciones específicas de Claude Code

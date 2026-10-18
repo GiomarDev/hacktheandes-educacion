@@ -1,0 +1,19 @@
+{
+  "projectId": "1503192843636542264",
+  "title": "Hack The Andes Test",
+  "designSystem": {
+    "id": "assets/1f2a70fbfee3432bbfc4ba0b5b833683",
+    "displayName": "Amauti Sistema de Continuidad Educativa"
+  },
+  "screens": [
+    {
+      "id": "ead523b7bb3646fdb3c6f36dfdd1a429",
+      "title": "Amauti · Sistema de Continuidad Educativa (Landing Editorial Institucional)",
+      "deviceType": "DESKTOP",
+      "width": 2560,
+      "height": 11508,
+      "htmlFile": ".stitch/designs/amauti-landing-institucional.html",
+      "screenshotFile": ".stitch/designs/amauti-landing-institucional.png"
+    }
+  ]
+}

@@ -31,6 +31,12 @@
       "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "89496d5dd00f4810205f351759594fc2742bf8eea85a2f2b2d1de59f4bd91576"
     },
+    "pptx": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pptx/SKILL.md",
+      "computedHash": "d6198c2f85d5d1c737d451b98ebacc3bbc187730c9a79252aa738ddb8d818455"
+    },
     "react-vite-dashboard": {
       "source": "google-labs-code/stitch-skills",
       "sourceType": "github",

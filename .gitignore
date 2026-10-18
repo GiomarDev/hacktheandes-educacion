@@ -42,7 +42,7 @@ Thumbs.db
 *.psd
 *.raw
 
-# Backend
+# Backend y dependencias
 node_modules/
 dist/
 coverage/
