@@ -306,71 +306,151 @@
       box-shadow: 0 10px 24px -6px rgba(43, 138, 62, 0.4);
     }
 
-    /* ════════ SLIDE 3: CELULAR WHATSAPP ➔ PLATAFORMA EN VIVO ════════ */
+    /* ════════ SLIDE 3: 2 CAPTURAS WHATSAPP ➔ PLATAFORMA EN VIVO ════════ */
     .s3-visual-flow {
       display: grid;
-      grid-template-columns: 260px 1fr 1.35fr;
+      grid-template-columns: auto 70px 1fr;
       align-items: center;
-      gap: 40px;
-    }
-
-    .phone-img {
+      gap: 32px;
       width: 100%;
-      max-height: 490px;
-      object-fit: contain;
-      filter: drop-shadow(0 20px 36px rgba(26, 35, 50, 0.22));
     }
 
-    .middle-flow {
+    .phones-duo {
+      display: flex;
+      gap: 18px;
+      align-items: flex-end;
+    }
+
+    .phone-column {
       display: flex;
       flex-direction: column;
-      gap: 28px;
-      padding-left: 12px;
-    }
-
-    .flow-item {
-      display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 10px;
     }
 
-    .flow-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: var(--gob-azul-bg);
-      color: var(--gob-azul);
+    .phone-tag {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 8px rgba(26, 35, 50, 0.06);
+      white-space: nowrap;
+    }
+    .phone-tag.alert {
+      color: var(--critico);
+      background: var(--critico-bg);
+      border-color: rgba(200, 16, 46, 0.2);
+    }
+
+    .phone-mockup {
+      width: 200px;
+      height: 442px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 4px solid var(--nav-bg);
+      background: #000;
+      box-shadow: 0 16px 36px -10px rgba(26, 35, 50, 0.22);
+      position: relative;
+    }
+
+    .phone-mockup img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .sync-bridge {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      flex-shrink: 0;
+      text-align: center;
+      gap: 6px;
     }
-    .flow-item:nth-child(2) .flow-icon { background: var(--estable-bg); color: var(--estable); }
-    .flow-item:nth-child(3) .flow-icon { background: var(--critico-bg); color: var(--critico); }
 
-    .flow-label {
+    .sync-arrow {
+      font-size: 2.6rem;
+      line-height: 1;
+      color: var(--gob-azul);
+    }
+
+    .sync-text {
       font-family: var(--font-display);
-      font-size: 1.85rem;
+      font-size: 1.05rem;
       font-weight: 800;
       color: var(--ink);
-      line-height: 1.1;
+      line-height: 1.15;
+    }
+
+    .sync-sub {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--estable);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .platform-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .platform-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .platform-label {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .live-cta {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 8px;
       background: var(--gob-rojo);
       color: #FFF;
       text-decoration: none;
       font-weight: 800;
-      font-size: 1.2rem;
-      padding: 12px 24px;
+      font-size: 1.05rem;
+      padding: 8px 18px;
       border-radius: 99px;
-      width: fit-content;
-      box-shadow: 0 10px 24px -6px rgba(217, 16, 35, 0.45);
+      box-shadow: 0 8px 18px -4px rgba(217, 16, 35, 0.45);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .live-cta:hover {
+      background: #B50D1C;
+      transform: translateY(-1px);
+    }
+
+    .platform-shot {
+      width: 100%;
+      height: 442px;
+      object-fit: cover;
+      object-position: top left;
+      border-radius: 16px;
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 20px 48px -12px rgba(26, 35, 50, 0.2);
     }
 
     /* ════════ SLIDE 4: ARQUITECTURA VISUAL (NODOS + CAPTURA SHA-256) ════════ */
@@ -478,6 +558,23 @@
       width: 36px;
       background: var(--gob-rojo);
     }
+
+    @media (max-height: 850px) {
+      .title { margin-bottom: 24px; font-size: 2.8rem; }
+      .phone-mockup { height: 370px; width: 168px; border-radius: 18px; }
+      .platform-shot { height: 370px; }
+      .s3-visual-flow { gap: 24px; }
+      .sync-arrow { font-size: 2rem; }
+      .open-timeline::before { top: 56px; }
+      .tl-circle { width: 84px; height: 84px; font-size: 2.2rem; }
+    }
+
+    @media (max-width: 1200px) {
+      .slide { padding: 0 32px; }
+      .phone-mockup { height: 340px; width: 154px; }
+      .platform-shot { height: 340px; }
+      .s3-visual-flow { grid-template-columns: auto 50px 1fr; gap: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -561,38 +658,45 @@
       </div>
     </section>
 
-    <!-- ══════════════════ SLIDE 3: SEÑAL ➔ RESCATE (MOCKUP + PLATAFORMA) ══════════════════ -->
+    <!-- ══════════════════ SLIDE 3: SEÑAL ➔ RESCATE (WHATSAPP ➔ PLATAFORMA) ══════════════════ -->
     <section class="slide">
       <div class="kicker">La Diferencia Amauti</div>
-      <h2 class="title" style="margin-bottom: 32px;">Cierra el ciclo <span style="color: var(--gob-azul);">entre la señal y el rescate.</span></h2>
+      <h2 class="title" style="margin-bottom: 28px;">Cierra el ciclo <span style="color: var(--gob-azul);">entre la señal y el rescate.</span></h2>
 
       <div class="s3-visual-flow">
-        <!-- Imagen real del teléfono con WhatsApp -->
-        <img class="phone-img" src="../presentacion/mockup_phone_full.png" alt="Audio de 10s en WhatsApp" />
-
-        <!-- 3 íconos limpios sin cajas -->
-        <div class="middle-flow">
-          <div class="flow-item">
-            <div class="flow-icon">📋</div>
-            <div class="flow-label">Agiliza trámites</div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-icon">🎙️</div>
-            <div class="flow-label">Bitacoriza el aula</div>
-          </div>
-          <div class="flow-item">
-            <div class="flow-icon">🚨</div>
-            <div class="flow-label">Alerta el riesgo</div>
+        <!-- Dos teléfonos con capturas reales de WhatsApp -->
+        <div class="phones-duo">
+          <div class="phone-column">
+            <span class="phone-tag">💬 1. Bitácora de aula</span>
+            <div class="phone-mockup">
+              <img src="./screenshots/wsp_real_bitacora_observaciones.png" alt="WhatsApp bitácora Brayan Huamán y Lucero" />
+            </div>
           </div>
 
-          <a href="https://amauti.keoit.com" target="_blank" rel="noopener" class="live-cta">
-            🚀 Demo en vivo (Xander) ↗
-          </a>
+          <div class="phone-column">
+            <span class="phone-tag alert">🚨 2. Alerta temprana</span>
+            <div class="phone-mockup">
+              <img src="./screenshots/wsp_real_alerta_nayeli.png" alt="WhatsApp alerta 4 faltas Nayeli Cachique" />
+            </div>
+          </div>
         </div>
 
-        <!-- Imagen real de la plataforma sincronizada -->
-        <div>
-          <img class="clean-shot" src="./screenshots/17_docente_hoy_tablero_diario_limpio.png" alt="Tablero Sincronizado Amauti" />
+        <!-- Conector en tiempo real -->
+        <div class="sync-bridge">
+          <div class="sync-arrow">➔</div>
+          <div class="sync-text">Sincronización instantánea</div>
+          <div class="sync-sub">Sin papeleo</div>
+        </div>
+
+        <!-- Plataforma web oficial en vivo -->
+        <div class="platform-container">
+          <div class="platform-header">
+            <div class="platform-label">💻 Tablero Diario · IE & UGEL</div>
+            <a href="https://amauti.keoit.com" target="_blank" rel="noopener" class="live-cta">
+              🚀 Demo en vivo (Xander) ↗
+            </a>
+          </div>
+          <img class="platform-shot" src="./screenshots/17_docente_hoy_tablero_diario_limpio.png" alt="Tablero Diario Sincronizado Amauti" />
         </div>
       </div>
     </section>

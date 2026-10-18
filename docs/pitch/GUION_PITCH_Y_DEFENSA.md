@@ -10,14 +10,14 @@
 | :---: | :---: | :--- | :--- | :--- |
 | **`0:00 - 0:13`** | **Augusto** | **Acto I: Hook y Curiosidad** | Slide 1: **375** alumnos / 24h + Pregunta de Curiosidad | Problema e Impacto (15%) |
 | **`0:13 - 0:44`** | **Augusto** | **Acto II: Tensión Visceral** | Slide 2: Punto ciego 60 días (Autopsias) + Docente solo con WhatsApp | Problema e Impacto (15%) |
-| **`0:44 - 1:08`** | **Augusto** | **Acto III: La Diferencia Amauti** | Slide 3: 2 Capturas WhatsApp (`1° A` Bitácora + Alerta Nayeli) ➔ 3 Pilares | Claridad (10%) |
+| **`0:44 - 1:08`** | **Augusto** | **Acto III: La Diferencia Amauti** | Slide 3: 2 Capturas Reales WhatsApp (1. Bitácora Huamán/Lucero · 2. Alerta 4 faltas Nayeli) ➔ Plataforma Amauti en Vivo | Claridad (10%) |
 | **`1:08 - 2:10`** | **Xander** | **DEMO EN VIVO (62 seg)** | **Web en vivo: `https://amauti.keoit.com`** | **Funciona (25%) + Tracción (+0.5)** |
 | **`2:10 - 2:35`** | **Xander** | **Arquitectura y Complejidad** | Slide 4: 5 Microservicios NestJS + Cifrado AES-256 + SHA-256 | **Complejidad (30%) + Calidad (20%)** |
 | **`2:35 - 3:00`** | **Xander** | **Tradeoffs, Siguiente Paso y Cierre** | Slide 5: Reglas deterministas + Planes de Nivelación (Roadmap) | Claridad / Tradeoffs (10%) |
 
 ---
 
-## 🎙️ PARTE 1: Los Primeros 70 Segundos (Augusto — 166 Palabras)
+## 🎙️ PARTE 1: Los Primeros 70 Segundos (Augusto — 167 Palabras)
 
 ### Acto I — El Hook y la Pregunta de Curiosidad (`0:00 - 0:13` · 31 palabras)
 > *"Cada 24 horas, 375 alumnos escolares habrán abandonado para siempre el colegio. ¿En qué minuto exacto perdimos la oportunidad de retenerlos? ¿Fue el día que dejaron de ir, o mucho antes?"*
@@ -26,8 +26,8 @@
 > *"Lo perdimos semanas atrás, en un punto ciego de 60 días: cuando falló en matemáticas, empezó a faltar y se apagó al fondo del salón, mientras para las herramientas oficiales todo seguía 'normal'.*  
 > *Los pocos sistemas del Estado hacen autopsias, no rescates: ahogan a nuestro principal agente de cambio —el profesor— en trámites institucionales, dejándolo solo, sin tiempo para intervenir y sin tecnología en el aula… salvo una que ya tiene en su bolsillo: WhatsApp."*
 
-### Acto III — Por qué Amauti hace la diferencia + Pase a Xander (`0:44 - 1:08` · 64 palabras)
-> *"¿Por qué Amauti hace la diferencia? **Porque cierra el ciclo entre la señal y el rescate.** Como ven en pantalla, con un mensaje o audio de 10 segundos en WhatsApp, el docente registra avances en 1° A validados contra su lista oficial y reporta las 4 faltas de **Nayeli Cachique**: Amauti abre su alerta de riesgo alto al instante y sincroniza al colegio, la UGEL y el Ministerio. **Xander** se los mostrará en vivo."*
+### Acto III — Por qué Amauti hace la diferencia + Pase a Xander (`0:44 - 1:08` · 65 palabras)
+> *"¿Por qué Amauti hace la diferencia? **Porque cierra el ciclo entre la señal y el rescate.** Miren la pantalla: con un WhatsApp de 10 segundos el docente bitacoriza avances de Huamán y Lucero, y al avisar que **Nayeli Cachique** faltó 4 veces, Amauti valida la lista oficial y activa su alerta de riesgo alto al instante, sincronizando a la escuela y la UGEL sin tocar un solo papel. **Xander** se los mostrará en vivo."*
 
 ---
 
