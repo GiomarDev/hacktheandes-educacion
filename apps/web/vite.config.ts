@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'node:url';
 
 // Lo único de Node que usa la configuración: así compila sin @types/node (build aislado en Docker o CI).
 declare const process: { env: Record<string, string | undefined> };
@@ -29,6 +30,8 @@ const proxy = Object.fromEntries(
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Imports absolutos desde src: '@/features/...', '@/shared/...'.
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   server: { port: 5173, proxy },
   preview: { proxy },
   test: {

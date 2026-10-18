@@ -166,8 +166,8 @@ Verificación final contra un PostgreSQL 17 local (el servidor compartido da `So
 
 ## Amauti y recorrido de bienvenida (18/10/2026)
 
-- Mascota Amauti integrada en `apps/web/src/mascot/` desde la exportación del equipo (motor SVG + GSAP sin cambios de lógica; estilos propios en `amauti-theme.css`). Nueva dependencia del frontend: `gsap` 3.15.0.
-- Recorrido por rol (`apps/web/src/onboarding/`), generado desde `navFor` para que coincida siempre con la navegación. Estado en `users.onboarded_roles` (migración `20261018040000_onboarded_roles`): **aplicada en `auth_test` y en el PostgreSQL local de CI; falta aplicarla en `auth` real** antes de desplegar este frontend (sin ella el recorrido simplemente no aparece).
+- Mascota Amauti integrada en `apps/web/src/features/mascot/` desde la exportación del equipo (motor SVG + GSAP sin cambios de lógica; estilos propios en `amauti-theme.css`). Nueva dependencia del frontend: `gsap` 3.15.0.
+- Recorrido por rol (`apps/web/src/features/onboarding/`), generado desde `navFor` para que coincida siempre con la navegación. Estado en `users.onboarded_roles` (migración `20261018040000_onboarded_roles`): **aplicada en `auth_test` y en el PostgreSQL local de CI; falta aplicarla en `auth` real** antes de desplegar este frontend (sin ella el recorrido simplemente no aparece).
 - Mejoras de diseño tomadas de las skills del repo (`taste-design`, `react-vite-dashboard`): Geist + Geist Mono en lugar de Inter, esqueletos en lugar de spinners, estados vacíos con la mascota, entrada escalonada de cada pantalla, respuesta táctil en botones, login a dos columnas y grillas sin desborde en el móvil en todas las pantallas.
 - El bundle del frontend pasó de 144 a 186 kB comprimidos por GSAP; dividir el código por ruta queda como mejora.
 

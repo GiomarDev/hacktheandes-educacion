@@ -158,7 +158,7 @@ Una vez permitido el origen, revisar login y los recorridos de las cuentas anter
 
 ### Amauti y recorrido de bienvenida
 
-Amauti, la mascota del proyecto (un lápiz animado con GSAP, en `apps/web/src/mascot/`), acompaña la aplicación: saluda en el login, duerme en los estados vacíos y celebra al guardar asistencia, generar un reporte, aprobar un plan o registrar la devolución de una visita. Se puede arrastrar, sigue el cursor con los ojos y se muestra u oculta desde la cabecera (la preferencia queda en el navegador; en el móvil arranca oculta). Respeta `prefers-reduced-motion`.
+Amauti, la mascota del proyecto (un lápiz animado con GSAP, en `apps/web/src/features/mascot/`), acompaña la aplicación: saluda en el login, duerme en los estados vacíos y celebra al guardar asistencia, generar un reporte, aprobar un plan o registrar la devolución de una visita. Se puede arrastrar, sigue el cursor con los ojos y se muestra u oculta desde la cabecera (la preferencia queda en el navegador; en el móvil arranca oculta). Respeta `prefers-reduced-motion`.
 
 La primera vez que alguien entra con un rol, Amauti lo guía paso a paso por los accesos de ese rol, resaltando cada uno. ms-auth guarda qué roles ya vieron el recorrido (`GET`/`POST /auth/onboarding`, `DELETE /auth/onboarding/:role`), así que no se repite en otro dispositivo; el botón de brújula de la cabecera lo vuelve a abrir.
 
