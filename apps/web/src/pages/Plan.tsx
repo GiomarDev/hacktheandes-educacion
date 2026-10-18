@@ -41,15 +41,15 @@ const textarea = `${inputClass} h-24 py-2`;
 function Lines({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <div className="text-[11px] font-medium text-muted">{title}</div>
+      <div className="text-[0.875rem] font-medium text-muted">{title}</div>
       {items.length ? (
-        <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[13px]">
+        <ul className="mt-1 list-disc space-y-0.5 pl-5 text-[1rem]">
           {items.map((item, i) => (
             <li key={i}>{item}</li>
           ))}
         </ul>
       ) : (
-        <p className="mt-1 text-[12.5px] text-faint">Sin entradas.</p>
+        <p className="mt-1 text-[0.9375rem] text-faint">Sin entradas.</p>
       )}
     </div>
   );
@@ -265,13 +265,17 @@ function BaseCard({
           </div>
         </form>
       ) : (
-        <div className="space-y-3 px-4 py-3 text-[13px]">
+        <div className="space-y-3 px-4 py-3 text-[1rem]">
           <div>
-            <div className="text-[11px] font-medium text-muted">Barreras</div>
+            <div className="text-[0.875rem] font-medium text-muted">
+              Barreras
+            </div>
             <p className="mt-1 whitespace-pre-line">{plan.barriers}</p>
           </div>
           <div>
-            <div className="text-[11px] font-medium text-muted">Fortalezas</div>
+            <div className="text-[0.875rem] font-medium text-muted">
+              Fortalezas
+            </div>
             <p className="mt-1 whitespace-pre-line">
               {plan.strengths || (
                 <span className="text-faint">Sin registrar.</span>
@@ -280,7 +284,7 @@ function BaseCard({
           </div>
           {readsDiagnosis && (
             <div className="rounded border border-line bg-canvas px-3 py-2">
-              <div className="flex items-center gap-1 text-[11px] font-medium text-muted">
+              <div className="flex items-center gap-1 text-[0.875rem] font-medium text-muted">
                 <Lock className="size-3" aria-hidden /> Diagnóstico reservado
                 (tu lectura queda registrada)
               </div>
@@ -479,7 +483,7 @@ export function PlanPage() {
                       <Lines title="Adecuaciones" items={v.adjustments} />
                       <Lines title="Estrategias" items={v.strategies} />
                       {v.progressNotes && (
-                        <p className="text-[12.5px] whitespace-pre-line text-muted md:col-span-3">
+                        <p className="text-[0.9375rem] whitespace-pre-line text-muted md:col-span-3">
                           Avances: {v.progressNotes}
                         </p>
                       )}

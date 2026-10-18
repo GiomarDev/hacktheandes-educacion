@@ -175,13 +175,13 @@ export function DocenteHoyPage() {
                 const relatedCase = caseOf.get(studentId);
                 return (
                   <li key={studentId} className="flex gap-3 px-4 py-3.5">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-critical-soft text-[12px] font-semibold text-critical">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-critical-soft text-[0.9375rem] font-semibold text-critical">
                       {initials(name)}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <span className="font-semibold">{name}</span>
-                        <span className="text-[12px] text-faint">
+                        <span className="text-[0.9375rem] text-faint">
                           {enrollment
                             ? `${ageOf(enrollment.student.birthDate)} años · `
                             : ''}
@@ -191,7 +191,7 @@ export function DocenteHoyPage() {
                           {alertType(top.type)}
                         </Badge>
                       </div>
-                      <p className="mt-1 text-[12.5px] text-muted">
+                      <p className="mt-1 text-[0.9375rem] text-muted">
                         {alertEvidence(top.data) ??
                           'Revisar la evidencia en el caso.'}{' '}
                         · detectada {timeAgo(top.detectedAt)}
@@ -230,14 +230,14 @@ export function DocenteHoyPage() {
                   to={`/docente/aula?seccion=${s.id}`}
                   className="flex items-center gap-3 px-4 py-3 hover:bg-canvas"
                 >
-                  <span className="rounded bg-critical-soft px-1.5 py-0.5 font-mono text-[10px] font-medium text-critical">
+                  <span className="rounded bg-critical-soft px-1.5 py-0.5 font-sans tabular-nums text-[0.8125rem] font-medium text-critical">
                     HOY
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="font-medium">
                       Pasar lista · {gradeLabel(s.grade, s.name)}
                     </div>
-                    <div className="text-[12px] text-faint">
+                    <div className="text-[0.9375rem] text-faint">
                       {s.enrolledCount} estudiantes · {s.school.name}
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export function DocenteHoyPage() {
                     className="flex items-center gap-3 px-4 py-3 hover:bg-canvas"
                   >
                     <span
-                      className={`rounded px-1.5 py-0.5 font-mono text-[10px] font-medium ${days <= 0 ? 'bg-critical-soft text-critical' : 'bg-medium-soft text-[#9a6a00]'}`}
+                      className={`rounded px-1.5 py-0.5 font-sans tabular-nums text-[0.8125rem] font-medium ${days <= 0 ? 'bg-critical-soft text-critical' : 'bg-medium-soft text-[#9a6a00]'}`}
                     >
                       {days <= 0
                         ? 'VENCIDO'
@@ -263,7 +263,7 @@ export function DocenteHoyPage() {
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="font-medium">Contactar a la familia</div>
-                      <div className="text-[12px] text-faint">
+                      <div className="text-[0.9375rem] text-faint">
                         {enrollment ? fullName(enrollment.student) : 'Caso'} ·
                         plazo {formatDate(c.dueAt, true)}
                       </div>

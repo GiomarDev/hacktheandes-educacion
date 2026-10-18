@@ -61,7 +61,7 @@ function StageForm({ visit }: { visit: MonitoringVisit }) {
 
   if (!done && !happened)
     return (
-      <p className="text-[12px] text-faint">
+      <p className="text-[0.9375rem] text-faint">
         Podrás registrar lo observado cuando llegue la fecha de la visita.
       </p>
     );
@@ -295,7 +295,7 @@ export function VisitasPage() {
                               'Docente')}{' '}
                           · {sectionName.get(v.sectionId) ?? 'sección'}
                         </div>
-                        <div className="text-[12px] text-faint">
+                        <div className="text-[0.9375rem] text-faint">
                           {isTerritorial &&
                             `${schoolName.get(v.schoolId) ?? 'IE'} · `}
                           {formatDate(v.visitedAt, true)}
@@ -307,10 +307,10 @@ export function VisitasPage() {
                       </Badge>
                     </button>
                     {open === v.id && (
-                      <div className="mt-3 space-y-3 text-[13px]">
+                      <div className="mt-3 space-y-3 text-[1rem]">
                         {v.observations && (
                           <div>
-                            <div className="text-[11px] font-medium text-muted">
+                            <div className="text-[0.875rem] font-medium text-muted">
                               Observación
                             </div>
                             <p className="mt-1 whitespace-pre-line">
@@ -320,13 +320,13 @@ export function VisitasPage() {
                         )}
                         {v.feedback && (
                           <div>
-                            <div className="text-[11px] font-medium text-muted">
+                            <div className="text-[0.875rem] font-medium text-muted">
                               Devolución
                             </div>
                             <p className="mt-1 whitespace-pre-line">
                               {v.feedback}
                             </p>
-                            <div className="mt-2 text-[11px] font-medium text-muted">
+                            <div className="mt-2 text-[0.875rem] font-medium text-muted">
                               Compromiso de mejora
                             </div>
                             <p className="mt-1 whitespace-pre-line">
@@ -338,7 +338,7 @@ export function VisitasPage() {
                           <StageForm visit={v} />
                         )}
                         {!v.observations && !mine && (
-                          <p className="text-[12px] text-faint">
+                          <p className="text-[0.9375rem] text-faint">
                             Aún no se registra lo observado.
                           </p>
                         )}

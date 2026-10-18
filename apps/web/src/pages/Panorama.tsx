@@ -102,7 +102,7 @@ export function PanoramaPage() {
 
       {(alerts.data?.length ?? 0) > 0 && (
         <div className="mb-5 flex flex-wrap items-center gap-3 rounded-md border border-critical/25 bg-critical-soft px-4 py-3">
-          <span className="font-mono text-[20px] font-medium text-critical">
+          <span className="font-sans tabular-nums text-[1.25rem] font-medium text-critical">
             {alertsBySchool.size}
           </span>
           <div className="min-w-0 flex-1">
@@ -111,14 +111,14 @@ export function PanoramaPage() {
                 ? 'institución educativa con alertas abiertas'
                 : 'instituciones educativas con alertas abiertas'}
             </div>
-            <div className="text-[12px] text-muted">
+            <div className="text-[0.9375rem] text-muted">
               {alerts.data?.length} alertas · {openCases.length} casos abiertos,{' '}
               {contacted} con la familia contactada
             </div>
           </div>
           <Link
             to="/alertas"
-            className="text-[12.5px] font-medium text-critical hover:underline"
+            className="text-[0.9375rem] font-medium text-critical hover:underline"
           >
             Ver todas las alertas →
           </Link>
@@ -180,7 +180,7 @@ export function PanoramaPage() {
                     aria-selected={level === i}
                     onClick={() => setLevel(i)}
                     className={cx(
-                      'rounded px-2.5 py-1 text-[12px] font-medium',
+                      'rounded px-2.5 py-1 text-[0.9375rem] font-medium',
                       level === i ? 'bg-ink text-white' : 'text-muted',
                     )}
                   >
@@ -216,7 +216,7 @@ export function PanoramaPage() {
                 subtitle={`${LEVELS[level].label} · ${selected.periodLabel}`}
                 action={
                   <button
-                    className="text-[12px] text-gob hover:underline"
+                    className="text-[0.9375rem] text-gob hover:underline"
                     onClick={() => setRegion(null)}
                   >
                     Ver Perú
@@ -236,7 +236,7 @@ export function PanoramaPage() {
                 />
               </div>
               <div className="p-4">
-                <div className="mb-2 text-[12px] font-medium text-muted">
+                <div className="mb-2 text-[0.9375rem] font-medium text-muted">
                   Tasa interanual en secundaria · ESCALE
                 </div>
                 {regionTrend.length ? (
@@ -290,7 +290,7 @@ export function PanoramaPage() {
                 ) : (
                   <Empty title="Sin serie importada" />
                 )}
-                <p className="mt-3 text-[11.5px] text-faint">
+                <p className="mt-3 text-[0.875rem] text-faint">
                   TD = (M<sub>t</sub> − (M<sub>t</sub> ∩ M<sub>t+1</sub>) − A5S
                   <sub>t</sub> − F<sub>t</sub>) / M<sub>t</sub> × 100 · fórmula
                   oficial del MINEDU.
@@ -321,7 +321,7 @@ export function PanoramaPage() {
                 <li key={code} className="px-4 py-3">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold">{row.name}</span>
-                    <span className="font-mono text-[11px] text-faint">
+                    <span className="font-sans tabular-nums text-[0.875rem] text-faint">
                       {row.period}
                     </span>
                   </div>
@@ -333,14 +333,14 @@ export function PanoramaPage() {
                           key={u.code}
                           className="rounded bg-canvas px-2.5 py-2"
                         >
-                          <div className="text-[11px] text-muted">
+                          <div className="text-[0.875rem] text-muted">
                             {u.label}
                           </div>
-                          <div className="font-mono text-[16px] font-medium">
+                          <div className="font-sans tabular-nums text-[1rem] font-medium">
                             {pct(v?.value, 1)}
                           </div>
                           {v?.denominator !== null && v && (
-                            <div className="text-[10.5px] text-faint">
+                            <div className="text-[0.8125rem] text-faint">
                               {int(v.numerator)} / {int(v.denominator)}
                             </div>
                           )}
@@ -360,7 +360,7 @@ export function PanoramaPage() {
             action={
               <Link
                 to="/escuelas"
-                className="text-[12px] text-gob hover:underline"
+                className="text-[0.9375rem] text-gob hover:underline"
               >
                 Ver todas →
               </Link>
@@ -382,14 +382,16 @@ export function PanoramaPage() {
                       to={`/escuelas/${s.id}`}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-canvas"
                     >
-                      <span className="w-5 font-mono text-[11px] text-faint">
+                      <span className="w-5 font-sans tabular-nums text-[0.875rem] text-faint">
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="truncate font-medium">{s.name}</div>
-                        <div className="text-[12px] text-faint">
-                          <span className="font-mono">{s.modularCode}</span> ·{' '}
-                          {s.province}, {s.department} ·{' '}
+                        <div className="text-[0.9375rem] text-faint">
+                          <span className="font-sans tabular-nums">
+                            {s.modularCode}
+                          </span>{' '}
+                          · {s.province}, {s.department} ·{' '}
                           {s.area === 'RURAL' ? 'Rural' : 'Urbana'}
                         </div>
                       </div>

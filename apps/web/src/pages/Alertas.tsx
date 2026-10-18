@@ -99,7 +99,7 @@ export function AlertasPage() {
                 aria-selected={tab === i}
                 onClick={() => setTab(i)}
                 className={cx(
-                  '-mb-px border-b-2 px-3 py-2 text-[12.5px] font-medium whitespace-nowrap',
+                  '-mb-px border-b-2 px-3 py-2 text-[0.9375rem] font-medium whitespace-nowrap',
                   tab === i
                     ? 'border-peru text-ink'
                     : 'border-transparent text-muted hover:text-ink',
@@ -135,8 +135,8 @@ export function AlertasPage() {
                       )}
                     />
                     <div className="min-w-[220px] flex-1">
-                      <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-faint">
-                        <span className="font-mono">
+                      <div className="flex flex-wrap items-center gap-2 text-[0.875rem] text-faint">
+                        <span className="font-sans tabular-nums">
                           #{a.id.slice(-6).toUpperCase()}
                         </span>
                         <Badge tone={SEVERITY[a.severity].tone}>
@@ -159,7 +159,7 @@ export function AlertasPage() {
                           </Link>
                         )}
                       </div>
-                      <div className="text-[12.5px] text-muted">
+                      <div className="text-[0.9375rem] text-muted">
                         {school ? (
                           <Link
                             to={`/escuelas/${school.id}`}
@@ -248,7 +248,7 @@ export function AlertasPage() {
                         </Badge>
                         <span
                           className={cx(
-                            'ml-auto font-mono text-[11px]',
+                            'ml-auto font-sans tabular-nums text-[0.875rem]',
                             days <= 0 ? 'text-critical' : 'text-faint',
                           )}
                         >
@@ -260,7 +260,7 @@ export function AlertasPage() {
                           {nameOf(c.studentId)}
                         </div>
                       )}
-                      <div className="mt-1 text-[12px] text-muted">
+                      <div className="mt-1 text-[0.9375rem] text-muted">
                         {schoolName.get(c.schoolId)?.name ?? 'IE'} · abierto{' '}
                         {formatDate(c.openedAt)} · nivel {c.escalationLevel}
                       </div>

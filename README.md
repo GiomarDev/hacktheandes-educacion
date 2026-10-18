@@ -133,6 +133,10 @@ docker compose -f deploy/compose.yml run --rm auth npx prisma migrate deploy --c
 
 ---
 
+### Diseño y tipografía
+
+Amauti usa Source Sans 3 y Source Serif 4 de Adobe, servidas localmente, con iconos Phosphor seleccionados mediante `better-icons`. El [prompt](docs/design/2026-10-18-prompt-amauti.md) y las [decisiones de diseño y fuentes](docs/design/2026-10-18-tipografia-amauti.md) documentan la investigación de servicios públicos, permisos y verificación. La conexión opcional a un proyecto web de Adobe Fonts se configura en `apps/web/.env.local` a partir de `apps/web/.env.example`; sin kit la aplicación funciona con las fuentes locales.
+
 ## 🎯 Problema, Diagnóstico y Oportunidad
 
 A partir de un proceso exhaustivo de análisis cuantitativo oficial y validación cualitativa en campo, se identificaron los siguientes ejes críticos:

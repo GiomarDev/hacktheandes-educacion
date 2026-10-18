@@ -178,3 +178,11 @@ Verificación final contra un PostgreSQL 17 local (el servidor compartido da `So
 3. **Operación:** respaldos de la base `school`, monitoreo de `/health` y alertas por fallas de los jobs.
 4. **Frontend, mejoras:** importar el calendario de periodos (hoy los crea el seed), restablecer contraseñas desde administración y crear reglas nuevas (hoy solo se editan las existentes).
 5. **Servidor compartido:** las suites e2e largas contra `panel.keoit.com` sufren timeouts de red; para una corrida completa conviene un PostgreSQL local, como en CI.
+
+## Tipografía y diseño — 18/10/2026
+
+Rediseño tipográfico de Amauti con Source Sans 3 y Source Serif 4 locales, escala en rem, navegación de escritorio con etiquetas legibles, nuevo acceso, cifras tabulares y once iconos Phosphor seleccionados mediante better-icons. Contratos y permisos de APIs conservados. Prompt, investigación y límites en [registro de diseño](design/2026-10-18-tipografia-amauti.md).
+
+Instaladas frontend-design (Anthropic), better-icons y reverse-engineer-anything (REA), con origen/hash en skills-lock.json y enlaces para Claude Code. La conexión de un proyecto web Adobe queda preparada mediante variables VITE_ADOBE_* opcionales; la cuenta no pudo configurarse porque el navegador mantuvo bloqueado fonts.adobe.com. El acceso a Creative Cloud sí quedó habilitado.
+
+Verificación: 34 pruebas de frontend aprobadas, tipos/build de web y build de cinco servicios correctos; lint y revisión del diff sin errores. No se realizaron capturas ni revisión visual automatizada porque el navegador también bloqueó el origen local. Demo de cinco servicios y frontend dejados corriendo, solo sobre schemas _test, con 570 registros sintéticos e indicadores importados/calculados. Las migraciones de demo funcionaron con Node 22.22.2 ya instalado; los primeros intentos con Node 25 devolvieron un error genérico del motor de schema. No ejecutar e2e simultáneamente con la demo.

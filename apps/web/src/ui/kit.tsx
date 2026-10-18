@@ -14,7 +14,7 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={cx('rounded-md border border-line bg-card', className)}>
+    <section className={cx('rounded-lg border border-line bg-card', className)}>
       {children}
     </section>
   );
@@ -30,11 +30,11 @@ export function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-start justify-between gap-2 border-b border-line px-4 py-3">
+    <header className="flex flex-wrap items-start justify-between gap-2 border-b border-line px-5 py-4">
       <div className="min-w-0">
-        <h2 className="text-[14px] font-semibold text-ink">{title}</h2>
+        <h2 className="section-heading text-ink">{title}</h2>
         {subtitle && (
-          <p className="mt-0.5 text-[12px] text-faint">{subtitle}</p>
+          <p className="mt-0.5 text-[0.9375rem] text-faint">{subtitle}</p>
         )}
       </div>
       {action}
@@ -54,17 +54,20 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {eyebrow && (
-          <div className="mb-1 text-[11px] font-medium uppercase tracking-wide text-faint">
+          <div className="mb-2 text-[0.875rem] font-medium text-muted">
             {eyebrow}
           </div>
         )}
-        <h1 className="text-[22px] font-semibold tracking-tight text-ink">
-          {title}
-        </h1>
-        {subtitle && <p className="mt-1 text-[13px] text-muted">{subtitle}</p>}
+        <h1 className="page-heading text-ink">{title}</h1>
+        {subtitle && (
+          <p className="page-description mt-2 text-[1rem] text-muted">
+            {subtitle}
+          </p>
+        )}
+        <div className="page-heading-rule mt-4" aria-hidden="true" />
       </div>
       {action}
     </div>
@@ -90,17 +93,10 @@ export function Kpi({
     gob: 'text-gob',
   }[tone];
   return (
-    <Card className="px-4 py-3">
-      <div className="text-[12px] text-muted">{label}</div>
-      <div
-        className={cx(
-          'mt-1 font-mono text-[26px] font-medium leading-tight tabular',
-          color,
-        )}
-      >
-        {value}
-      </div>
-      {hint && <div className="mt-1 text-[11px] text-faint">{hint}</div>}
+    <Card className="px-5 py-4">
+      <div className="text-[0.9375rem] text-muted">{label}</div>
+      <div className={cx('metric-value mt-2 tabular', color)}>{value}</div>
+      {hint && <div className="mt-1 text-[0.875rem] text-faint">{hint}</div>}
     </Card>
   );
 }
@@ -110,7 +106,7 @@ export type Tone =
 const TONES: Record<Tone, string> = {
   critical: 'bg-critical-soft text-critical',
   high: 'bg-high-soft text-high',
-  medium: 'bg-medium-soft text-[#9a6a00]',
+  medium: 'bg-medium-soft text-[#7a5200]',
   low: 'bg-stable-soft text-low',
   stable: 'bg-stable-soft text-stable',
   neutral: 'bg-soft text-muted',
@@ -126,7 +122,7 @@ export function Badge({
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium',
+        'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[0.875rem] font-medium',
         TONES[tone],
       )}
     >
@@ -149,7 +145,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const styles = {
-    primary: 'bg-ink text-white hover:bg-ink-2',
+    primary: 'bg-gob text-white hover:bg-ink',
     secondary: 'border border-line bg-card text-ink hover:bg-soft',
     ghost: 'text-muted hover:bg-soft hover:text-ink',
     danger: 'bg-peru text-white hover:bg-critical',
@@ -159,7 +155,7 @@ export function Button({
       {...rest}
       disabled={disabled || busy}
       className={cx(
-        'inline-flex h-8 items-center justify-center gap-1.5 rounded px-3 text-[12.5px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 py-2 text-[0.9375rem] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
         styles,
         className,
       )}
@@ -199,9 +195,9 @@ export function Empty({
   return (
     <div className="flex flex-col items-center px-6 py-8 text-center">
       <MascotFigure pose="sleeping" className="mb-1 h-[78px] w-[56px]" />
-      <div className="text-[13px] font-medium text-ink">{title}</div>
+      <div className="text-[1rem] font-medium text-ink">{title}</div>
       {children && (
-        <p className="mt-1 max-w-sm text-[12px] text-faint">{children}</p>
+        <p className="mt-1 max-w-sm text-[0.9375rem] text-faint">{children}</p>
       )}
     </div>
   );
@@ -213,7 +209,7 @@ export function ErrorNote({ error }: { error: unknown }) {
   return (
     <div
       role="alert"
-      className="m-4 flex items-start gap-2 rounded border border-critical/30 bg-critical-soft px-3 py-2 text-[12.5px] text-critical"
+      className="m-4 flex items-start gap-2 rounded border border-critical/30 bg-critical-soft px-3 py-2 text-[0.9375rem] text-critical"
     >
       <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
       <span>{message}</span>
@@ -232,12 +228,12 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[12px] font-medium text-muted">
+      <span className="mb-1 block text-[0.9375rem] font-medium text-muted">
         {label}
       </span>
       {children}
       {hint && (
-        <span className="mt-1 block text-[11px] text-faint">{hint}</span>
+        <span className="mt-1 block text-[0.875rem] text-faint">{hint}</span>
       )}
     </label>
   );
@@ -245,5 +241,5 @@ export function Field({
 
 // Sin alto ni ancho: para controles compactos que fijan los suyos (Tailwind no resuelve h-9/h-8 ni w-full/w-auto juntos).
 export const controlClass =
-  'rounded border border-line bg-card px-3 text-[13px] text-ink placeholder:text-faint focus:border-gob focus:outline-none disabled:bg-soft disabled:text-muted';
-export const inputClass = `h-9 w-full ${controlClass}`;
+  'rounded border border-line bg-card px-3 text-[1rem] text-ink placeholder:text-faint focus:border-gob focus:outline-none disabled:bg-soft disabled:text-muted';
+export const inputClass = `min-h-11 w-full ${controlClass}`;

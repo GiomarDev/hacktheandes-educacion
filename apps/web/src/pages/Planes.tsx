@@ -94,7 +94,7 @@ export function PlanesPage() {
                   >
                     <div className="min-w-0 flex-1">
                       <div className="font-medium">{nameOf(p.studentId)}</div>
-                      <div className="truncate text-[12px] text-faint">
+                      <div className="truncate text-[0.9375rem] text-faint">
                         {p.barriers}
                       </div>
                     </div>
@@ -102,7 +102,7 @@ export function PlanesPage() {
                       <Badge tone={PLAN_STATUS[p.status].tone}>
                         {PLAN_STATUS[p.status].label}
                       </Badge>
-                      <div className="mt-1 text-[11px] text-faint">
+                      <div className="mt-1 text-[0.875rem] text-faint">
                         {formatDate(p.updatedAt)}
                       </div>
                     </div>

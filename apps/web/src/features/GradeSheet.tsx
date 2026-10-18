@@ -39,7 +39,7 @@ export function GradeSheet({
   const competency = sheet.competencies.find((c) => c.id === competencyId);
   if (!competency)
     return (
-      <p className="px-4 py-6 text-[12.5px] text-faint">
+      <p className="px-4 py-6 text-[0.9375rem] text-faint">
         El área no tiene competencias registradas.
       </p>
     );
@@ -85,7 +85,7 @@ export function GradeSheet({
             title={c.name}
             onClick={() => setCompetencyId(c.id)}
             className={cx(
-              'shrink-0 rounded px-2.5 py-1 text-[12px] font-medium',
+              'shrink-0 rounded px-2.5 py-1 text-[0.9375rem] font-medium',
               c.id === competency.id
                 ? 'bg-ink text-white'
                 : 'text-muted hover:bg-soft hover:text-ink',
@@ -95,12 +95,12 @@ export function GradeSheet({
           </button>
         ))}
       </div>
-      <p className="px-4 pt-3 text-[12.5px] text-muted">{competency.name}</p>
+      <p className="px-4 pt-3 text-[0.9375rem] text-muted">{competency.name}</p>
       {error ? <ErrorNote error={error} /> : null}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-max text-[12.5px]">
+        <table className="w-full min-w-max text-[0.9375rem]">
           <thead>
-            <tr className="text-left text-[11px] text-faint">
+            <tr className="text-left text-[0.875rem] text-faint">
               <th className="sticky left-0 bg-card px-4 py-2 font-medium md:w-full">
                 Estudiante
               </th>
@@ -157,7 +157,7 @@ export function GradeSheet({
                           <select
                             aria-label={`${name}: columna ${columnNumber}`}
                             className={cx(
-                              'h-7 w-12 rounded border border-line bg-card text-center font-mono text-[12px] focus:border-gob focus:outline-none',
+                              'h-7 w-12 rounded border border-line bg-card text-center font-sans tabular-nums text-[0.9375rem] focus:border-gob focus:outline-none',
                               busy && 'opacity-50',
                             )}
                             value={value ?? ''}
@@ -180,7 +180,9 @@ export function GradeSheet({
                             ))}
                           </select>
                         ) : (
-                          <span className="font-mono">{value ?? '—'}</span>
+                          <span className="font-sans tabular-nums">
+                            {value ?? '—'}
+                          </span>
                         )}
                       </td>
                     );
@@ -195,7 +197,7 @@ export function GradeSheet({
                       <span className="text-faint">—</span>
                     )}
                   </td>
-                  <td className="px-3 py-1.5 text-right font-mono text-muted">
+                  <td className="px-3 py-1.5 text-right font-sans tabular-nums text-muted">
                     {final ? pct(final.attendanceRate, 0) : '—'}
                   </td>
                 </tr>
@@ -204,7 +206,7 @@ export function GradeSheet({
           </tbody>
         </table>
       </div>
-      <p className="px-4 py-3 text-[11px] text-faint">
+      <p className="px-4 py-3 text-[0.875rem] text-faint">
         La nota del periodo la calcula SIAGIE con la regla provisional del
         proyecto: la calificación más frecuente y, si hay empate, la más
         reciente. Está pendiente validarla con la norma oficial.

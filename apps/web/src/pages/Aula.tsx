@@ -69,7 +69,7 @@ export function AulaPage() {
       <Card>
         <div className="flex flex-wrap items-end gap-3 border-b border-line px-4 py-3">
           <label className="min-w-[200px] flex-1">
-            <span className="mb-1 block text-[12px] font-medium text-muted">
+            <span className="mb-1 block text-[0.9375rem] font-medium text-muted">
               Sección
             </span>
             <select
@@ -86,7 +86,7 @@ export function AulaPage() {
             </select>
           </label>
           <label>
-            <span className="mb-1 block text-[12px] font-medium text-muted">
+            <span className="mb-1 block text-[0.9375rem] font-medium text-muted">
               Fecha
             </span>
             <input
@@ -116,7 +116,7 @@ export function AulaPage() {
           action={
             <Link
               to="/docente"
-              className="text-[12px] text-gob hover:underline"
+              className="text-[0.9375rem] text-gob hover:underline"
             >
               Volver a Hoy
             </Link>

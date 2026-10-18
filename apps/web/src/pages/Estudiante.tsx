@@ -65,9 +65,9 @@ export function EstudiantePage() {
             <Empty title="Sin calificaciones registradas" />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-[12.5px]">
+              <table className="w-full text-[0.9375rem]">
                 <thead>
-                  <tr className="border-b border-line text-left text-[11px] text-faint uppercase">
+                  <tr className="border-b border-line text-left text-[0.875rem] text-faint">
                     <th className="px-4 py-2 font-medium">Competencia</th>
                     {periods.map((p) => (
                       <th key={p} className="px-3 py-2 text-center font-medium">
@@ -79,7 +79,7 @@ export function EstudiantePage() {
                 <tbody>
                   {competencies.map((c) => (
                     <tr key={c} className="border-b border-line last:border-0">
-                      <td className="px-4 py-2 font-mono">{c}</td>
+                      <td className="px-4 py-2 font-sans tabular-nums">{c}</td>
                       {periods.map((p) => {
                         const value = periodGrades.find(
                           (g) => g.competencyCode === c && g.periodNumber === p,
@@ -126,7 +126,7 @@ export function EstudiantePage() {
                     <Badge tone={CASE_STATUS[c.status].tone}>
                       {CASE_STATUS[c.status].label}
                     </Badge>
-                    <div className="mt-1 text-[12px] text-faint">
+                    <div className="mt-1 text-[0.9375rem] text-faint">
                       Abierto {formatDate(c.openedAt)} ·{' '}
                       {c.firstContactAt
                         ? `primer contacto ${formatDate(c.firstContactAt)}`

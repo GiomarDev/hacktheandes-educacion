@@ -100,7 +100,7 @@ export function RegionMap({
                 x={size / 2}
                 y={22}
                 textAnchor="middle"
-                fontSize={11}
+                fontSize={12}
                 fontWeight={600}
                 fill={scale.text}
               >
@@ -110,8 +110,8 @@ export function RegionMap({
                 x={size / 2}
                 y={39}
                 textAnchor="middle"
-                fontSize={11}
-                fontFamily="JetBrains Mono, monospace"
+                fontSize={12}
+                fontFamily="var(--font-sans)"
                 fill={scale.text}
               >
                 {v ? v.value.toFixed(1) : '—'}
@@ -120,7 +120,7 @@ export function RegionMap({
           );
         })}
       </svg>
-      <div className="space-y-1.5 text-[12px]">
+      <div className="space-y-1.5 text-[0.9375rem]">
         {RISK_SCALE.map((s) => (
           <div key={s.label} className="flex items-center gap-2">
             <span
@@ -130,7 +130,7 @@ export function RegionMap({
             {s.label}
           </div>
         ))}
-        <p className="max-w-[160px] pt-2 text-[11px] text-faint">
+        <p className="max-w-[160px] pt-2 text-[0.875rem] text-faint">
           Quintiles de la tasa entre las 25 regiones. Clic en una región para
           ver su detalle.
         </p>

@@ -1,28 +1,30 @@
 @import 'tailwindcss';
+@import './typography.css';
 
-/* Tokens del bosquejo de Claude Design (Amauti, antes Centinela Escolar). */
+/* Amauti: lectura pública clara y carácter educativo. Ver docs/design/. */
 @theme {
-  /* Geist + Geist Mono: pareja sans/mono para interfaces densas (skill taste-design). */
-  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  /* Dos voces de Adobe: interfaz humanista y títulos de lectura. */
+  --font-sans: 'Source Sans 3', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, monospace;
   /* Amauti: el amarillo del lápiz, solo para la mascota y sus acentos. */
   --color-amauti: #ffd21f;
   --color-amauti-soft: #fff7d1;
-  --color-ink: #1a2332;
-  --color-ink-2: #243043;
-  --color-muted: #5a6578;
-  --color-faint: #8a95a8;
-  --color-line: #e1e5eb;
-  --color-soft: #f0f3f7;
-  --color-canvas: #f5f7fa;
+  --color-ink: #183349;
+  --color-ink-2: #24465c;
+  --color-muted: #526579;
+  --color-faint: #627589;
+  --color-line: #d8e2e9;
+  --color-soft: #eaf0f4;
+  --color-canvas: #f2f5f7;
   --color-card: #ffffff;
   --color-peru: #d91023;
-  --color-gob: #003876;
+  --color-gob: #164e73;
   --color-critical: #c8102e;
-  --color-high: #f0633b;
+  --color-high: #a74423;
   --color-medium: #e6a316;
-  --color-low: #78b04b;
-  --color-stable: #2b8a3e;
+  --color-low: #3e722e;
+  --color-stable: #28713a;
   --color-critical-soft: #ffeef0;
   --color-high-soft: #fdede4;
   --color-medium-soft: #fef6e6;
@@ -40,7 +42,10 @@ body {
   background: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 13.5px;
+  font-size: 1rem;
+  font-size-adjust: from-font;
+  font-optical-sizing: auto;
+  font-synthesis: none;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -77,18 +82,9 @@ button:not(:disabled):active {
   }
 }
 
-/* Entrada de cada pantalla: los bloques suben en cascada. */
-.page-enter > * {
-  animation: rise 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-.page-enter > *:nth-child(2) {
-  animation-delay: 60ms;
-}
-.page-enter > *:nth-child(3) {
-  animation-delay: 120ms;
-}
-.page-enter > *:nth-child(n + 4) {
-  animation-delay: 180ms;
+/* Una entrada de pantalla; el contenido permanece quieto durante la lectura. */
+.page-enter {
+  animation: rise 0.18s ease-out both;
 }
 @keyframes rise {
   from {
@@ -121,7 +117,7 @@ button:not(:disabled):active {
 
 @media (prefers-reduced-motion: reduce) {
   .skeleton,
-  .page-enter > *,
+  .page-enter,
   .tour-card {
     animation: none;
   }
@@ -131,5 +127,130 @@ button:not(:disabled):active {
   }
   button:not(:disabled):active {
     transform: none;
+  }
+}
+
+/* Escala en rem: conserva el zoom y el tamaño de texto elegido en el navegador. */
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
+}
+p {
+  text-wrap: pretty;
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+input,
+select,
+textarea {
+  font-size: 1rem;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+input,
+select,
+textarea {
+  min-height: 2.75rem;
+}
+textarea {
+  line-height: 1.6;
+}
+th {
+  font-weight: 600;
+}
+table {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+::selection {
+  background: #ffe784;
+  color: #183349;
+}
+
+.page-heading {
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 1.45rem + 1.35vw, 2.5rem);
+  font-weight: 600;
+  font-size-adjust: from-font;
+  font-optical-sizing: auto;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.page-description {
+  max-width: 72ch;
+  line-height: 1.6;
+}
+.page-heading-rule {
+  width: 2.5rem;
+  height: 0.25rem;
+  background: var(--color-amauti);
+  border-radius: 1px;
+}
+.section-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.metric-value {
+  font-size: clamp(2rem, 1.7rem + 0.65vw, 2.625rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: 1.75rem;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 1rem;
+  z-index: 2000;
+  transform: translateY(-200%);
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  color: var(--color-gob);
+  font-weight: 600;
+}
+.skip-link:focus {
+  transform: none;
+}
+.login-copy {
+  font-size: clamp(2.5rem, 1.5rem + 2vw, 3.75rem);
+}
+.login-surface {
+  position: relative;
+  background: var(--color-ink);
+  color: white;
+}
+.login-surface::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4rem;
+  height: 0.35rem;
+  background: var(--color-amauti);
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
   }
 }

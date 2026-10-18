@@ -134,7 +134,7 @@ export function CasoPage() {
                       {SEVERITY[a.severity].label}
                     </Badge>
                     <span className="font-medium">{alertType(a.type)}</span>
-                    <span className="text-[12px] text-faint">
+                    <span className="text-[0.9375rem] text-faint">
                       {alertEvidence(a.data) ?? ''} ·{' '}
                       {formatDate(a.detectedAt, true)}
                     </span>
@@ -160,14 +160,14 @@ export function CasoPage() {
                     className="relative border-l border-line pb-4 pl-4 last:pb-0"
                   >
                     <span className="absolute top-1 -left-[4.5px] size-2 rounded-full bg-gob" />
-                    <div className="text-[12px] text-faint">
+                    <div className="text-[0.9375rem] text-faint">
                       {formatDate(a.performedAt, true)}
                     </div>
                     <div className="font-medium">
                       {ACTION_TYPE[a.type] ?? a.type}
                     </div>
                     {a.notes && (
-                      <p className="mt-0.5 text-[12.5px] whitespace-pre-line text-muted">
+                      <p className="mt-0.5 text-[0.9375rem] whitespace-pre-line text-muted">
                         {a.notes}
                       </p>
                     )}
@@ -176,7 +176,7 @@ export function CasoPage() {
               </ol>
             )}
             {c.notifications.length > 0 && (
-              <div className="border-t border-line px-4 py-3 text-[12px] text-muted">
+              <div className="border-t border-line px-4 py-3 text-[0.9375rem] text-muted">
                 Mensajes a apoderados:{' '}
                 {c.notifications
                   .map((n) => `${n.channel} ${n.status.toLowerCase()}`)
@@ -213,7 +213,7 @@ export function CasoPage() {
                   <MessageSquare className="size-4" aria-hidden /> Enviar
                   mensaje de acompañamiento
                 </Button>
-                <p className="text-[11.5px] text-faint">
+                <p className="text-[0.875rem] text-faint">
                   Usa un texto neutro y solo llega a apoderados que aceptaron
                   recibir alertas.
                 </p>
@@ -298,7 +298,7 @@ export function CasoPage() {
           {feedback && (
             <div
               role="status"
-              className="rounded border border-stable/30 bg-stable-soft px-3 py-2 text-[12.5px] text-stable"
+              className="rounded border border-stable/30 bg-stable-soft px-3 py-2 text-[0.9375rem] text-stable"
             >
               {feedback}
             </div>

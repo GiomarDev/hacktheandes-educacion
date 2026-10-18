@@ -85,8 +85,10 @@ function Figures({ items }: { items: [string, ReactNode][] }) {
     <dl className="grid grid-cols-2 gap-2 sm:grid-cols-3">
       {items.map(([label, value]) => (
         <div key={label} className="rounded bg-canvas px-2.5 py-2">
-          <dt className="text-[11px] text-muted">{label}</dt>
-          <dd className="font-mono text-[14px] font-medium">{value}</dd>
+          <dt className="text-[0.875rem] text-muted">{label}</dt>
+          <dd className="font-sans tabular-nums text-[1.0625rem] font-medium">
+            {value}
+          </dd>
         </div>
       ))}
     </dl>
@@ -112,7 +114,7 @@ function ReportFigures({ report }: { report: Report }) {
           ]}
         />
         <div>
-          <div className="mb-1 text-[11px] font-medium text-muted">
+          <div className="mb-1 text-[0.875rem] font-medium text-muted">
             Notas del periodo por competencia ({int(graded)})
           </div>
           <Figures
@@ -226,7 +228,7 @@ export function ReportesPage() {
                             'bimestre')}{' '}
                         {r.year}
                       </div>
-                      <div className="text-[12px] text-faint">
+                      <div className="text-[0.9375rem] text-faint">
                         {schoolName.get(r.schoolId) ?? 'IE'} · revisión{' '}
                         {r.revision} · generado{' '}
                         {formatDate(r.generatedAt ?? r.createdAt)}
@@ -240,7 +242,7 @@ export function ReportesPage() {
                     <div className="mt-3 space-y-3">
                       <ReportFigures report={r} />
                       {r.reviewNotes && (
-                        <p className="rounded border border-high/30 bg-high-soft px-3 py-2 text-[12.5px]">
+                        <p className="rounded border border-high/30 bg-high-soft px-3 py-2 text-[0.9375rem]">
                           Observación de la UGEL: {r.reviewNotes}
                         </p>
                       )}
@@ -350,7 +352,7 @@ export function ReportesPage() {
                     ))}
                   </select>
                   {periods.data && !bimesters.length && (
-                    <span className="mt-1 block text-[11px] text-high">
+                    <span className="mt-1 block text-[0.875rem] text-high">
                       La IE no tiene bimestres iniciados este año.
                     </span>
                   )}

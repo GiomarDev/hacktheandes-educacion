@@ -47,8 +47,8 @@ export function TrendChart({
               x={pad.l - 6}
               y={y(t) + 4}
               textAnchor="end"
-              fontSize={10}
-              fill="#8A95A8"
+              fontSize={12}
+              fill="#627589"
             >
               {t.toFixed(1)}
             </text>
@@ -61,8 +61,8 @@ export function TrendChart({
               x={x(p)}
               y={height - 8}
               textAnchor="middle"
-              fontSize={10}
-              fill="#8A95A8"
+              fontSize={12}
+              fill="#627589"
             >
               {p.slice(2, 4)}-{p.slice(7, 9)}
             </text>
@@ -92,7 +92,7 @@ export function TrendChart({
           </g>
         ))}
       </svg>
-      <div className="mt-1 flex flex-wrap gap-4 text-[11.5px] text-muted">
+      <div className="mt-1 flex flex-wrap gap-4 text-[0.875rem] text-muted">
         {series.map((s) => (
           <span key={s.label} className="flex items-center gap-1.5">
             <span className="h-0.5 w-4" style={{ background: s.color }} />{' '}

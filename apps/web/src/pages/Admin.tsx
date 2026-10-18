@@ -171,7 +171,7 @@ function NewUserForm({ schoolId, roles }: { schoolId: string; roles: Role[] }) {
       </Field>
       {create.error ? <ErrorNote error={create.error} /> : null}
       {done && (
-        <p role="status" className="text-[12.5px] text-stable">
+        <p role="status" className="text-[0.9375rem] text-stable">
           Cuenta de {done} creada.
         </p>
       )}
@@ -213,7 +213,7 @@ function UserRow({
             {account.firstName} {account.lastName}
             {self && <span className="text-faint"> (tú)</span>}
           </div>
-          <div className="text-[12px] text-faint">
+          <div className="text-[0.9375rem] text-faint">
             DNI {account.documentNumber} · {STATUS_LABEL[account.status]}
             {account.mustChangePassword ? ' · debe cambiar su contraseña' : ''}
             {' · '}
@@ -226,7 +226,7 @@ function UserRow({
           {account.roles.map((r) => (
             <span
               key={r.id}
-              className="inline-flex items-center gap-1 rounded bg-soft px-1.5 py-0.5 text-[11px] font-medium text-muted"
+              className="inline-flex items-center gap-1 rounded bg-soft px-1.5 py-0.5 text-[0.875rem] font-medium text-muted"
             >
               {roleLabel(r.role)}
               {!self && grantable.includes(r.role) && (
@@ -248,7 +248,7 @@ function UserRow({
       {!self && schoolId && missing.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-2">
           <select
-            className={`${controlClass} h-8 w-auto text-[12px]`}
+            className={`${controlClass} h-8 w-auto text-[0.9375rem]`}
             aria-label={`Rol para ${account.firstName}`}
             value={role}
             onChange={(e) => setRole(e.target.value as Role)}
@@ -298,7 +298,7 @@ function UsersTab() {
           action={
             !active.schoolId && (
               <select
-                className={`${controlClass} h-8 w-auto text-[12px]`}
+                className={`${controlClass} h-8 w-auto text-[0.9375rem]`}
                 aria-label="IE"
                 value={schoolId ?? ''}
                 onChange={(e) => setChosen(e.target.value)}
@@ -363,7 +363,7 @@ function RuleRow({ rule, editable }: { rule: RiskRule; editable: boolean }) {
       <div className="flex flex-wrap items-center gap-2">
         <div className="min-w-0 flex-1">
           <div className="font-medium">{RULE_TYPE[rule.type] ?? rule.type}</div>
-          <div className="font-mono text-[11px] text-faint">
+          <div className="font-sans tabular-nums text-[0.875rem] text-faint">
             {rule.code} · {rule.schoolId ? 'de la IE' : 'global'}
           </div>
         </div>
@@ -387,7 +387,7 @@ function RuleRow({ rule, editable }: { rule: RiskRule; editable: boolean }) {
           const meta = PARAMS[key];
           return (
             <label key={key}>
-              <span className="mb-1 block text-[11px] text-muted">
+              <span className="mb-1 block text-[0.875rem] text-muted">
                 {meta?.label ?? key}
               </span>
               <input
@@ -405,7 +405,9 @@ function RuleRow({ rule, editable }: { rule: RiskRule; editable: boolean }) {
           );
         })}
         <label>
-          <span className="mb-1 block text-[11px] text-muted">Severidad</span>
+          <span className="mb-1 block text-[0.875rem] text-muted">
+            Severidad
+          </span>
           <select
             className={`${controlClass} h-8 w-auto`}
             disabled={!editable}
@@ -496,7 +498,7 @@ export function AdminPage() {
             aria-selected={tab === key}
             onClick={() => setParams({ tab: key }, { replace: true })}
             className={cx(
-              'rounded px-3 py-1.5 text-[12.5px] font-medium',
+              'rounded px-3 py-1.5 text-[0.9375rem] font-medium',
               tab === key
                 ? 'bg-ink text-white'
                 : 'text-muted hover:bg-soft hover:text-ink',

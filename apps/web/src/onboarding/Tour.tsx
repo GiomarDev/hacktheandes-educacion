@@ -164,23 +164,23 @@ export function Tour({
             className="-mt-1 h-[92px] w-[66px] shrink-0"
           />
           <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-medium text-faint">
+            <div className="text-[0.875rem] font-medium text-faint">
               Paso {index + 1} de {steps.length}
             </div>
             <h2
               id="tour-title"
-              className="mt-0.5 text-[16px] leading-snug font-semibold tracking-tight text-ink"
+              className="mt-0.5 text-[1rem] leading-snug font-semibold tracking-tight text-ink"
             >
               {step.title}
             </h2>
-            <p id="tour-body" className="mt-1.5 text-[13px] text-muted">
+            <p id="tour-body" className="mt-1.5 text-[1rem] text-muted">
               {step.body}
             </p>
           </div>
           <button
             type="button"
             onClick={() => onFinish(false)}
-            className="-mt-1 -mr-1 flex size-8 shrink-0 items-center justify-center rounded text-faint hover:bg-soft hover:text-ink"
+            className="-mt-1 -mr-1 flex size-11 shrink-0 items-center justify-center rounded text-faint hover:bg-soft hover:text-ink"
             aria-label="Saltar el recorrido"
           >
             <X className="size-4" aria-hidden />

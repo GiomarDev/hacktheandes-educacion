@@ -50,9 +50,9 @@ export function EscuelasPage() {
           <Empty title="No hay IEs que coincidan" />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-[12.5px]">
+            <table className="w-full min-w-[640px] text-[0.9375rem]">
               <thead>
-                <tr className="border-b border-line text-left text-[11px] text-faint uppercase">
+                <tr className="border-b border-line text-left text-[0.875rem] text-faint">
                   <th className="px-4 py-2 font-medium">
                     Institución educativa
                   </th>
@@ -75,7 +75,7 @@ export function EscuelasPage() {
                       >
                         {s.name}
                       </Link>
-                      <div className="font-mono text-[11px] text-faint">
+                      <div className="font-sans tabular-nums text-[0.875rem] text-faint">
                         {s.modularCode}
                       </div>
                     </td>
@@ -91,7 +91,9 @@ export function EscuelasPage() {
                           : s.level}{' '}
                       · {s.management === 'PUBLIC' ? 'pública' : 'privada'}
                     </td>
-                    <td className="px-3 py-2.5 font-mono">{s.attentionGoal}</td>
+                    <td className="px-3 py-2.5 font-sans tabular-nums">
+                      {s.attentionGoal}
+                    </td>
                     <td className="px-3 py-2.5">
                       {count.get(s.id) ? (
                         <Badge tone="critical">

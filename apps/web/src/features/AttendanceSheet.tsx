@@ -75,10 +75,12 @@ export function AttendanceSheet({
         >
           <CheckCheck className="size-4" aria-hidden /> Todos presentes
         </Button>
-        <div className="ml-auto flex flex-wrap gap-3 text-[12px] text-muted">
+        <div className="ml-auto flex flex-wrap gap-3 text-[0.9375rem] text-muted">
           {counts.map(([status, n]) => (
             <span key={status}>
-              <span className="font-mono font-medium text-ink">{n}</span>{' '}
+              <span className="font-sans tabular-nums font-medium text-ink">
+                {n}
+              </span>{' '}
               {ATTENDANCE_LABEL[status].label.toLowerCase()}
             </span>
           ))}
@@ -92,7 +94,7 @@ export function AttendanceSheet({
               key={e.id}
               className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5"
             >
-              <span className="w-6 font-mono text-[11px] text-faint">
+              <span className="w-6 font-sans tabular-nums text-[0.875rem] text-faint">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="min-w-[180px] flex-1 font-medium">{name}</span>
@@ -110,7 +112,7 @@ export function AttendanceSheet({
                       disabled={disabled}
                       onClick={() => mark(e.id, status)}
                       className={cx(
-                        'size-8 rounded border font-mono text-[12px] font-semibold transition-colors disabled:opacity-50',
+                        'size-11 rounded border font-sans tabular-nums text-[0.9375rem] font-semibold transition-colors disabled:opacity-50',
                         checked
                           ? SELECTED[status]
                           : 'border-line bg-card text-muted hover:bg-soft',
@@ -126,9 +128,12 @@ export function AttendanceSheet({
         })}
       </ul>
       {error ? <ErrorNote error={error} /> : null}
-      <div className="sticky bottom-14 flex flex-wrap items-center gap-3 border-t border-line bg-card px-4 py-3 md:bottom-0">
+      <div className="sticky bottom-16 flex flex-wrap items-center gap-3 border-t border-line bg-card px-4 py-3 md:bottom-0">
         <span
-          className={cx('text-[12.5px]', missing ? 'text-high' : 'text-stable')}
+          className={cx(
+            'text-[0.9375rem]',
+            missing ? 'text-high' : 'text-stable',
+          )}
         >
           {missing
             ? `Falta marcar a ${missing} estudiante${missing === 1 ? '' : 's'}`

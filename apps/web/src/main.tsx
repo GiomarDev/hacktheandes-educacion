@@ -5,6 +5,13 @@ import { ApiError } from './api/client';
 import { AuthProvider } from './auth/AuthProvider';
 import { App } from './App';
 import './index.css';
+import { configureAdobeFonts } from './adobe-fonts';
+
+configureAdobeFonts({
+  kitId: import.meta.env.VITE_ADOBE_FONTS_KIT_ID,
+  uiFamily: import.meta.env.VITE_ADOBE_UI_FAMILY,
+  displayFamily: import.meta.env.VITE_ADOBE_DISPLAY_FAMILY,
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {

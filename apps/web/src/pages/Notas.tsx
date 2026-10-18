@@ -82,7 +82,7 @@ export function NotasPage() {
       <Card>
         <div className="grid gap-3 border-b border-line px-4 py-3 sm:grid-cols-3">
           <label>
-            <span className="mb-1 block text-[12px] font-medium text-muted">
+            <span className="mb-1 block text-[0.9375rem] font-medium text-muted">
               Sección
             </span>
             <select
@@ -98,7 +98,7 @@ export function NotasPage() {
             </select>
           </label>
           <label>
-            <span className="mb-1 block text-[12px] font-medium text-muted">
+            <span className="mb-1 block text-[0.9375rem] font-medium text-muted">
               Periodo
             </span>
             <select
@@ -116,7 +116,7 @@ export function NotasPage() {
             </select>
           </label>
           <label>
-            <span className="mb-1 block text-[12px] font-medium text-muted">
+            <span className="mb-1 block text-[0.9375rem] font-medium text-muted">
               Área
             </span>
             <select

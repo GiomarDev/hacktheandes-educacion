@@ -92,9 +92,9 @@ export function FuentesPage() {
                         i.dataset}
                     </Badge>
                   </div>
-                  <div className="mt-0.5 text-[12px] text-faint">
+                  <div className="mt-0.5 text-[0.9375rem] text-faint">
                     {int(i.rowCount)} filas · {formatDate(i.importedAt, true)} ·{' '}
-                    <span className="font-mono">
+                    <span className="font-sans tabular-nums">
                       {i.checksum.slice(0, 12)}…
                     </span>
                   </div>
@@ -138,7 +138,7 @@ export function FuentesPage() {
                 />
               </Field>
             )}
-            <label className="flex h-9 cursor-pointer items-center justify-center gap-2 rounded bg-ink px-3 text-[12.5px] font-medium text-white hover:bg-ink-2">
+            <label className="flex h-9 cursor-pointer items-center justify-center gap-2 rounded bg-ink px-3 text-[0.9375rem] font-medium text-white hover:bg-ink-2">
               <Upload className="size-4" aria-hidden />{' '}
               {upload.isPending ? 'Importando…' : 'Elegir archivo CSV'}
               <input
@@ -150,7 +150,7 @@ export function FuentesPage() {
             </label>
             {upload.error ? <ErrorNote error={upload.error} /> : null}
             {upload.data && (
-              <p role="status" className="text-[12.5px] text-stable">
+              <p role="status" className="text-[0.9375rem] text-stable">
                 Importado: {upload.data.values} valores.
               </p>
             )}

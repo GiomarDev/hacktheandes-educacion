@@ -76,7 +76,7 @@ export function EscuelaPage() {
       <PageHeader
         eyebrow={
           <span className="normal-case">
-            <span className="font-mono">{s.modularCode}</span> ·{' '}
+            <span className="font-sans tabular-nums">{s.modularCode}</span> ·{' '}
             {s.ugel?.name ?? 'UGEL'} · {s.department}
           </span>
         }
@@ -143,9 +143,9 @@ export function EscuelaPage() {
             <Empty title="Sin secciones registradas este año" />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[460px] text-[12.5px]">
+              <table className="w-full min-w-[460px] text-[0.9375rem]">
                 <thead>
-                  <tr className="border-b border-line text-left text-[11px] text-faint uppercase">
+                  <tr className="border-b border-line text-left text-[0.875rem] text-faint">
                     <th className="px-4 py-2 font-medium">Sección</th>
                     <th className="px-3 py-2 font-medium">Matrícula</th>
                     <th className="px-3 py-2 font-medium">Asistencia</th>
@@ -171,7 +171,7 @@ export function EscuelaPage() {
                               : sec.shift.toLowerCase()}
                           </span>
                         </td>
-                        <td className="px-3 py-2.5 font-mono">
+                        <td className="px-3 py-2.5 font-sans tabular-nums">
                           {sec.enrolledCount}
                         </td>
                         <td className="px-3 py-2.5">
@@ -186,7 +186,9 @@ export function EscuelaPage() {
                                 style={{ width: `${r ?? 0}%` }}
                               />
                             </div>
-                            <span className="font-mono">{pct(r, 0)}</span>
+                            <span className="font-sans tabular-nums">
+                              {pct(r, 0)}
+                            </span>
                           </div>
                         </td>
                         <td className="px-3 py-2.5">
@@ -225,9 +227,9 @@ export function EscuelaPage() {
                     .sort((a, b) => b[1] - a[1])
                     .map(([type, n]) => (
                       <li key={type}>
-                        <div className="mb-1 flex justify-between text-[12.5px]">
+                        <div className="mb-1 flex justify-between text-[0.9375rem]">
                           <span>{alertType(type)}</span>
-                          <span className="font-mono">{n}</span>
+                          <span className="font-sans tabular-nums">{n}</span>
                         </div>
                         <div className="h-1.5 overflow-hidden rounded bg-soft">
                           <div
@@ -242,7 +244,7 @@ export function EscuelaPage() {
               <div className="border-t border-line px-4 py-2.5">
                 <Link
                   to="/alertas"
-                  className="text-[12px] text-gob hover:underline"
+                  className="text-[0.9375rem] text-gob hover:underline"
                 >
                   Ir al centro de alertas →
                 </Link>
@@ -269,7 +271,7 @@ export function EscuelaPage() {
                   >
                     <div className="min-w-0 flex-1">
                       <div className="font-medium">{REPORT_TYPE[r.type]}</div>
-                      <div className="text-[12px] text-faint">
+                      <div className="text-[0.9375rem] text-faint">
                         {r.month ? `Mes ${r.month}` : 'Bimestre'} · {r.year} ·{' '}
                         {formatDate(r.createdAt)}
                       </div>

@@ -1,26 +1,9 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
-import {
-  AlertTriangle,
-  BarChart3,
-  CalendarCheck,
-  ClipboardList,
-  Database,
-  FileText,
-  Eye,
-  GraduationCap,
-  HeartHandshake,
-  LayoutDashboard,
-  LogOut,
-  MoreHorizontal,
-  School,
-  Compass,
-  Settings,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { BarChart3, LogOut, MoreHorizontal, Compass } from 'lucide-react';
+import { NavigationIcon } from '../ui/NavigationIcon';
 import { useSession } from '../auth/AuthProvider';
 import { navFor, roleLabel } from '../auth/roles';
-import type { NavIcon } from '../auth/roles';
 import { useAlerts } from '../api/queries';
 import { useMascot } from '../mascot/MascotProvider';
 import { MascotFigure } from '../mascot/MascotFigure';
@@ -29,20 +12,6 @@ import { Tour } from '../onboarding/Tour';
 import { useOnboarding } from '../onboarding/useOnboarding';
 import { Flag, Wordmark } from '../ui/Brand';
 import { cx } from '../ui/kit';
-
-const ICONS: Record<NavIcon, LucideIcon> = {
-  today: CalendarCheck,
-  classroom: ClipboardList,
-  grades: GraduationCap,
-  alerts: AlertTriangle,
-  panorama: LayoutDashboard,
-  schools: School,
-  reports: FileText,
-  sources: Database,
-  plans: HeartHandshake,
-  visits: Eye,
-  admin: Settings,
-};
 
 function initials(name: string) {
   return name
@@ -69,17 +38,22 @@ export function Shell() {
 
   return (
     <div className="flex min-h-screen bg-canvas text-ink">
-      {/* Barra lateral institucional (escritorio) */}
-      <aside className="sticky top-0 hidden h-screen w-16 shrink-0 flex-col items-center bg-ink md:flex">
-        <div className="flex h-[52px] w-full items-center justify-center border-b border-ink-2">
-          <Flag />
+      <a href="#main-content" className="skip-link">
+        Saltar al contenido
+      </a>
+      {/* Navegación con etiquetas de lectura a tamaño funcional. */}
+      <aside className="sticky top-0 hidden h-dvh w-[84px] shrink-0 flex-col bg-ink text-white md:flex lg:w-[232px]">
+        <div className="flex min-h-20 w-full items-center justify-center gap-3 border-b border-white/10 px-4 lg:justify-start">
+          <Flag size={28} />
+          <span className="hidden font-display text-[1.75rem] font-semibold tracking-tight lg:block">
+            Amauti
+          </span>
         </div>
         <nav
           aria-label="Principal"
-          className="flex w-full flex-1 flex-col items-center gap-0.5 py-2.5"
+          className="flex w-full min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-1.5 py-5 lg:px-3"
         >
           {items.map((item) => {
-            const Icon = ICONS[item.icon];
             return (
               <NavLink
                 key={item.to}
@@ -88,26 +62,26 @@ export function Shell() {
                 data-tour={`nav-${item.icon}`}
                 className={({ isActive }) =>
                   cx(
-                    'relative flex h-12 w-14 flex-col items-center justify-center gap-0.5 rounded-[5px] text-[9px] font-medium transition-colors hover:bg-ink-2 hover:text-white',
-                    isActive ? 'bg-ink-2 text-white' : 'text-[#B4BCC9]',
+                    'relative flex min-h-14 w-full flex-col items-center justify-center gap-1 rounded-md px-1 py-2 text-[0.75rem] font-medium transition-colors hover:bg-white/10 hover:text-white lg:min-h-12 lg:flex-row lg:justify-start lg:gap-3 lg:px-3 lg:text-[1rem]',
+                    isActive ? 'bg-white/10 text-white' : 'text-[#c9d9e5]',
                   )
                 }
               >
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <span className="absolute top-1/2 left-0 h-[22px] w-[3px] -translate-y-1/2 rounded-r bg-peru" />
+                      <span className="absolute top-1/2 left-0 h-[22px] w-[3px] -translate-y-1/2 rounded-r bg-amauti" />
                     )}
-                    <Icon
-                      className="size-[18px]"
-                      strokeWidth={1.7}
+                    <NavigationIcon
+                      name={item.icon}
+                      className="size-5 shrink-0"
                       aria-hidden
                     />
-                    <span className="max-w-full truncate px-0.5">
+                    <span className="max-w-full px-0.5 lg:pr-5">
                       {item.label}
                     </span>
                     {item.icon === 'alerts' && alertCount > 0 && (
-                      <span className="absolute top-1 right-1 flex h-3.5 min-w-4 items-center justify-center rounded-full bg-peru px-1 font-mono text-[9px] font-semibold text-white">
+                      <span className="absolute top-1 right-1 flex h-4 min-w-4 lg:top-3.5 lg:right-2 items-center justify-center rounded-full bg-peru px-1 font-sans tabular-nums text-[0.75rem] font-semibold text-white">
                         {alertCount > 99 ? '99+' : alertCount}
                       </span>
                     )}
@@ -119,31 +93,32 @@ export function Shell() {
         </nav>
         <button
           onClick={() => void logout()}
-          className="mb-3 flex h-10 w-10 items-center justify-center rounded text-[#B4BCC9] hover:bg-ink-2 hover:text-white"
+          className="mx-3 mb-4 flex min-h-11 items-center justify-center gap-3 rounded-md text-[#c9d9e5] hover:bg-white/10 hover:text-white lg:justify-start lg:px-3"
           title="Cerrar sesión"
           aria-label="Cerrar sesión"
         >
-          <LogOut className="size-[17px]" strokeWidth={1.7} />
+          <LogOut className="size-5 shrink-0" aria-hidden />
+          <span className="hidden text-[1rem] lg:inline">Cerrar sesión</span>
         </button>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-20 border-b border-line bg-card">
-          <div className="flex h-[52px] items-center gap-3 px-4 lg:px-6">
+          <div className="flex min-h-20 flex-wrap items-center gap-3 px-4 py-3 lg:px-8">
             <div className="md:hidden">
               <Flag size={24} />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="hidden text-[10px] font-medium tracking-wide text-faint uppercase sm:block">
-                Piloto · Hack the Andes · Reto de educación
+              <div className="hidden text-[0.875rem] text-muted sm:block">
+                Continuidad educativa
               </div>
               <Wordmark />
             </div>
             {user.roles.length > 1 ? (
-              <label className="hidden items-center gap-2 text-[12px] text-muted sm:flex">
+              <label className="hidden items-center gap-2 text-[0.9375rem] text-muted sm:flex">
                 Rol activo
                 <select
-                  className="h-8 rounded border border-line bg-card px-2 text-[12px] font-medium text-ink"
+                  className="h-8 rounded border border-line bg-card px-2 text-[0.9375rem] font-medium text-ink"
                   value={user.roles.indexOf(active)}
                   onChange={(e) => selectRole(Number(e.target.value))}
                 >
@@ -155,7 +130,7 @@ export function Shell() {
                 </select>
               </label>
             ) : (
-              <div className="hidden text-[12px] text-muted sm:block">
+              <div className="hidden text-[0.9375rem] text-muted sm:block">
                 Rol activo:{' '}
                 <span className="font-medium text-ink">
                   {roleLabel(active.role)}
@@ -172,7 +147,7 @@ export function Shell() {
                   mascot.visible ? 'Ocultar a Amauti' : 'Mostrar a Amauti'
                 }
                 className={cx(
-                  'flex size-8 items-center justify-center rounded transition-colors hover:bg-soft',
+                  'flex size-11 items-center justify-center rounded transition-colors hover:bg-soft',
                   mascot.visible ? 'bg-medium-soft' : 'opacity-70',
                 )}
               >
@@ -183,24 +158,24 @@ export function Shell() {
                 onClick={tour.start}
                 title="Ver el recorrido"
                 aria-label="Ver el recorrido de bienvenida"
-                className="flex size-8 items-center justify-center rounded text-muted transition-colors hover:bg-soft hover:text-ink"
+                className="flex size-11 items-center justify-center rounded text-muted transition-colors hover:bg-soft hover:text-ink"
               >
                 <Compass className="size-4" strokeWidth={1.8} aria-hidden />
               </button>
             </div>
             <div className="flex items-center gap-2 border-l border-line pl-3">
-              <div className="flex size-8 items-center justify-center rounded-full bg-gob text-[11px] font-semibold text-white">
+              <div className="flex size-11 items-center justify-center rounded-full bg-gob text-[0.875rem] font-semibold text-white">
                 {initials(user.name)}
               </div>
               <div className="hidden leading-tight lg:block">
-                <div className="text-[12.5px] font-medium">{user.name}</div>
-                <div className="text-[11px] text-faint">
+                <div className="text-[0.9375rem] font-medium">{user.name}</div>
+                <div className="text-[0.875rem] text-faint">
                   {roleLabel(active.role)}
                 </div>
               </div>
               <button
                 onClick={() => void logout()}
-                className="flex size-8 items-center justify-center rounded text-muted hover:bg-soft md:hidden"
+                className="flex size-11 items-center justify-center rounded text-muted hover:bg-soft md:hidden"
                 aria-label="Cerrar sesión"
               >
                 <LogOut className="size-4" />
@@ -211,7 +186,7 @@ export function Shell() {
             <div className="border-t border-line px-4 py-1.5 sm:hidden">
               <select
                 aria-label="Rol activo"
-                className="h-8 w-full rounded border border-line bg-card px-2 text-[12px]"
+                className="h-8 w-full rounded border border-line bg-card px-2 text-[0.9375rem]"
                 value={user.roles.indexOf(active)}
                 onChange={(e) => selectRole(Number(e.target.value))}
               >
@@ -225,9 +200,16 @@ export function Shell() {
           )}
         </header>
 
-        <main className="flex-1 px-4 pt-5 pb-24 md:pb-8 lg:px-8">
-          {/* La clave por ruta repite la entrada en cascada al cambiar de pantalla. */}
-          <div key={pathname} className="page-enter">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="flex-1 px-4 pt-7 pb-28 outline-none md:pb-10 lg:px-8 lg:pt-9"
+        >
+          {/* La entrada es única por pantalla, sin mover los bloques durante la lectura. */}
+          <div
+            key={pathname}
+            className="page-enter mx-auto w-full max-w-[1560px]"
+          >
             <Outlet />
           </div>
         </main>
@@ -235,13 +217,15 @@ export function Shell() {
           <Tour steps={stepsFor(active, user.name)} onFinish={tour.finish} />
         )}
 
-        <footer className="hidden items-center gap-4 border-t border-line bg-card px-6 py-2 text-[11px] text-faint md:flex">
+        <footer className="hidden items-center gap-4 border-t border-line bg-card px-6 py-2 text-[0.875rem] text-faint md:flex">
           <span className="flex items-center gap-1.5">
             <BarChart3 className="size-3.5" aria-hidden /> SIAGIE · Alerta ·
             SIMON · ESCALE
           </span>
           <span>Datos sintéticos de demostración</span>
-          <span className="ml-auto font-mono">v0.1.0 · piloto</span>
+          <span className="ml-auto font-sans tabular-nums">
+            v0.1.0 · piloto
+          </span>
         </footer>
       </div>
 
@@ -256,10 +240,9 @@ export function Shell() {
       {moreOpen && (
         <nav
           aria-label="Más secciones"
-          className="fixed inset-x-3 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+8px)] z-30 rounded-md border border-line bg-card py-1 shadow-lg md:hidden"
+          className="fixed inset-x-3 bottom-[calc(4rem+env(safe-area-inset-bottom)+8px)] z-30 rounded-md border border-line bg-card py-1 shadow-lg md:hidden"
         >
           {moreItems.map((item) => {
-            const Icon = ICONS[item.icon];
             return (
               <NavLink
                 key={item.to}
@@ -267,12 +250,16 @@ export function Shell() {
                 onClick={() => setMoreOpen(false)}
                 className={({ isActive }) =>
                   cx(
-                    'flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium',
-                    isActive ? 'text-peru' : 'text-ink',
+                    'flex items-center gap-3 px-4 py-2.5 text-[1rem] font-medium',
+                    isActive ? 'bg-gob-soft text-gob' : 'text-ink',
                   )
                 }
               >
-                <Icon className="size-5" strokeWidth={1.7} aria-hidden />
+                <NavigationIcon
+                  name={item.icon}
+                  className="size-5"
+                  aria-hidden
+                />
                 {item.label}
               </NavLink>
             );
@@ -284,7 +271,6 @@ export function Shell() {
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-card pb-[env(safe-area-inset-bottom)] md:hidden"
       >
         {mobileItems.map((item) => {
-          const Icon = ICONS[item.icon];
           return (
             <NavLink
               key={item.to}
@@ -294,15 +280,15 @@ export function Shell() {
               onClick={() => setMoreOpen(false)}
               className={({ isActive }) =>
                 cx(
-                  'relative flex h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium',
-                  isActive ? 'text-peru' : 'text-muted',
+                  'relative flex h-16 flex-1 flex-col items-center justify-center gap-0.5 text-[0.8125rem] font-medium',
+                  isActive ? 'bg-gob-soft text-gob' : 'text-muted',
                 )
               }
             >
-              <Icon className="size-5" strokeWidth={1.7} aria-hidden />
+              <NavigationIcon name={item.icon} className="size-5" aria-hidden />
               {item.label}
               {item.icon === 'alerts' && alertCount > 0 && (
-                <span className="absolute top-1.5 right-[calc(50%-18px)] rounded-full bg-peru px-1 font-mono text-[9px] text-white">
+                <span className="absolute top-1.5 right-[calc(50%-18px)] rounded-full bg-peru px-1 font-sans tabular-nums text-[0.75rem] text-white">
                   {alertCount}
                 </span>
               )}
@@ -316,11 +302,11 @@ export function Shell() {
             aria-expanded={moreOpen}
             onClick={() => setMoreOpen((o) => !o)}
             className={cx(
-              'flex h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium',
-              moreOpen ? 'text-peru' : 'text-muted',
+              'flex h-16 flex-1 flex-col items-center justify-center gap-0.5 text-[0.8125rem] font-medium',
+              moreOpen ? 'bg-gob-soft text-gob' : 'text-muted',
             )}
           >
-            <MoreHorizontal className="size-5" strokeWidth={1.7} aria-hidden />
+            <MoreHorizontal className="size-5" aria-hidden />
             Más
           </button>
         )}

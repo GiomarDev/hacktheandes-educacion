@@ -1,7 +1,7 @@
 export function Flag({ size = 30 }: { size?: number }) {
   return (
     <div
-      className="flex overflow-hidden rounded shadow-sm"
+      className="flex overflow-hidden rounded-sm"
       style={{ width: size, height: size }}
       aria-hidden
     >
@@ -18,14 +18,14 @@ export function Wordmark({ light = false }: { light?: boolean }) {
       <span
         className={
           light
-            ? 'text-[15px] font-semibold whitespace-nowrap text-white'
-            : 'text-[15px] font-semibold whitespace-nowrap text-ink'
+            ? 'wordmark whitespace-nowrap text-white'
+            : 'wordmark whitespace-nowrap text-ink'
         }
       >
         Amauti
       </span>
-      <span className="hidden rounded bg-peru px-1.5 py-0.5 font-mono min-[400px]:inline text-[9.5px] font-medium tracking-wider text-white">
-        PILOTO
+      <span className="hidden rounded border border-line bg-card px-2 py-1 min-[400px]:inline text-[0.75rem] font-medium text-muted">
+        Piloto
       </span>
     </div>
   );

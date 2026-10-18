@@ -5,7 +5,7 @@
   background: var(--color-card);
   color: var(--color-ink);
   font:
-    500 12.5px/1.45 var(--font-sans),
+    500 0.9375rem/1.5 var(--font-sans),
     sans-serif;
   box-shadow: 0 10px 24px -12px rgb(26 35 50 / 0.35);
 }
@@ -19,7 +19,7 @@
   background: var(--color-card);
   color: var(--color-muted);
   font:
-    500 11px var(--font-sans),
+    500 0.875rem var(--font-sans),
     sans-serif;
   cursor: pointer;
 }
