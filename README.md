@@ -4,6 +4,9 @@ Proyecto del equipo **Futuro Agéntico** (KeoIT) para el reto de **Educación Es
 
 El proyecto aborda la problemática de la **deserción escolar y el bajo rendimiento académico** en el sistema educativo peruano, transformando diagnósticos reactivos y burocráticos en un sistema proactivo asistido por agentes de Inteligencia Artificial que conecta a docentes, directivos y decisores gubernamentales con intervenciones tempranas y oportunas.
 
+- **Demo publicada:** https://amauti.keoit.com (landing pública; la plataforma está en `/ingresar`).
+- **Ramas:** `main` (estable, la que despliega EasyPanel), `develop` (integración) y `pre-develop` (preparación de cambios antes de integrarlos). Las tres parten de la versión final presentada en el hackathon.
+
 ## Backend
 
 Implementados `ms-auth`, `ms-siagie`, `ms-alerta`, `ms-simon` y `ms-escale`: autenticación JWT RS256/JWKS, roles con alcance territorial, matrícula, asistencia, notas, carné QR, resumen auditado y seguimiento de riesgos con contacto familiar simulado, reportes, planes de apoyo cifrados y visitas, e indicadores de deserción oficiales y calculados por UGEL. Estado del relevo, verificación y próximas fases en [Continuidad del backend](docs/continuidad-backend.md). Contratos de [F2 — alertas](docs/ms-alerta.md), [F3 — reportes y planes](docs/ms-simon.md) y [F4 — indicadores](docs/ms-escale.md).
@@ -52,7 +55,7 @@ Los DNI de demo están en `libs/fixtures/src/seed-ids.ts`; dirección usa `70000
 
 ### Desarrollo y ejecución compilada
 
-En cuatro terminales:
+En cinco terminales:
 
 ```sh
 npm run start:auth
@@ -95,6 +98,8 @@ La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No e
 
 `apps/web` (React 19, Vite, TanStack Query, React Router y Tailwind) implementa el [bosquejo de Claude Design del equipo](https://claude.ai/artifact/UT5n57ZJPMv7sX4mY3XqhB) conectado a los cinco microservicios. Los datos mostrados vienen de las APIs: el score de ML y otras cifras del bosquejo sin respaldo se reemplazaron por datos reales con su fuente.
 
+Sin sesión, `/` muestra la **landing pública** (`features/landing`): el punto ciego de la deserción con cifras de los microdatos oficiales de MINEDU, la tesis, las piezas de la solución, las cuentas de demostración (cada una abre `/ingresar?dni=…` con el DNI precargado) y el QR para conversar con Amauti por WhatsApp. `/ingresar` es el login; con sesión iniciada lleva a la pantalla de inicio del rol.
+
 Los accesos dependen del rol y del ámbito asignado; el servidor comprueba los permisos de cada operación. Las cuentas concretas de la demo y sus límites aparecen más abajo.
 
 Demo local completa, con datos sintéticos en los schemas `_test`, sin tocar los reales:
@@ -107,6 +112,20 @@ npm run web:dev             # http://localhost:5173
 ```
 
 Si el puerto 5173 está ocupado, Vite usa el siguiente libre (lo indica al arrancar). En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
+
+### Organización del código
+
+`apps/web/src` sigue tres capas con el alias `@/`,: `src/architecture.test.ts` impide importaciones en sentido contrario, que una feature importe páginas de otra y los imports relativos con `../`.
+
+- `app/`: arranque, proveedores, router (rutas cargadas bajo demanda con View Transitions), shell y pantalla de error.
+- `features/<dominio>/`: `api.ts`, `types.ts`, `pages/`, `components/` y `lib/` de cada módulo (admin, alerts, attendance, auth, documents, grades, home, indicators, landing, mascot, onboarding, plans, reports, schools y visits). Las páginas solo se cargan desde el router.
+- `shared/`: cliente HTTP, hooks, utilidades y componentes de UI sin dominio.
+
+### Módulos destacados
+
+- **Documentos** (`/documentos`): sesiones, informes, actas y registros que el agente de WhatsApp prepara para el docente. El docente los aprueba o rechaza y, si rechaza uno, registra el archivo corregido (.docx, .xlsx o .pdf de hasta 20 MB). Por ahora solo se guardan el registro y los metadatos del archivo, no su contenido. Contratos en [docs/ms-simon.md](docs/ms-simon.md#documentos-generados-desde-whatsapp).
+- **Celular de los usuarios** (Administración): un rol superior puede editar el número de una cuenta de su ámbito solo si tiene acceso a todos los roles de esa cuenta; el servidor rechaza el cambio en cualquier otro caso.
+- **Nueva versión publicada**: tras un despliegue, una pestaña abierta antes no puede cargar las pantallas de la versión anterior. La app se recarga una vez, directamente en la pantalla pedida, con protección contra recargas en bucle de 30 s (`shared/lib/app-version.ts`).
 
 ### Cuentas y roles para probar
 
@@ -158,7 +177,7 @@ Una vez permitido el origen, revisar login y los recorridos de las cuentas anter
 
 ### Amauti y recorrido de bienvenida
 
-Amauti, la mascota del proyecto (un lápiz animado con GSAP, en `apps/web/src/features/mascot/`), acompaña la aplicación: saluda en el login, duerme en los estados vacíos y celebra al guardar asistencia, generar un reporte, aprobar un plan o registrar la devolución de una visita. Se puede arrastrar, sigue el cursor con los ojos y se muestra u oculta desde la cabecera (la preferencia queda en el navegador; en el móvil arranca oculta). Respeta `prefers-reduced-motion`.
+Amauti, la mascota del proyecto (un lápiz animado con GSAP, en `apps/web/src/features/mascot/`), acompaña la aplicación: saluda en el login, duerme en los estados vacíos y celebra al guardar asistencia, generar un reporte, aprobar un plan o registrar la devolución de una visita. Ocupa una posición fija (no se puede arrastrar), sigue el cursor con los ojos y se muestra u oculta desde la cabecera; la preferencia queda en el navegador. En el móvil no se muestra. Respeta `prefers-reduced-motion`.
 
 La primera vez que alguien entra con un rol, Amauti lo guía paso a paso por los accesos de ese rol, resaltando cada uno. ms-auth guarda qué roles ya vieron el recorrido (`GET`/`POST /auth/onboarding`, `DELETE /auth/onboarding/:role`), así que no se repite en otro dispositivo; el botón de brújula de la cabecera lo vuelve a abrir.
 
@@ -170,6 +189,20 @@ La primera vez que alguien entra con un rol, Amauti lo guía paso a paso por los
 docker compose -f deploy/compose.yml up --build      # http://localhost:8080, con las bases y secretos del .env
 docker compose -f deploy/compose.yml run --rm auth npx prisma migrate deploy --config apps/ms-auth/prisma.config.ts   # migraciones, una por servicio
 ```
+
+### Despliegue en EasyPanel (producción)
+
+La demo pública corre en EasyPanel como servicio Compose `ia/amauti`, a partir del repositorio de GitHub con la rama `main`, ruta de build `/` y archivo [`easypanel.compose.yml`](easypanel.compose.yml). El dominio `https://amauti.keoit.com` apunta a `web:80`; el subdominio se administra en Hostinger. Las variables del servicio se cargan en **Environment** con la opción "Create .env file", siguiendo `.env.example`. Las contraseñas no van al repositorio.
+
+Después de un despliegue que agrega migraciones, ejecutar desde una terminal con el `.env` de producción:
+
+```sh
+npx prisma migrate deploy --config apps/ms-<servicio>/prisma.config.ts   # por cada servicio con migraciones nuevas
+npm run simon:seed        # documentos de demo (idempotente)
+npm run demo:publish      # por la API pública: importa los CSV oficiales, pases de lista sintéticos e indicadores
+```
+
+`auth:seed` y `siagie:seed` sobre los schemas reales requieren la confirmación explícita del responsable.
 
 ### Integración continua
 
@@ -204,29 +237,29 @@ A partir de un proceso exhaustivo de análisis cuantitativo oficial y validació
 
 El repositorio integra investigaciones profundas originadas en el proceso de análisis agéntico:
 
-### 1. [Tasa de Deserción Escolar en Secundaria (MINEDU / ESCALE)](conversation://4f3431b9-6593-44dc-a0ec-32f7eb960bde)
-* **Documentación técnica:** [`docs/reporte_desercion_escale.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/reporte_desercion_escale.md)
+### 1. Tasa de Deserción Escolar en Secundaria (MINEDU / ESCALE)
+* **Documentación técnica:** [`docs/reporte_desercion_escale.md`](docs/reporte_desercion_escale.md)
 * **Datos y tablero interactivo:**
-  - Dataset CSV procesado: [`docs/tasa_desercion_secundaria_escale.csv`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/tasa_desercion_secundaria_escale.csv)
-  - Visualizador interactivo local: [`docs/desercion_interactiva.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/desercion_interactiva.html)
+  - Dataset CSV procesado: [`docs/tasa_desercion_secundaria_escale.csv`](docs/tasa_desercion_secundaria_escale.csv)
+  - Visualizador interactivo local: [`docs/desercion_interactiva.html`](docs/desercion_interactiva.html)
 * **Aspectos clave:** Decodificación del Cuadro 321 de ESCALE, análisis de la fórmula matemática oficial ($TD_t$) y algoritmo de procesamiento Stata de la Unidad de Estadística Educativa (UEE).
 
-### 2. [Estadísticas Oficiales de Rendimiento Académico y Logros de Aprendizaje](conversation://e3f99f5d-89df-4926-bc82-816b7e876738)
-* **Documentación técnica:** [`docs/reporte_rendimiento_academico_oficial_peru.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/reporte_rendimiento_academico_oficial_peru.md)
+### 2. Estadísticas Oficiales de Rendimiento Académico y Logros de Aprendizaje
+* **Documentación técnica:** [`docs/reporte_rendimiento_academico_oficial_peru.md`](docs/reporte_rendimiento_academico_oficial_peru.md)
 * **Datos y tablero interactivo:**
-  - Base de datos consolidada (2016-2025): [`docs/rendimiento_academico_escale.json`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/rendimiento_academico_escale.json)
-  - Tablero web interactivo: [`docs/rendimiento_interactivo.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/rendimiento_interactivo.html)
+  - Base de datos consolidada (2016-2025): [`docs/rendimiento_academico_escale.json`](docs/rendimiento_academico_escale.json)
+  - Tablero web interactivo: [`docs/rendimiento_interactivo.html`](docs/rendimiento_interactivo.html)
   - Microdatos por indicadores:
-    - Cuadro 121: Aprobación primaria ([`docs/aprobacion_primaria_cuadro_121.csv`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/aprobacion_primaria_cuadro_121.csv))
-    - Cuadro 135: Aprobación secundaria ([`docs/aprobacion_secundaria_cuadro_135.csv`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/aprobacion_secundaria_cuadro_135.csv))
-    - Cuadro 247: Logros 2.° de primaria ([`docs/primaria_2do_grado_cuadro_247.csv`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/primaria_2do_grado_cuadro_247.csv))
-    - Cuadro 367: Logros 4.° de primaria ([`docs/primaria_4to_grado_cuadro_367.csv`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/primaria_4to_grado_cuadro_367.csv))
-    - Cuadro 249: Logros 2.° de secundaria ([`docs/secundaria_2do_grado_cuadro_249.csv`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/secundaria_2do_grado_cuadro_249.csv))
+    - Cuadro 121: Aprobación primaria ([`docs/aprobacion_primaria_cuadro_121.csv`](docs/aprobacion_primaria_cuadro_121.csv))
+    - Cuadro 135: Aprobación secundaria ([`docs/aprobacion_secundaria_cuadro_135.csv`](docs/aprobacion_secundaria_cuadro_135.csv))
+    - Cuadro 247: Logros 2.° de primaria ([`docs/primaria_2do_grado_cuadro_247.csv`](docs/primaria_2do_grado_cuadro_247.csv))
+    - Cuadro 367: Logros 4.° de primaria ([`docs/primaria_4to_grado_cuadro_367.csv`](docs/primaria_4to_grado_cuadro_367.csv))
+    - Cuadro 249: Logros 2.° de secundaria ([`docs/secundaria_2do_grado_cuadro_249.csv`](docs/secundaria_2do_grado_cuadro_249.csv))
 * **Aspectos clave:** Metodología UMC basada en Teoría de Respuesta al Ítem (TRI), categorización de logros (Satisfactorio, En Proceso, En Inicio, Previo al Inicio) y registro continuo de SIAGIE.
 
-### 3. [Documentación y Auditoría Técnica de Alerta Escuela](conversation://efb5428a-7bc1-40f3-a304-90df385bfddf)
-* **Documentación técnica:** [`docs/alerta_escuela_documentacion.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/alerta_escuela_documentacion.md)
-* **Validación cualitativa:** [`notas_sesión_1.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/notas_sesi%C3%B3n_1.md) (entrevista a docente de primaria y secundaria).
+### 3. Documentación y Auditoría Técnica de Alerta Escuela
+* **Documentación técnica:** [`docs/alerta_escuela_documentacion.md`](docs/alerta_escuela_documentacion.md)
+* **Validación cualitativa:** [`notas_sesión_1.md`](notas_sesi%C3%B3n_1.md) (entrevista a docente de primaria y secundaria).
 * **Aspectos clave:** Arquitectura del modelo predictivo de Machine Learning supervisado (Gradient Boosting / Random Forest), fuentes de integración (SIAGIE, Censo, RENIEC, SISFOH), flujos operativos de semaforización y análisis de puntos de quiebre para proponer una alternativa agéntica ágil y preventiva.
 
 ### 4. Deserción Escolar por Región y Distrito (SIAGIE 2023 → 2024)
@@ -235,32 +268,28 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 * **Aspectos clave:** promedio nacional de 2,54 % en secundaria (72 282 estudiantes) y 1,73 % en primaria (64 463). El problema se concentra en la Amazonía y la costa norte: Ucayali duplica el promedio nacional y es candidato para el piloto (varios distritos críticos en Coronel Portillo), mientras Lima reúne cerca de 1 de cada 3 desertores de secundaria. Pendiente comprobar cuánto de la cifra en frontera y zonas migrantes corresponde a estudiantes que se fueron del país.
 
 ### 5. Validación Cualitativa en Campo y Academia: Entrevistas y Cambio de Gears
-* **Estado de persistencia:** Se ha procesado y persistido el aprendizaje integral de las entrevistas cualitativas (docente de aula Marita y especialista de la academia Saúl) en sus transcripciones completas y verbatim mediante procesamiento agéntico de audio; véase la sesión [`Dividir Y Transcribir Video`](conversation://d9a5f650-9c31-4820-a10e-d7d9ddca77b9).
+* **Estado de persistencia:** Se ha procesado y persistido el aprendizaje integral de las entrevistas cualitativas (docente de aula Marita y especialista de la academia Saúl) en sus transcripciones completas y verbatim mediante procesamiento agéntico de audio.
 * **Documentación y transcripciones:**
-  - Transcripción docente Marita: [`docs/transcripcion_marita.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/transcripcion_marita.md)
-  - Transcripción academia Saúl: [`docs/transcripcion_saul.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/transcripcion_saul.md)
-  - Plan de cambio de gears a implementación: [`Augus_workstation/plan_implementacion_reunion.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/Augus_workstation/plan_implementacion_reunion.md) (minuta ejecutiva con referencia al audio de sincronización del equipo).
-  - Preguntas y soluciones clave consolidadas: [`docs/soluciones_y_preguntas_clave.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/docs/soluciones_y_preguntas_clave.md)
+  - Transcripción docente Marita: [`docs/transcripcion_marita.md`](docs/transcripcion_marita.md)
+  - Transcripción academia Saúl: [`docs/transcripcion_saul.md`](docs/transcripcion_saul.md)
+  - Plan de cambio de gears a implementación: [`Augus_workstation/plan_implementacion_reunion.md`](Augus_workstation/plan_implementacion_reunion.md) (minuta ejecutiva con referencia al audio de sincronización del equipo).
+  - Preguntas y soluciones clave consolidadas: [`docs/soluciones_y_preguntas_clave.md`](docs/soluciones_y_preguntas_clave.md)
 * **Aspectos clave:** La investigación de campo reveló que las soluciones de escritorio o portales web presentan alta fricción en los docentes ("no usan tecnología burocrática adicional"); por ello, el equipo pivota la interacción diaria a WhatsApp (agente conversacional como CLI para asistencia, bitácora y planes) y la plataforma web a un dashboard gerencial para directivos/UGEL. Asimismo, se fijó como meta inmediata la validación de tracción comercial (*willingness to pay*) con usuarios reales.
 
 ---
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
 
-> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` mencionada a continuación se retiró del repositorio. El frontend implementado (Amauti) sigue el bosquejo de Claude Design descrito en la sección Frontend.
+> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` con estos archivos se retiró del repositorio. El frontend implementado (Amauti) sigue el bosquejo de Claude Design descrito en la sección Frontend.
 
 Como parte de la fase de prototipado y validación de la solución, se diseñó la primera versión interactiva de **AmautaIA — Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero**. Los prototipos fueron generados e iterados a través de la integración agéntica con **Google Stitch MCP** en el proyecto `Hack The Andes Test` (`projects/1503192843636542264`), bajo el sistema de diseño semántico **AmautaIA Institucional Claro (MINEDU GovTech)** (`assets/764693782689717926`).
 
-> 🚀 **Visor Interactivo Central:** Abre [`STICH_ITERATION_1/index.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/index.html) en tu navegador para interactuar con las 4 pantallas completas en un solo panel navegable con pestañas.
-
 | # | Vista / Rol | Formato | Screen ID en Stitch | Archivo HTML / Prototipo | Propuesta de Valor y Funcionalidad Clave |
 | :-: | :--- | :---: | :--- | :--- | :--- |
-| **01** | **Landing B2G Institucional** | `Desktop` | `72360752c9d04f0891b7b25dfa6512bf` | [`01_landing_b2g_institucional.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/01_landing_b2g_institucional.html) | Presentación ejecutiva para MINEDU/DRE/UGEL: tesis de rescate escolar, pilares de mentoría quirúrgica y retorno de inversión en retención escolar. |
-| **02** | **Espacio del Docente + Copiloto Anti-Burocracia** | `Desktop` | `38e7bd2903a4485bb9dc396029042af1` | [`02_vista_docente_copiloto.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/02_vista_docente_copiloto.html) | Agrupación automática de alumnos por micro-paso fallado, guías de mentoría de 10 min y generación automática de sesiones CNEB y conclusiones SIAGIE. |
-| **03** | **Interacción WhatsApp del Docente con el Agente** | `Mobile` | `73981077ba2c49c4a3c3d11b4c201c9b` | [`03_interaccion_whatsapp_agente.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/03_interaccion_whatsapp_agente.html) | Interfaz móvil cero fricción: el docente envía una foto del registro o nota de voz y el agente actualiza asistencia, detecta riesgo y redacta los informes. |
-| **04** | **Torre de Control Territorial UGEL / MINEDU** | `Desktop` | `271be7b380054fba8bfafc2747b9b73a` | [`04_torre_control_ugel_minedu.html`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/04_torre_control_ugel_minedu.html) | Visor geoespacial en tiempo real sin pedir reportes manuales, auditoría SIAGIE vs. Aprendizaje Real y fiscalización del despliegue de psicólogos. |
-
-Para más detalles sobre los componentes y sugerencias de iteración devueltas por Stitch, consulta el reporte en [`STICH_ITERATION_1/README.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/STICH_ITERATION_1/README.md).
+| **01** | **Landing B2G Institucional** | `Desktop` | `72360752c9d04f0891b7b25dfa6512bf` | `01_landing_b2g_institucional.html` | Presentación ejecutiva para MINEDU/DRE/UGEL: tesis de rescate escolar, pilares de mentoría quirúrgica y retorno de inversión en retención escolar. |
+| **02** | **Espacio del Docente + Copiloto Anti-Burocracia** | `Desktop` | `38e7bd2903a4485bb9dc396029042af1` | `02_vista_docente_copiloto.html` | Agrupación automática de alumnos por micro-paso fallado, guías de mentoría de 10 min y generación automática de sesiones CNEB y conclusiones SIAGIE. |
+| **03** | **Interacción WhatsApp del Docente con el Agente** | `Mobile` | `73981077ba2c49c4a3c3d11b4c201c9b` | `03_interaccion_whatsapp_agente.html` | Interfaz móvil cero fricción: el docente envía una foto del registro o nota de voz y el agente actualiza asistencia, detecta riesgo y redacta los informes. |
+| **04** | **Torre de Control Territorial UGEL / MINEDU** | `Desktop` | `271be7b380054fba8bfafc2747b9b73a` | `04_torre_control_ugel_minedu.html` | Visor geoespacial en tiempo real sin pedir reportes manuales, auditoría SIAGIE vs. Aprendizaje Real y fiscalización del despliegue de psicólogos. |
 
 ---
 
@@ -280,38 +309,32 @@ Para más detalles sobre los componentes y sugerencias de iteración devueltas p
 
 ```text
 .
-├── .agents/                                # Agentes y skills compartidos
-│   ├── code-reviewer.md                    # Subagente de revisión de código
-│   ├── planner.md                          # Subagente de planificación
-│   └── skills/                             # Skills agénticas (Stitch, CLI andes, frontend)
-│       ├── chofex-hackathon/               # Skill oficial Hack the Andes (CLI andes)
-│       └── stitch-*/                       # Skills especializadas para Google Stitch
-├── .claude/                                # Configuración de Claude Code
-├── .commands/                              # Comandos reutilizables (/commit, /review)
-├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002), ms-simon (3003), ms-escale (3004) y web (Amauti)
-├── libs/                                   # Autorización, contratos de eventos y fixtures sintéticos
-├── test/                                   # Entornos y protección de schemas de prueba
-├── scripts/                                # Creación de base y verificación del arranque compilado
-├── docs/                                   # Documentación técnica, datasets y tableros
-│   ├── alerta_escuela_documentacion.md     # Auditoría integral del sistema Alerta Escuela
-│   ├── reporte_desercion_escale.md         # Informe técnico y réplica de deserción ESCALE
-│   ├── desercion_por_region_siagie_2023_2024.md # Deserción por región y distrito (SIAGIE)
-│   ├── reporte_rendimiento_academico_oficial_peru.md # Informe técnico de rendimiento y UMC
-│   ├── desercion_interactiva.html          # Tablero interactivo de deserción secundaria
-│   ├── rendimiento_interactivo.html        # Tablero interactivo de rendimiento escolar
-│   ├── rendimiento_academico_escale.json   # Datasets agregados MINEDU/ESCALE
-│   └── *.csv                               # Datasets limpios por cuadros estadísticos
-├── STICH_ITERATION_1/                      # Mockups y prototipos interactivos generados en Google Stitch
-│   ├── index.html                          # Visor interactivo centralizado con pestañas de las 4 pantallas
-│   ├── 01_landing_b2g_institucional.html   # Landing B2G MINEDU/UGEL
-│   ├── 02_vista_docente_copiloto.html      # Copiloto docente anti-burocracia
-│   ├── 03_interaccion_whatsapp_agente.html # Flujo conversacional WhatsApp
-│   ├── 04_torre_control_ugel_minedu.html   # Torre de control territorial UGEL/MINEDU
-│   └── README.md                           # Detalle de pantallas y sugerencias de iteración Stitch
-├── notas_sesión_1.md                       # Notas de ideación y user research a docente
-├── AGENTS.md                               # Guía para agentes de IA (convenciones y workflow)
-├── CLAUDE.md                               # Instrucciones específicas para Claude Code
-└── README.md                               # Documentación general del proyecto
+├── .agents/                 # Subagentes y skills compartidos (.claude/agents apunta aquí)
+├── .commands/               # Comandos reutilizables (/commit, /review)
+├── .claude/                 # Configuración de Claude Code
+├── .github/workflows/       # CI: lint, tipos, pruebas, build e imágenes Docker
+├── apps/
+│   ├── ms-auth/             # Identidad, roles y JWT RS256/JWKS (3000)
+│   ├── ms-siagie/           # Matrícula, asistencia, notas y outbox (3001)
+│   ├── ms-alerta/           # Reglas, alertas, casos y contacto familiar simulado (3002)
+│   ├── ms-simon/            # Reportes, planes cifrados, visitas y documentos (3003)
+│   ├── ms-escale/           # Indicadores oficiales y calculados (3004)
+│   └── web/                 # Frontend Amauti: landing pública y plataforma
+├── libs/                    # Autorización, contratos de eventos y fixtures sintéticos
+├── test/                    # Entornos y protección de los schemas de prueba
+├── scripts/                 # Base de datos, demo local, publicación de la demo y arranque compilado
+├── deploy/                  # Dockerfiles, compose local y plantilla de nginx
+├── easypanel.compose.yml    # Despliegue de producción en EasyPanel
+├── docs/                    # Investigación, datasets, contratos, diseño, pitch y transcripciones
+│   ├── pitch/               # Guion del pitch
+│   ├── design/              # Prompt y decisiones de diseño y tipografía
+│   ├── testing/             # Evidencia de verificación de la demo (sin secretos)
+│   └── superpowers/         # Especificación y plan del backend
+├── Augus_workstation/       # Minutas y planes de trabajo del equipo
+├── notas_sesión_1.md        # Notas de ideación y entrevista a docente
+├── AGENTS.md                # Guía para agentes de IA
+├── CLAUDE.md                # Instrucciones específicas de Claude Code
+└── README.md                # Este documento
 ```
 
 ---
@@ -320,9 +343,9 @@ Para más detalles sobre los componentes y sugerencias de iteración devueltas p
 
 Este repositorio implementa flujos de trabajo colaborativos agénticos:
 
-- [`AGENTS.md`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/AGENTS.md): Normas de desarrollo, estilo y convenciones para agentes (Antigravity, Cursor, Claude Code, Codex).
-- [`.agents/skills/chofex-hackathon`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/.agents/skills/chofex-hackathon): Integración con el CLI `andes` para enviar actualizaciones de avance a los mentores y coordinar la entrega oficial.
-- Comandos rápidos disponibles en [`.commands/`](file:///d:/Augusto/personal_portfolio/hacktheandes-educacion/.commands) para commits estandarizados y revisiones de código.
+- [`AGENTS.md`](AGENTS.md): Normas de desarrollo, estilo y convenciones para agentes (Antigravity, Cursor, Claude Code, Codex).
+- [`.agents/skills/chofex-hackathon`](.agents/skills/chofex-hackathon): Integración con el CLI `andes` para enviar actualizaciones de avance a los mentores y coordinar la entrega oficial.
+- Comandos rápidos disponibles en [`.commands/`](.commands) para commits estandarizados y revisiones de código.
 
 ---
 
