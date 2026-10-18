@@ -3,6 +3,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
+// Lo único de Node que usa la configuración: así compila sin @types/node (build aislado en Docker o CI).
+declare const process: { env: Record<string, string | undefined> };
+
 // En desarrollo, cada microservicio se expone bajo /api/<servicio> (sin CORS en el backend).
 const SERVICES = {
   auth: 3000,
