@@ -8,9 +8,39 @@
 
 # Sistema
 .DS_Store
+Thumbs.db
 
-# Archivos multimedia / imágenes binarias pesadas
+# Archivos binarios multimedia (Audio)
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.ogg
+*.flac
+*.wma
+*.opus
+
+# Archivos binarios multimedia (Video)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.wmv
+*.flv
+
+# Archivos binarios multimedia (Imágenes)
 *.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.webp
+*.ico
+*.tiff
+*.tif
+*.psd
+*.raw
 
 # Backend
 node_modules/
