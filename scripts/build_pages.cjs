@@ -18,7 +18,9 @@ const screenshots = [
   '01_panorama_nacional_secundaria.png',
   '14_fuentes_datos_abiertos_csv.png',
   '16_admin_reglas_alerta_umbrales.png',
-  '17_docente_hoy_tablero_diario_limpio.png'
+  '17_docente_hoy_tablero_diario_limpio.png',
+  'wsp_real_alerta_nayeli.png',
+  'wsp_real_bitacora_observaciones.png'
 ];
 
 for (const file of screenshots) {
