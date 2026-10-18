@@ -108,33 +108,41 @@ export class AuthService implements OnModuleInit {
   }
 
   async refresh(refreshToken: string, meta: RequestMeta): Promise<TokenPair> {
-    const stored = await this.prisma.refreshToken.findUnique({
+    const found = await this.prisma.refreshToken.findUnique({
       where: { tokenHash: hashRefreshToken(refreshToken) },
-      include: { user: { include: { roles: true } } },
+      select: { id: true, familyId: true },
     });
-    if (!stored) throw invalidCredentials();
-    if (stored.revokedAt) {
-      // Un token ya rotado se volvió a usar: alguien lo copió. Se corta toda la sesión.
-      await this.revokeFamily(stored.familyId);
-      await this.event(stored.userId, 'TOKEN_REUSE_DETECTED', meta);
+    if (!found) throw invalidCredentials();
+    // La rotación de una familia va bajo un candado: si dos peticiones usan el mismo token, la segunda
+    // espera a que la primera emita el suyo y, al ver el token ya rotado, revoca también ese.
+    const outcome = await this.prisma.$transaction(async (tx) => {
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${found.familyId}))`;
+      const stored = await tx.refreshToken.findUniqueOrThrow({
+        where: { id: found.id },
+        include: { user: { include: { roles: true } } },
+      });
+      if (stored.revokedAt) {
+        // Un token ya rotado se volvió a usar: alguien lo copió. Se corta toda la sesión.
+        await tx.refreshToken.updateMany({
+          where: { familyId: stored.familyId, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+        return { kind: 'reused' as const, stored };
+      }
+      if (stored.expiresAt <= new Date() || stored.user.status !== 'ACTIVE') return { kind: 'invalid' as const, stored };
+      await tx.refreshToken.update({ where: { id: stored.id }, data: { revokedAt: new Date() } });
+      const token = await this.tokens.issueRefreshToken(stored.userId, stored.familyId, meta, tx);
+      return { kind: 'rotated' as const, stored, token };
+    });
+    if (outcome.kind === 'reused') {
+      await this.event(outcome.stored.userId, 'TOKEN_REUSE_DETECTED', meta);
       throw invalidCredentials();
     }
-    if (stored.expiresAt <= new Date() || stored.user.status !== 'ACTIVE') throw invalidCredentials();
-
-    const revoked = await this.prisma.refreshToken.updateMany({
-      where: { id: stored.id, revokedAt: null },
-      data: { revokedAt: new Date() },
-    });
-    if (revoked.count === 0) {
-      // Otra petición rotó este mismo token al mismo tiempo: se trata como reutilización.
-      await this.revokeFamily(stored.familyId);
-      await this.event(stored.userId, 'TOKEN_REUSE_DETECTED', meta);
-      throw invalidCredentials();
-    }
-    await this.event(stored.userId, 'REFRESH', meta);
+    if (outcome.kind === 'invalid') throw invalidCredentials();
+    await this.event(outcome.stored.userId, 'REFRESH', meta);
     return {
-      accessToken: await this.tokens.issueAccessToken(stored.user),
-      refreshToken: await this.tokens.issueRefreshToken(stored.userId, stored.familyId, meta),
+      accessToken: await this.tokens.issueAccessToken(outcome.stored.user),
+      refreshToken: outcome.token,
       expiresIn: ACCESS_TOKEN_TTL_SECONDS,
     };
   }

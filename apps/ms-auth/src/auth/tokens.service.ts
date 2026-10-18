@@ -51,9 +51,15 @@ export class TokensService {
     );
   }
 
-  async issueRefreshToken(userId: string, familyId: string | undefined, meta: RequestMeta): Promise<string> {
+  // client: la transacción de la rotación, para que el token nuevo quede bajo el mismo candado.
+  async issueRefreshToken(
+    userId: string,
+    familyId: string | undefined,
+    meta: RequestMeta,
+    client: Pick<PrismaService, 'refreshToken'> = this.prisma,
+  ): Promise<string> {
     const token = randomBytes(32).toString('base64url');
-    await this.prisma.refreshToken.create({
+    await client.refreshToken.create({
       data: {
         userId,
         tokenHash: hashRefreshToken(token),
