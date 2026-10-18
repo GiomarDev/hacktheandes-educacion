@@ -70,16 +70,17 @@ export class UsersService {
     });
   }
 
-  // El celular del personal lo edita quien administra alguno de sus roles activos (dirección en su
-  // IE, UGEL en su ámbito, MINEDU todo). Como con los roles, nadie edita el suyo salvo MINEDU.
+  // El celular del personal lo edita quien administra TODOS sus roles activos (dirección en su IE,
+  // UGEL en su ámbito, MINEDU todo): así no se alcanza a alguien con un rol superior u otro ámbito.
+  // Cuentas sin roles activos y el propio número: solo MINEDU.
   async updatePhone(editor: AuthUser, userId: string, dto: UpdatePhoneDto) {
     const isAdmin = editor.roles.some((r) => r.role === 'MINEDU_ADMIN');
     if (userId === editor.id && !isAdmin) throw new ForbiddenException('No puede editar su propio número desde aquí');
     const target = await this.prisma.user.findUnique({ where: { id: userId }, include: { roles: { where: { isActive: true } } } });
     if (!target) throw new NotFoundException('Usuario no encontrado');
-    let allowed = isAdmin;
+    let allowed = isAdmin || target.roles.length > 0;
     for (const role of target.roles) {
-      if (allowed) break;
+      if (isAdmin || !allowed) break;
       const claim = { role: role.role, schoolId: role.schoolId ?? undefined, ugelId: role.ugelId ?? undefined, dreId: role.dreId ?? undefined };
       allowed = canGrant(editor, claim, await this.resolveTarget(claim));
     }

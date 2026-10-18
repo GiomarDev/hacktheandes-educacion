@@ -214,6 +214,20 @@ describe('alta de usuarios y roles', () => {
       await phone('019a0000-0000-7000-8000-00000000dead', '987654321').expect(404);
     });
 
+    it('no edita a quien además tiene un rol fuera de su alcance ni a cuentas sin roles', async () => {
+      const both = await person('73000007', [
+        { role: 'TEACHER', schoolId: SCHOOL_A },
+        { role: 'DIRECTOR', schoolId: SCHOOL_B },
+      ]);
+      const ugel = await person('73000008', [
+        { role: 'TEACHER', schoolId: SCHOOL_A },
+        { role: 'UGEL_SPECIALIST', ugelId: UGEL_1 },
+      ]);
+      const admin = await person('73000009', [{ role: 'TEACHER', schoolId: SCHOOL_A }, { role: 'MINEDU_ADMIN' }]);
+      const noRoles = await person('73000010', []);
+      for (const target of [both, ugel, admin, noRoles]) await phone(target.id, '987654321').expect(403);
+    });
+
     it('el especialista UGEL edita al personal de las IEs de su UGEL', async () => {
       const teacher = await person('73000005', [{ role: 'TEACHER', schoolId: SCHOOL_B }]);
       const specialist = await createTestUser(prisma, { documentNumber: '73000006' });
