@@ -17,6 +17,7 @@ import {
 import { seedAuth } from '../apps/ms-auth/prisma/seed.js';
 import { seedSiagie } from '../apps/ms-siagie/prisma/seed.js';
 import { seedRules } from '../apps/ms-alerta/prisma/seed.js';
+import { seedDocuments } from '../apps/ms-simon/prisma/seed.js';
 import { PrismaService as AuthPrisma } from '../apps/ms-auth/src/prisma.service.js';
 import { PrismaService as SiagiePrisma } from '../apps/ms-siagie/src/prisma.service.js';
 import { PrismaService as AlertaPrisma } from '../apps/ms-alerta/src/prisma.service.js';
@@ -119,6 +120,7 @@ try {
   await seedAuth(authDb, password);
   await seedSiagie(siagieDb);
   await seedRules(alertaDb);
+  await seedDocuments(simonDb);
   // Asistencia sintética: la mayoría asiste; algunos estudiantes acumulan faltas o tardanzas para que
   // las reglas de ms-alerta tengan evidencia. Sección B no pasa lista el último día (aula en silencio).
   const enrollments = await siagieDb.enrollment.findMany({

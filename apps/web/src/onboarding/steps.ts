@@ -27,6 +27,10 @@ const COPY: Record<NavIcon, (claim: RoleClaim, item: NavItem) => string> = {
     claim.role === 'TEACHER' || claim.role === 'TUTOR'
       ? 'Registra AD, A, B o C por competencia en las áreas que dictas. SIAGIE calcula la nota del periodo.'
       : 'Consulta las calificaciones de cada sección, área y bimestre.',
+  documents: (claim) =>
+    claim.role === 'DIRECTOR'
+      ? 'El papeleo que Amauti preparó para tus docentes desde WhatsApp y si ya lo aprobaron.'
+      : 'Papeleo que Amauti preparó con tus mensajes de WhatsApp: apruébalo o súbelo corregido.',
   alerts: () =>
     'Casos que detectan las reglas de asistencia y notas. Nada se envía a una familia sin que un responsable lo decida.',
   panorama: () =>

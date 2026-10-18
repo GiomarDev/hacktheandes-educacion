@@ -54,6 +54,7 @@ describe('Shell', () => {
       '/escuelas/s1',
       '/docente/aula',
       '/notas',
+      '/documentos',
       '/alertas',
       '/reportes',
       '/planes',
@@ -94,7 +95,7 @@ describe('Shell', () => {
       within(more)
         .getAllByRole('link')
         .map((a) => a.getAttribute('href')),
-    ).toEqual(['/reportes', '/planes', '/visitas', '/admin']);
+    ).toEqual(['/alertas', '/reportes', '/planes', '/visitas', '/admin']);
     await userEvent.click(within(more).getByRole('link', { name: /Planes/ }));
     expect(
       screen.queryByRole('navigation', { name: 'Más secciones' }),

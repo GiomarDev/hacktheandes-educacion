@@ -16,8 +16,18 @@ import { ScopeService } from './scope.service.js';
 import { ReportsService } from './reports.service.js';
 import { PlansService } from './plans.service.js';
 import { VisitsService } from './visits.service.js';
+import {
+  DocumentsController,
+  DocumentsService,
+  InternalDocumentsController,
+} from './documents.js';
 @Module({
-  controllers: [HealthController, ApiController],
+  controllers: [
+    HealthController,
+    ApiController,
+    DocumentsController,
+    InternalDocumentsController,
+  ],
   providers: [
     PrismaService,
     SourcesClient,
@@ -26,6 +36,7 @@ import { VisitsService } from './visits.service.js';
     ReportsService,
     PlansService,
     VisitsService,
+    DocumentsService,
     {
       provide: JwksKeyResolver,
       useFactory: () => new HttpJwksKeyResolver(requireEnv('AUTH_JWKS_URL')),

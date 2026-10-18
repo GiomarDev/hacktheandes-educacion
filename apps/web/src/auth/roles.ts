@@ -60,6 +60,8 @@ const PLAN_READERS: Role[] = [
   'TUTOR',
   'TEACHER',
 ];
+// Papeleo generado desde WhatsApp: lo revisa el personal de aula; dirección lo consulta.
+const DOCUMENT_USERS: Role[] = [...CLASSROOM, 'DIRECTOR'];
 const VISIT_USERS: Role[] = [...TERRITORIAL, 'DIRECTOR', 'TUTOR', 'TEACHER'];
 // Coincide con ms-auth: administran cuentas MINEDU, UGEL y dirección.
 const ADMINS: Role[] = ['MINEDU_ADMIN', 'UGEL_SPECIALIST', 'DIRECTOR'];
@@ -68,6 +70,7 @@ export type NavIcon =
   | 'today'
   | 'classroom'
   | 'grades'
+  | 'documents'
   | 'alerts'
   | 'panorama'
   | 'schools'
@@ -107,6 +110,8 @@ export function navFor(claim: RoleClaim): NavItem[] {
   }
   if (GRADE_READERS.includes(role))
     items.push({ to: '/notas', label: 'Notas', icon: 'grades' });
+  if (DOCUMENT_USERS.includes(role))
+    items.push({ to: '/documentos', label: 'Documentos', icon: 'documents' });
   if (ALERT_READERS.includes(role))
     items.push({ to: '/alertas', label: 'Alertas', icon: 'alerts' });
   if (TERRITORIAL.includes(role))

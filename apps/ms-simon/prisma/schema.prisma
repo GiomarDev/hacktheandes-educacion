@@ -123,3 +123,39 @@ model AuditLog {
   @@index([entityId, createdAt])
   @@map("audit_logs")
 }
+
+enum DocumentFormat {
+  WORD
+  EXCEL
+}
+enum DocumentSource {
+  WHATSAPP
+}
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Papeleo generado por la plataforma a partir de los mensajes de WhatsApp del docente.
+// Por ahora solo se registra el documento y su revisión; el archivo aún no se almacena.
+model GeneratedDocument {
+  id String @id @default(uuid(7)) @db.Uuid
+  schoolId String @map("school_id") @db.Uuid
+  ownerUserId String @map("owner_user_id") @db.Uuid
+  title String @db.VarChar(200)
+  category String? @db.VarChar(80)
+  format DocumentFormat
+  source DocumentSource @default(WHATSAPP)
+  status DocumentStatus @default(PENDING)
+  reviewedAt DateTime? @map("reviewed_at") @db.Timestamptz(6)
+  correctionFileName String? @map("correction_file_name") @db.VarChar(200)
+  correctionMimeType String? @map("correction_mime_type") @db.VarChar(120)
+  correctionSizeBytes Int? @map("correction_size_bytes")
+  correctionUploadedAt DateTime? @map("correction_uploaded_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  @@index([ownerUserId, status])
+  @@index([schoolId, status])
+  @@map("generated_documents")
+}

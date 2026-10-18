@@ -62,6 +62,10 @@ const routes = [
       },
       { path: 'notas', lazy: page(() => import('./pages/Notas'), 'NotasPage') },
       {
+        path: 'documentos',
+        lazy: page(() => import('./pages/Documentos'), 'DocumentosPage'),
+      },
+      {
         path: 'alertas',
         lazy: page(() => import('./pages/Alertas'), 'AlertasPage'),
       },

@@ -99,3 +99,18 @@ Requieren `x-internal-key`, sin JWT. No exponerlas directamente al cliente web.
 - Alerta: `GET /internal/simon/reports?schoolId=&from=&to=` devuelve agregados del seguimiento.
 
 Las fuentes validan fechas reales, orden y pertenencia a un mismo año. Errores de referencia: `404`; consulta incompatible: `400`; autorización: `403`; duplicado, cambio de revisión o transición inválida: `409`; contexto no disponible: `503`. El cliente interno tiene un límite de cinco segundos por solicitud.
+
+## Documentos generados desde WhatsApp
+
+La plataforma prepara documentos (sesiones, informes, actas, registros) a partir de los mensajes de WhatsApp del docente. El docente los revisa en el módulo **Documentos** y los marca como aprobados o no aprobados. **Por ahora solo se guarda el registro**: nombre, categoría, formato, estado y los datos del archivo corregido (nombre, tipo, tamaño y fecha). El contenido de los archivos todavía no se almacena.
+
+| Método y ruta | Cuerpo o resultado | Acceso |
+| --- | --- | --- |
+| `POST /internal/documents` | `schoolId`, `ownerUserId`, `title` (1–200), `category?` (≤80), `format` (`WORD` o `EXCEL`) → documento en `PENDING` | Agente de WhatsApp, con `x-internal-key`; nginx no la expone |
+| `GET /documents?status=` | Documentos propios; dirección ve los de su IE | Autenticado |
+| `POST /documents/:id/review` | `{ "status": "APPROVED" \| "REJECTED" }`; se puede cambiar la decisión | Solo el docente dueño |
+| `POST /documents/:id/correction` | `fileName` (.docx, .doc, .xlsx, .xls o .pdf), `mimeType`, `sizeBytes` (≤ 20 MB) | Solo el dueño y solo si el documento está `REJECTED` (si no, 409) |
+
+En el frontend, un documento no aprobado ofrece la descarga en Word (`.docx` y `.doc`) o en Excel (`.xlsx`) y una casilla para arrastrar y soltar el documento corregido. Mientras no se almacenen los originales, la descarga es una plantilla generada en el navegador con los datos del registro.
+
+Migración `20261018060000_generated_documents`. `npm run simon:seed` crea 10 documentos de demo para los docentes sintéticos (los incluye `demo:stack`).

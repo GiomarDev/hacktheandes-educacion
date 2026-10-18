@@ -12,6 +12,7 @@ describe('stepsFor', () => {
       'today',
       'classroom',
       'grades',
+      'documents',
       'alerts',
       'plans',
       'visits',

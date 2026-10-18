@@ -54,7 +54,8 @@
     "web:build": "npm --prefix apps/web run build",
     "web:test": "npm --prefix apps/web run test",
     "demo:verify": "tsx --tsconfig apps/ms-siagie/tsconfig.app.json scripts/verify-demo.ts",
-    "demo:publish": "tsx scripts/publish-demo-data.ts"
+    "demo:publish": "tsx scripts/publish-demo-data.ts",
+    "simon:seed": "tsx --tsconfig apps/ms-simon/tsconfig.app.json apps/ms-simon/prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
