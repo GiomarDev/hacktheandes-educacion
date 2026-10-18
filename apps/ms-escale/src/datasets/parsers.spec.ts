@@ -169,6 +169,31 @@ describe('DROPOUT_RATE_SECONDARY_ESCALE', () => {
     ).toThrow('repetida');
   });
 
+  it('rechaza un periodo repetido en la cabecera', () => {
+    const csv = escaleCsv.replace('2014-2015,', '2013-2014,');
+    expect(() => parseDataset('DROPOUT_RATE_SECONDARY_ESCALE', csv)).toThrow(
+      'Periodo repetido: 2013-2014',
+    );
+  });
+
+  it('rechaza más periodos de los que admite un archivo', () => {
+    const periods = Array.from(
+      { length: 41 },
+      (_, i) => `${1990 + i}-${1991 + i}`,
+    );
+    const csv = `Categoria,${periods.join(',')}\nPER,${periods.map(() => '1').join(',')}\n`;
+    expect(() => parseDataset('DROPOUT_RATE_SECONDARY_ESCALE', csv)).toThrow(
+      'como máximo 40 periodos',
+    );
+  });
+
+  it('rechaza un periodo que no sea de años consecutivos', () => {
+    const csv = escaleCsv.replace('2014-2015,', '2014-2019,');
+    expect(() => parseDataset('DROPOUT_RATE_SECONDARY_ESCALE', csv)).toThrow(
+      'forma 2023-2024',
+    );
+  });
+
   it('rechaza una categoría desconocida', () => {
     expect(() =>
       parseDataset(

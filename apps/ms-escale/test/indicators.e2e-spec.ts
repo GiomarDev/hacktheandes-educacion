@@ -233,6 +233,38 @@ describe('F4: importación de datos abiertos e indicadores', () => {
     expect(body).toEqual([expect.objectContaining({ value: 5.4 })]);
   });
 
+  it('dos importaciones simultáneas del mismo archivo guardan una y avisan que ya estaba', async () => {
+    const responses = await Promise.all([
+      importFile('DROPOUT_RATE_SECONDARY_ESCALE', escaleCsv),
+      importFile('DROPOUT_RATE_SECONDARY_ESCALE', escaleCsv),
+    ]);
+    expect(responses.map((r) => r.status).sort()).toEqual([201, 409]);
+    expect(responses.find((r) => r.status === 409)!.body.message).toBe(
+      'Este archivo ya fue importado',
+    );
+    expect(await prisma.datasetImport.count()).toBe(1);
+  });
+
+  it('dos versiones simultáneas de los mismos periodos se guardan ambas, sin duplicar valores', async () => {
+    const fixed = escaleCsv.replace(/^PER,5\.3,/m, 'PER,5.4,');
+    const responses = await Promise.all([
+      importFile('DROPOUT_RATE_SECONDARY_ESCALE', escaleCsv),
+      importFile('DROPOUT_RATE_SECONDARY_ESCALE', fixed),
+    ]);
+    expect(responses.map((r) => r.status)).toEqual([201, 201]);
+    const { body } = await request(escale.url)
+      .get('/indicators')
+      .query({
+        code: 'DROPOUT_RATE_SEC_ESCALE',
+        geo_code: '00',
+        period: '2013-2014',
+        dimension: 'none',
+      })
+      .set(as('admin'))
+      .expect(200);
+    expect(body).toHaveLength(1);
+  });
+
   it('los indicadores calculados se filtran por el ámbito del especialista', async () => {
     const def = await prisma.indicatorDefinition.findUniqueOrThrow({
       where: { code: 'ATTENDANCE_RATE' },

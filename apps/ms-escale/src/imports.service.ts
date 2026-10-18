@@ -31,16 +31,18 @@ export class ImportsService {
       throw error;
     }
     const checksum = createHash('sha256').update(dto.content).digest('hex');
-    if (await this.prisma.datasetImport.findUnique({ where: { checksum } }))
-      throw new ConflictException('Este archivo ya fue importado');
     const definitions = await this.prisma.indicatorDefinition.findMany({
       where: { code: { in: [...new Set(values.map((v) => v.code))] } },
     });
     const idOf = new Map(definitions.map((d) => [d.code, d.id]));
     const periods = [...new Set(values.map((v) => v.periodLabel))];
     // Una importación reemplaza los valores de sus indicadores en los periodos que trae.
+    // Las importaciones se serializan: dos a la vez chocarían al borrar y crear los mismos valores.
     const created = await this.prisma.$transaction(
       async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('escale:imports'))`;
+        if (await tx.datasetImport.findUnique({ where: { checksum } }))
+          throw new ConflictException('Este archivo ya fue importado');
         const record = await tx.datasetImport.create({
           data: {
             dataset: dto.dataset,

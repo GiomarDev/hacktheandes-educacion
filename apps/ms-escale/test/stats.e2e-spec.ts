@@ -211,6 +211,15 @@ describe('F4: agregados diarios e indicadores por UGEL', () => {
     ).toBe(3);
   });
 
+  it('dos cálculos simultáneos del mismo día terminan bien y no duplican filas', async () => {
+    const responses = await Promise.all([compute(MONDAY), compute(MONDAY)]);
+    expect(responses.map((r) => r.status)).toEqual([200, 200]);
+    expect(await prisma.schoolDailyStat.count()).toBe(2);
+    expect(
+      await prisma.indicatorValue.count({ where: { geoLevel: 'UGEL' } }),
+    ).toBe(3);
+  });
+
   it('los fines de semana no generan aulas en silencio', async () => {
     const { body } = await compute('2026-03-07').expect(200);
     expect(body).toMatchObject({ skipped: true, computed: 0 });

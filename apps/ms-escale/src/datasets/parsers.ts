@@ -24,6 +24,9 @@ export class DatasetError extends Error {}
 
 const round4 = (n: number) => Math.round(n * 10000) / 10000;
 
+// La serie oficial trae 12 años lectivos; el tope evita archivos desmesurados.
+const MAX_PERIODS = 40;
+
 // Año lectivo t y t+1, por ejemplo "2023-2024".
 export function isSchoolYearPair(period: string): boolean {
   const match = /^(\d{4})-(\d{4})$/.exec(period);
@@ -138,8 +141,14 @@ const DIMENSIONS = [
 // docs/tasa_desercion_secundaria_escale.csv: tasas (sin conteos) por categoría y año lectivo.
 function escaleSecondarySeries([header, ...rows]: string[][]): ParsedValue[] {
   const periods = header.slice(1);
-  if (!periods.length || periods.some((p) => !/^\d{4}-\d{4}$/.test(p)))
+  if (!periods.length || !periods.every(isSchoolYearPair))
     throw new DatasetError('Los periodos deben tener la forma 2023-2024');
+  if (periods.length > MAX_PERIODS)
+    throw new DatasetError(
+      `El archivo admite como máximo ${MAX_PERIODS} periodos`,
+    );
+  const repeated = periods.find((p, i) => periods.indexOf(p) !== i);
+  if (repeated) throw new DatasetError(`Periodo repetido: ${repeated}`);
   const out: ParsedValue[] = [];
   const seen = new Set<string>();
   for (const [category, ...cells] of rows) {

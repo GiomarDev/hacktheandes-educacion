@@ -163,7 +163,10 @@ export class StatsService {
         });
       }
     }
+    // El candado serializa dos cálculos del mismo mes, que chocarían al borrar y crear sus valores.
     await this.prisma.$transaction([
+      this.prisma
+        .$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`escale:month:${month}`}))`,
       this.prisma.indicatorValue.deleteMany({
         where: {
           indicatorId: { in: [...idOf.values()] },
