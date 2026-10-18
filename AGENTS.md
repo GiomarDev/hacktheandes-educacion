@@ -6,26 +6,27 @@ Guía para agentes de IA (Claude Code, Codex, Cursor, etc.) que trabajan en este
 
 **hacktheandes-educacion** — proyecto de KeoIT para el reto de educación de Hack the Andes.
 
-Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú. Docentes, tutores y directivos registran matrícula, asistencia y notas; `ms-alerta` detecta riesgos, abre casos y simula el contacto familiar. Los especialistas de UGEL/DRE acceden según su ámbito. `ms-simon` genera reportes, protege los diagnósticos de los planes y registra visitas. La siguiente fase es indicadores (`ms-escale`).
+Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú. Docentes, tutores y directivos registran matrícula, asistencia y notas; `ms-alerta` detecta riesgos, abre casos y simula el contacto familiar. Los especialistas de UGEL/DRE acceden según su ámbito. `ms-simon` genera reportes, protege los diagnósticos de los planes y registra visitas. `ms-escale` importa los CSV oficiales de deserción y calcula agregados diarios e indicadores mensuales por UGEL.
 
 ## Stack
 
-Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. Frontend y despliegue pendientes.
+Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. Frontend y despliegue pendientes.
 
 | Tarea        | Comando |
 |--------------|---------|
-| Instalar     | `npm ci`, `npm run auth:generate`, `npm run siagie:generate` `npm run alerta:generate` y `npm run simon:generate` |
-| Desarrollo   | `npm run start:auth`, `npm run start:siagie` `npm run start:alerta` y `npm run start:simon` en terminales separadas |
+| Instalar     | `npm ci`, `npm run auth:generate`, `npm run siagie:generate` `npm run alerta:generate`, `npm run simon:generate` y `npm run escale:generate` |
+| Desarrollo   | `npm run start:auth`, `npm run start:siagie` `npm run start:alerta`, `npm run start:simon` y `npm run start:escale` en terminales separadas |
 | Tests        | `npm test`, `npm run test:e2e`, `npm run test:smoke` (requiere build previo) |
 | Lint/format  | `npm run lint`, `npm run typecheck`, `npm run format` |
 | Build        | `npm run build` |
 
 - Configuración en `.env.example`; nunca mostrar ni commitear los secretos del `.env`.
-- Las pruebas solo usan `auth_test`, `siagie_test`, `alerta_test` y `simon_test`. `test/test-databases.ts` aborta ante otro schema. No ejecutar suites de integración simultáneas: comparten tablas de prueba y las limpian entre casos.
+- Las pruebas solo usan `auth_test`, `siagie_test`, `alerta_test`, `simon_test` y `escale_test` (derivado de la URL de prueba de SIMON si falta `ESCALE_TEST_DATABASE_URL`). `test/test-databases.ts` aborta ante otro schema. No ejecutar suites de integración simultáneas: comparten tablas de prueba y las limpian entre casos.
 - Las notificaciones de F2 son simuladas por `ConsoleProvider`. No imprimir datos personales ni textos de las familias en logs. Webhooks y rutas internas exigen `x-internal-key`.
 - Las escrituras de SIAGIE guardan eventos en una outbox en la misma transacción. No introducir llamadas HTTP que hagan fallar una escritura ya confirmada. Workers de entrega/inbox/notificaciones cada minuto; evaluación global cada hora. `BACKGROUND_JOBS_ENABLED=false` los desactiva para tests.
 - No ejecutar seeds sobre `auth` o `siagie` sin confirmación explícita del usuario.
 - SIMON: diagnóstico cifrado con clave propia; solo tutor asignado, psicología y dirección pueden leerlo. Nunca devolver ciphertext ni incluir diagnóstico en listados, reportes o auditoría. Contratos en `docs/ms-simon.md`.
+- ESCALE: los indicadores oficiales son datos abiertos; los calculados se filtran por UGEL/DRE. El catálogo de indicadores vive en la migración. Contratos en `docs/ms-escale.md`.
 - Estado y pendientes: `docs/continuidad-backend.md`. Plan detallado: `docs/superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md`.
 
 ## Estructura
@@ -35,7 +36,7 @@ Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sir
 ├── .agents/      # Subagentes compartidos (fuente única; .claude/agents apunta aquí)
 ├── .commands/    # Comandos/prompts reutilizables (fuente única; .claude/commands apunta aquí)
 ├── .claude/      # Config de Claude Code (settings.json + symlinks a .agents y .commands)
-├── apps/         # ms-auth, ms-siagie, ms-alerta y ms-simon, cada uno con Prisma y tests propios
+├── apps/         # ms-auth, ms-siagie, ms-alerta, ms-simon y ms-escale, cada uno con Prisma y tests propios
 ├── libs/         # common (autorización y utilidades) y fixtures (IDs sintéticos compartidos)
 ├── test/         # Configuración y protección de las bases de prueba
 ├── scripts/      # Creación de base de datos y prueba de arranque compilado

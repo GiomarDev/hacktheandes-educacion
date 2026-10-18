@@ -4,7 +4,7 @@ Relevo de Claude a Codex, 17 de octubre de 2026. Rama: `feat/backend-fundacion`.
 
 ## Alcance recuperado
 
-El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). **F3 — ms-simon** continúa con reportes, planes cifrados y visitas, según su [plan](superpowers/plans/2026-10-17-ms-simon.md) y [contratos](ms-simon.md). `ms-escale` y el frontend siguen pendientes.
+El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). **F3 — ms-simon** continúa con reportes, planes cifrados y visitas, según su [plan](superpowers/plans/2026-10-17-ms-simon.md) y [contratos](ms-simon.md). **F4 — ms-escale** lo continuó Claude según su [plan](superpowers/plans/2026-10-17-ms-escale.md) y [contratos](ms-escale.md). El frontend sigue pendiente.
 
 Al iniciar el relevo, las tareas 1–12 ya estaban en Git; el último commit era `8feaff1`. La tarea 13 tenía archivos sin commit: seeds de ambos servicios, IDs compartidos, resumen del estudiante y prueba entre servicios. El registro local de Claude está en `.superpowers/sdd/2026-10-17-backend-fundacion-auth-siagie/progress.md` (ignorado por Git).
 
@@ -84,13 +84,43 @@ Migración `apps/ms-simon/prisma/migrations/20261018010000_init`: **aplicada exc
 
 Verificación dirigida: **73 unitarias y 13 e2e de F3 aprobadas**, sin saltos. Lint, tipos y compilación de los cuatro servicios correctos. La primera ejecución unitaria dentro del sandbox no pudo abrir el servidor local JWKS; la repetición con acceso a red aprobó las 73 pruebas. **Suite completa: 125 e2e aprobadas en 18 archivos**, sin saltos (94 de fundación + 18 de F2 + 13 de F3). Junto con las 73 unitarias, son **198 pruebas únicas**. Los cuatro ejecutables compilados arrancan y responden `/health`; los procesos se detienen al terminar la prueba. Formato y `git diff --check` correctos.
 
+## Continuación F4 — ms-escale
+
+Relevo de Codex a Claude, 17 de octubre de 2026. Antes de continuar se verificó lo que dejó Codex en `1ab813f`: lint, tipos, 73 pruebas unitarias, build, arranque de los cuatro ejecutables y 125 e2e. Todo pasó, sin tests saltados.
+
+ms-escale es el quinto servicio NestJS/Prisma, en el puerto 3004 con schema `escale`.
+- **Importación:** recibe los CSV oficiales de `docs/` y evita importar dos veces el mismo archivo comparando su sha256. Un archivo con errores responde 400 y no se guarda nada.
+- **Totales:** se comprobó que los totales nacionales cuadran con `desercion_por_region_siagie_2023_2024.csv`: secundaria 72 282 / 2 842 831 y primaria 64 463 / 3 721 852.
+- **Agregados:** calcula un agregado diario por IE con datos de SIAGIE y Alerta, y a partir de ahí tres indicadores mensuales por UGEL: asistencia, aulas en silencio y casos contactados.
+- **Acceso:** los indicadores oficiales los ve cualquier usuario autenticado; los calculados, solo MINEDU y los especialistas dentro de su ámbito.
+
+Cambios en otros servicios, todos compatibles con lo existente:
+- SIAGIE: `GET /internal/escale/schools`.
+- Alerta: el reporte interno ahora devuelve también `currentlyContactedOpenCases`.
+
+Una revisión independiente de F4 no encontró nada crítico y sí cuatro puntos importantes. Los cuatro se corrigieron con TDD:
+- El periodo es obligatorio al importar el CSV de SIAGIE.
+- Ese CSV debe traer todas las regiones, y Lima no puede aparecer entera y dividida a la vez.
+- `POST /stats/compute` no calcula hoy ni fechas futuras, y al recalcular un día pasado se conservan sus casos.
+- Los días fuera de los periodos académicos no cuentan como aulas en silencio.
+
+Hallazgos menores que quedan pendientes:
+- Columnas de periodo repetidas y sin tope en el CSV de ESCALE.
+- Dos importaciones o cálculos simultáneos responden con un 409 genérico.
+- Un día que falla no se reintenta solo después de la medianoche.
+- Hay que confirmar que `prisma migrate dev` no intente quitar el `NULLS NOT DISTINCT` del índice único.
+
+Verificación final: lint, tipos y build de los cinco servicios sin errores; **91 unitarias** en 16 archivos y **141 e2e** en 20 archivos, sin tests saltados (125 previas + 16 de F4); los cinco ejecutables compilados arrancan y responden `/health`.
+
+Migración `apps/ms-escale/prisma/migrations/20261018020000_init`: **aplicada solo a `escale_test`**. La URL de `escale_test` se deriva de `SIMON_TEST_DATABASE_URL` cuando falta `ESCALE_TEST_DATABASE_URL`. Para correr el servicio sobre el schema real hay que agregar `ESCALE_DATABASE_URL` al `.env`; los marcadores ya están en `.env.example`.
+
 ## Pendientes ordenados
 
 1. **Carga de demo en schemas reales:** paso 4 de la tarea 13. Requiere confirmación explícita; no es requisito para probar ni desarrollar sobre los schemas de test.
 2. **Puesta en marcha de F2:** aplicar las migraciones nuevas en los schemas reales cuando se autorice esa puesta en marcha. El desarrollo y las verificaciones usan los schemas de prueba. Los contratos y límites de la demo están en `docs/ms-alerta.md`.
 3. **Puesta en marcha de F3:** aplicar la migración de SIMON en su schema real cuando se autorice; conservar la clave propia de cifrado de diagnóstico. No se requiere para seguir desarrollando sobre tests.
-4. **F4 — ms-escale:** importar CSV oficiales del repositorio y construir agregados e indicadores verificables por UGEL.
-5. **Frontend:** recuperar los prototipos que el README menciona bajo `STICH_ITERATION_1/` (esa carpeta no está en este checkout), conectar Stitch y construir la interfaz sobre APIs verificadas.
+4. **Puesta en marcha de F4:** agregar `ESCALE_DATABASE_URL` al `.env`, aplicar la migración de ms-escale en su schema real cuando se autorice e importar los dos CSV con `POST /imports`. Los hallazgos menores de la revisión están listados en la sección de F4.
+5. **Frontend:** la carpeta `STICH_ITERATION_1/` se eliminó del repositorio a pedido del equipo; partir de los diseños de Stitch, conectar Stitch y construir la interfaz sobre APIs verificadas.
 6. **Operación:** definir despliegue, CI y limitación por IP de autenticación. La limitación por cuenta ya existe; la limitación por IP quedó diferida en el registro de Claude.
 7. **Validación de dominio:** confirmar código oficial del estudiante y cálculo oficial de notas. La moda con desempate por última columna es una decisión provisional del plan, no una regla oficial validada.
 8. **Entorno:** al actualizar el runtime, elegir una versión de Node admitida por las herramientas del CLI; Node 25.8.1 produce advertencias de engines en Angular Devkit aunque las verificaciones del proyecto funcionan.

@@ -6,7 +6,7 @@ El proyecto aborda la problemática de la **deserción escolar y el bajo rendimi
 
 ## Backend
 
-Implementados `ms-auth`, `ms-siagie`, `ms-alerta` y `ms-simon`: autenticación JWT RS256/JWKS, roles con alcance territorial, matrícula, asistencia, notas, carné QR, resumen auditado y seguimiento de riesgos con contacto familiar simulado, reportes, planes de apoyo cifrados y visitas. Estado del relevo, verificación y próximas fases en [Continuidad del backend](docs/continuidad-backend.md). Contratos de [F2 — alertas](docs/ms-alerta.md) y [F3 — reportes y planes](docs/ms-simon.md).
+Implementados `ms-auth`, `ms-siagie`, `ms-alerta`, `ms-simon` y `ms-escale`: autenticación JWT RS256/JWKS, roles con alcance territorial, matrícula, asistencia, notas, carné QR, resumen auditado y seguimiento de riesgos con contacto familiar simulado, reportes, planes de apoyo cifrados y visitas, e indicadores de deserción oficiales y calculados por UGEL. Estado del relevo, verificación y próximas fases en [Continuidad del backend](docs/continuidad-backend.md). Contratos de [F2 — alertas](docs/ms-alerta.md), [F3 — reportes y planes](docs/ms-simon.md) y [F4 — indicadores](docs/ms-escale.md).
 
 ### Preparación
 
@@ -20,9 +20,10 @@ npm run auth:generate
 npm run siagie:generate
 npm run alerta:generate
 npm run simon:generate
+npm run escale:generate
 ```
 
-Cada servicio usa su propio schema en la base PostgreSQL `school`. Las variables `AUTH_DATABASE_URL`, `SIAGIE_DATABASE_URL`, `ALERTA_DATABASE_URL` y `SIMON_DATABASE_URL` apuntan a `auth`, `siagie`, `alerta` y `simon`; sus equivalentes `*_TEST_DATABASE_URL`, exclusivamente a `auth_test`, `siagie_test`, `alerta_test` y `simon_test`. Configurar `KEY_ENCRYPTION_SECRET` y `SIMON_DATA_ENCRYPTION_SECRET` (claves independientes de 32 bytes en base64), `INTERNAL_API_KEY` y `SEED_PASSWORD`. Las contraseñas de las URL deben codificarse para URL, por ejemplo `$` como `%24`.
+Cada servicio usa su propio schema en la base PostgreSQL `school`. Las variables `AUTH_DATABASE_URL`, `SIAGIE_DATABASE_URL`, `ALERTA_DATABASE_URL`, `SIMON_DATABASE_URL` y `ESCALE_DATABASE_URL` apuntan a `auth`, `siagie`, `alerta`, `simon` y `escale`; sus equivalentes `*_TEST_DATABASE_URL`, exclusivamente a `auth_test`, `siagie_test`, `alerta_test`, `simon_test` y `escale_test` (si falta `ESCALE_TEST_DATABASE_URL`, las pruebas derivan `escale_test` de la URL de prueba de SIMON). Configurar `KEY_ENCRYPTION_SECRET` y `SIMON_DATA_ENCRYPTION_SECRET` (claves independientes de 32 bytes en base64), `INTERNAL_API_KEY` y `SEED_PASSWORD`. Las contraseñas de las URL deben codificarse para URL, por ejemplo `$` como `%24`.
 
 La base `school` debe existir. `npm run db:create` crea ese recurso si falta; requiere autorización sobre el servidor compartido. Para aplicar migraciones existentes:
 
@@ -31,9 +32,10 @@ npx prisma migrate deploy --config apps/ms-auth/prisma.config.ts
 npx prisma migrate deploy --config apps/ms-siagie/prisma.config.ts
 npx prisma migrate deploy --config apps/ms-alerta/prisma.config.ts
 npx prisma migrate deploy --config apps/ms-simon/prisma.config.ts
+npx prisma migrate deploy --config apps/ms-escale/prisma.config.ts
 ```
 
-Para crear una migración durante desarrollo: `npm run auth:migrate -- --name descripcion`, `npm run siagie:migrate -- --name descripcion`, `npm run alerta:migrate -- --name descripcion` o `npm run simon:migrate -- --name descripcion`.
+Para crear una migración durante desarrollo: `npm run auth:migrate -- --name descripcion`, `npm run siagie:migrate -- --name descripcion`, `npm run alerta:migrate -- --name descripcion` `npm run simon:migrate -- --name descripcion` o `npm run escale:migrate -- --name descripcion`.
 
 ### Demo sintética
 
@@ -57,9 +59,10 @@ npm run start:auth
 npm run start:siagie
 npm run start:alerta
 npm run start:simon
+npm run start:escale
 ```
 
-Por defecto escuchan en 3000, 3001, 3002 y 3003. Configurar `AUTH_JWKS_URL=http://localhost:3000/.well-known/jwks.json`, `AUTH_URL=http://localhost:3000`, `SIAGIE_URL=http://localhost:3001` y `ALERTA_URL=http://localhost:3002`. `PORT` permite cambiar el puerto de cada proceso.
+Por defecto escuchan en 3000, 3001, 3002, 3003 y 3004. Configurar `AUTH_JWKS_URL=http://localhost:3000/.well-known/jwks.json`, `AUTH_URL=http://localhost:3000`, `SIAGIE_URL=http://localhost:3001` y `ALERTA_URL=http://localhost:3002`. `PORT` permite cambiar el puerto de cada proceso.
 
 ```sh
 npm run build
@@ -68,9 +71,10 @@ npm run start:auth:prod
 npm run start:siagie:prod
 npm run start:alerta:prod
 npm run start:simon:prod
+npm run start:escale:prod
 ```
 
-La compilación usa Rspack, el [builder de monorepos de Nest](https://docs.nestjs.com/recipes/swc), para incluir `libs/common` y los clientes Prisma generados. `/health` devuelve `{ "status": "ok", "service": "ms-auth" }` (o `ms-siagie`/`ms-alerta`/`ms-simon`).
+La compilación usa Rspack, el [builder de monorepos de Nest](https://docs.nestjs.com/recipes/swc), para incluir `libs/common` y los clientes Prisma generados. `/health` devuelve `{ "status": "ok", "service": "ms-auth" }` (o `ms-siagie`/`ms-alerta`/`ms-simon`/`ms-escale`).
 
 ### Verificación
 
@@ -83,7 +87,7 @@ npm run build
 npm run test:smoke
 ```
 
-La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No ejecutar dos suites e2e simultáneamente, ya que comparten tablas. `npm run test:e2e:auth`, `npm run test:e2e:siagie`, `npm run test:e2e:cross`, `npm run test:e2e:alerta` y `npm run test:e2e:simon` permiten verificaciones parciales. La prueba entre servicios realiza un login real, comprueba el aislamiento entre IEs, el resumen auditado, la repetición de los seeds y el funcionamiento de JWT en caché cuando `ms-auth` se apaga. F2 comprueba tres faltas → caso → contacto simulado → respuesta familiar, además de escalamiento, consentimiento y reintentos. F3 verifica reportes contrastados con registros sintéticos, permisos y cifrado del diagnóstico, versiones aprobadas por tutor y transiciones de visitas. La prueba de arranque utiliza las cuatro URL de prueba y detiene los procesos al terminar.
+La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No ejecutar dos suites e2e simultáneamente, ya que comparten tablas. `npm run test:e2e:auth`, `npm run test:e2e:siagie`, `npm run test:e2e:cross`, `npm run test:e2e:alerta`, `npm run test:e2e:simon` y `npm run test:e2e:escale` permiten verificaciones parciales. La prueba entre servicios realiza un login real, comprueba el aislamiento entre IEs, el resumen auditado, la repetición de los seeds y el funcionamiento de JWT en caché cuando `ms-auth` se apaga. F2 comprueba tres faltas → caso → contacto simulado → respuesta familiar, además de escalamiento, consentimiento y reintentos. F3 verifica reportes contrastados con registros sintéticos, permisos y cifrado del diagnóstico, versiones aprobadas por tutor y transiciones de visitas. F4 importa los CSV de `docs/` y comprueba que los totales nacionales cuadren con el archivo de SIAGIE, y calcula agregados diarios e indicadores por UGEL con SIAGIE y Alerta reales. La prueba de arranque utiliza las cinco URL de prueba y detiene los procesos al terminar.
 
 ---
 
@@ -185,7 +189,7 @@ Para más detalles sobre los componentes y sugerencias de iteración devueltas p
 │       └── stitch-*/                       # Skills especializadas para Google Stitch
 ├── .claude/                                # Configuración de Claude Code
 ├── .commands/                              # Comandos reutilizables (/commit, /review)
-├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002) y ms-simon (3003)
+├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002), ms-simon (3003) y ms-escale (3004)
 ├── libs/                                   # Autorización, contratos de eventos y fixtures sintéticos
 ├── test/                                   # Entornos y protección de schemas de prueba
 ├── scripts/                                # Creación de base y verificación del arranque compilado
