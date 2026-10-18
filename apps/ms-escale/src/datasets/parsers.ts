@@ -1,5 +1,5 @@
 import { readCsv } from './csv.js';
-import { findRegion, NATIONAL, sameName } from './regions.js';
+import { findRegion, NATIONAL, REGIONS, sameName } from './regions.js';
 
 export const DATASETS = [
   'DROPOUT_BY_REGION_SIAGIE',
@@ -24,19 +24,52 @@ export class DatasetError extends Error {}
 
 const round4 = (n: number) => Math.round(n * 10000) / 10000;
 
+// Año lectivo t y t+1, por ejemplo "2023-2024".
+export function isSchoolYearPair(period: string): boolean {
+  const match = /^(\d{4})-(\d{4})$/.exec(period);
+  return !!match && Number(match[2]) === Number(match[1]) + 1;
+}
+
 export function parseDataset(
   dataset: DatasetCode,
   content: string,
+  options: { period?: string } = {},
 ): ParsedValue[] {
   const rows = readCsv(content);
   if (rows.length < 2) throw new DatasetError('El archivo no tiene filas');
-  return dataset === 'DROPOUT_BY_REGION_SIAGIE'
-    ? dropoutByRegion(rows)
-    : escaleSecondarySeries(rows);
+  if (dataset === 'DROPOUT_BY_REGION_SIAGIE') {
+    // El CSV no trae columna de periodo: sin él, un archivo nuevo sobrescribiría otro año.
+    if (!options.period || !isSchoolYearPair(options.period))
+      throw new DatasetError(
+        'Indique el periodo del archivo con la forma 2023-2024',
+      );
+    return dropoutByRegion(rows, options.period);
+  }
+  return escaleSecondarySeries(rows);
+}
+
+// Lima se reporta entera (15) o dividida (15LM y 15LP), nunca de ambas formas.
+function assertFullCoverage(codes: Set<string>) {
+  const lima = ['15', '15LM', '15LP'].filter((c) => codes.has(c));
+  if (codes.has('15') && lima.length > 1)
+    throw new DatasetError('Lima aparece entera y dividida a la vez');
+  const missing = REGIONS.filter((r) => {
+    if (r.code === '15') return !codes.has('15') && lima.length !== 2;
+    if (r.code === '15LM' || r.code === '15LP')
+      return !codes.has('15') && !codes.has(r.code);
+    return !codes.has(r.code);
+  });
+  if (missing.length)
+    throw new DatasetError(
+      `Faltan regiones para el total nacional: ${missing.map((r) => r.name).join(', ')}`,
+    );
 }
 
 // docs/desercion_por_region_siagie_2023_2024.csv: conteos por región; el total nacional es la suma.
-function dropoutByRegion([header, ...rows]: string[][]): ParsedValue[] {
+function dropoutByRegion(
+  [header, ...rows]: string[][],
+  periodLabel: string,
+): ParsedValue[] {
   const levels = [
     { code: 'DROPOUT_RATE_SEC_SIAGIE', key: 'secundaria' },
     { code: 'DROPOUT_RATE_PRI_SIAGIE', key: 'primaria' },
@@ -55,6 +88,7 @@ function dropoutByRegion([header, ...rows]: string[][]): ParsedValue[] {
     const pct = col(`${level.key}_pct`);
     let totalStudents = 0;
     let totalDropouts = 0;
+    const codes = new Set<string>();
     for (const row of rows) {
       const region = findRegion(row[regionCol] ?? '');
       if (!region)
@@ -72,10 +106,12 @@ function dropoutByRegion([header, ...rows]: string[][]): ParsedValue[] {
       if (seen.has(key))
         throw new DatasetError(`Región repetida: ${region.name}`);
       seen.add(key);
+      codes.add(region.code);
       totalStudents += s;
       totalDropouts += d;
       out.push(value(level.code, 'DRE', region, p, d, s));
     }
+    assertFullCoverage(codes);
     out.push(
       value(
         level.code,
@@ -87,7 +123,7 @@ function dropoutByRegion([header, ...rows]: string[][]): ParsedValue[] {
       ),
     );
   }
-  return out;
+  return out.map((v) => ({ ...v, periodLabel }));
 }
 
 const DIMENSIONS = [
@@ -148,7 +184,7 @@ function value(
     geoLevel,
     geoCode: geo.code,
     geoName: geo.name,
-    periodLabel: '2023-2024',
+    periodLabel: '',
     dimension: null,
     dimensionValue: null,
     value: v,

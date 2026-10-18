@@ -38,11 +38,25 @@ describe('F4: importación de datos abiertos e indicadores', () => {
     dreA = randomUUID();
   const oldEnv = process.env.AUTH_JWKS_URL;
   const as = (who: string) => ({ Authorization: `Bearer ${tokens[who]}` });
-  const importFile = (dataset: string, content: string, who = 'admin') =>
+  const FILE_NAMES: Record<string, string> = {
+    DROPOUT_BY_REGION_SIAGIE: 'desercion_por_region_siagie_2023_2024.csv',
+    DROPOUT_RATE_SECONDARY_ESCALE: 'tasa_desercion_secundaria_escale.csv',
+  };
+  const importFile = (
+    dataset: string,
+    content: string,
+    who = 'admin',
+    extra: Record<string, string> = {},
+  ) =>
     request(escale.url)
       .post('/imports')
       .set(as(who))
-      .send({ dataset, fileName: `${dataset.toLowerCase()}.csv`, content });
+      .send({
+        dataset,
+        fileName: FILE_NAMES[dataset] ?? 'otro.csv',
+        content,
+        ...extra,
+      });
 
   beforeAll(async () => {
     auth = await start(AuthModule);
@@ -132,6 +146,30 @@ describe('F4: importación de datos abiertos e indicadores', () => {
     });
     expect(body[0].checksum).toMatch(/^[0-9a-f]{64}$/);
     await request(escale.url).get('/imports').set(as('ugel')).expect(403);
+  });
+
+  it('toma el periodo del nombre del archivo o del campo period', async () => {
+    const { body } = await importFile(
+      'DROPOUT_BY_REGION_SIAGIE',
+      regionCsv,
+      'admin',
+      {
+        fileName: 'desercion_por_region.csv',
+      },
+    ).expect(400);
+    expect(body.message).toContain('periodo');
+    await importFile('DROPOUT_BY_REGION_SIAGIE', regionCsv, 'admin', {
+      fileName: 'desercion_por_region.csv',
+      period: '2024-2025',
+    }).expect(201);
+    const { body: rows } = await request(escale.url)
+      .get('/indicators')
+      .query({ code: 'DROPOUT_RATE_SEC_SIAGIE', geo_level: 'NATIONAL' })
+      .set(as('admin'))
+      .expect(200);
+    expect(rows.map((r: { periodLabel: string }) => r.periodLabel)).toEqual([
+      '2024-2025',
+    ]);
   });
 
   it('rechaza un CSV inconsistente sin dejar registros', async () => {

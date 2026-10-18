@@ -18,6 +18,8 @@ export class ImportDto {
   @IsString() @Length(1, 2_000_000) content: string;
   @IsOptional() @IsString() @Length(1, 150) name?: string;
   @IsOptional() @IsUrl() @Length(1, 500) sourceUrl?: string;
+  // Año lectivo del archivo; si falta, se toma del nombre (…_2023_2024.csv).
+  @IsOptional() @Matches(/^\d{4}-\d{4}$/) period?: string;
 }
 
 export class IndicatorQuery {

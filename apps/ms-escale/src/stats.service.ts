@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { dateOnly } from '@app/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { dateOnly, todayInLima } from '@app/common';
 import type { EscaleSchool } from '@app/common';
 import { SourcesClient } from './clients.js';
 import { PrismaService } from './prisma.service.js';
@@ -7,6 +7,12 @@ import { PrismaService } from './prisma.service.js';
 const round4 = (n: number) => Math.round(n * 10000) / 10000;
 
 // Lunes a viernes. Los feriados aún no se descuentan.
+function previousDay(date: string): string {
+  return new Date(dateOnly(date).getTime() - 86400000)
+    .toISOString()
+    .slice(0, 10);
+}
+
 export function isSchoolDay(date: string): boolean {
   const day = dateOnly(date).getUTCDay();
   return day !== 0 && day !== 6;
@@ -21,12 +27,28 @@ export class StatsService {
   ) {}
 
   async compute(date: string) {
+    // Hoy o una fecha futura darían un día sin pase de lista: 100 % de aulas en silencio.
+    if (date >= todayInLima())
+      throw new BadRequestException('Solo se calculan días ya terminados');
     if (!isSchoolDay(date))
-      return { date, skipped: true, schools: 0, computed: 0, failed: 0 };
-    const schools = await this.sources.schools();
+      return {
+        date,
+        skipped: true,
+        schools: 0,
+        computed: 0,
+        failed: 0,
+        outOfSession: 0,
+      };
+    const schools = await this.sources.schools(date);
     let computed = 0;
     let failed = 0;
+    let outOfSession = 0;
     for (const school of schools) {
+      // Vacaciones o IE sin periodos académicos: no se espera pase de lista.
+      if (!school.inSession) {
+        outOfSession++;
+        continue;
+      }
       try {
         await this.computeSchool(school, date);
         computed++;
@@ -37,7 +59,14 @@ export class StatsService {
     }
     if (failed) this.logger.warn(`Agregado diario incompleto: ${failed} IE`);
     if (computed) await this.computeUgelMonth(date.slice(0, 7), schools);
-    return { date, skipped: false, schools: schools.length, computed, failed };
+    return {
+      date,
+      skipped: false,
+      schools: schools.length,
+      computed,
+      failed,
+      outOfSession,
+    };
   }
 
   // present = PRESENT + LEFT_EARLY y absent = ABSENT + JUSTIFIED: así la tasa coincide con la de SIAGIE.
@@ -61,13 +90,18 @@ export class StatsService {
       absent: a.absent + a.justified,
       sectionsTotal: report.sectionsTotal,
       sectionsReported: report.reportedSectionDays,
+    };
+    // Alerta solo da el estado actual de los casos: vale para ayer, no para días anteriores.
+    // Al recalcular un día pasado se conservan los casos que se guardaron entonces.
+    const cases = {
       openCases: alerts.currentlyOpenCases,
       contactedCases: alerts.currentlyContactedOpenCases,
     };
+    const isYesterday = date === previousDay(todayInLima());
     await this.prisma.schoolDailyStat.upsert({
       where: { schoolId_date: { schoolId: school.id, date: dateOnly(date) } },
-      create: { schoolId: school.id, date: dateOnly(date), ...data },
-      update: data,
+      create: { schoolId: school.id, date: dateOnly(date), ...data, ...cases },
+      update: isYesterday ? { ...data, ...cases } : data,
     });
   }
 

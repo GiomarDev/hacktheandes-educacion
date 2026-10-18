@@ -10,6 +10,11 @@ import { DatasetError, parseDataset } from './datasets/parsers.js';
 import type { ImportDto } from './api.dto.js';
 import { PrismaService } from './prisma.service.js';
 
+function periodFromFileName(fileName: string): string | undefined {
+  const match = /(\d{4})[_-](\d{4})/.exec(fileName);
+  return match ? `${match[1]}-${match[2]}` : undefined;
+}
+
 @Injectable()
 export class ImportsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -17,7 +22,9 @@ export class ImportsService {
   async import(user: AuthUser, dto: ImportDto) {
     let values;
     try {
-      values = parseDataset(dto.dataset, dto.content);
+      values = parseDataset(dto.dataset, dto.content, {
+        period: dto.period ?? periodFromFileName(dto.fileName),
+      });
     } catch (error) {
       if (error instanceof DatasetError)
         throw new BadRequestException(error.message);

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { todayInLima } from '@app/common';
 import request from 'supertest';
 import { AppModule as AuthModule } from '../../ms-auth/src/app.module.js';
 import { AppModule as SiagieModule } from '../../ms-siagie/src/app.module.js';
@@ -24,6 +25,7 @@ describe('F4: agregados diarios e indicadores por UGEL', () => {
   let prisma: PrismaService;
   let fx: Awaited<ReturnType<typeof createSchoolFixture>>;
   let tokens: Record<string, string>;
+  let alertsDb: AlertaPrisma;
   const oldEnv = Object.fromEntries(
     ['AUTH_JWKS_URL', 'SIAGIE_URL', 'ALERTA_URL'].map((k) => [
       k,
@@ -44,12 +46,24 @@ describe('F4: agregados diarios e indicadores por UGEL', () => {
     escale = await start(AppModule);
     prisma = escale.app.get(PrismaService);
     const source = siagie.app.get(SiagiePrisma);
-    const alertsDb = alerta.app.get(AlertaPrisma);
+    alertsDb = alerta.app.get(AlertaPrisma);
     await cleanSiagieTables(source);
     await alertsDb.$executeRawUnsafe(
       'TRUNCATE "alerta_test"."guardian_responses", "alerta_test"."notifications", "alerta_test"."case_actions", "alerta_test"."alerts", "alerta_test"."cases", "alerta_test"."inbox_events" CASCADE',
     );
     fx = await createSchoolFixture(source);
+    // Solo marzo y abril tienen clases: fuera de ese rango la IE no está en sesión.
+    for (const schoolId of [fx.schoolA.id, fx.schoolB.id])
+      await source.academicPeriod.create({
+        data: {
+          schoolId,
+          year: 2026,
+          type: 'BIMESTER',
+          number: 1,
+          startDate: new Date('2026-03-01'),
+          endDate: new Date('2026-04-30'),
+        },
+      });
     // IE A: sección A con un presente y una falta; sección B sin pase de lista (aula en silencio).
     // IE B: una tardanza y una falta justificada.
     const marks = [
@@ -125,6 +139,7 @@ describe('F4: agregados diarios e indicadores por UGEL', () => {
       schools: 2,
       computed: 2,
       failed: 0,
+      outOfSession: 0,
     });
     const rows = await prisma.schoolDailyStat.findMany();
     const of = (schoolId: string) => rows.find((r) => r.schoolId === schoolId);
@@ -216,6 +231,43 @@ describe('F4: agregados diarios e indicadores por UGEL', () => {
     expect(
       await prisma.indicatorValue.count({ where: { geoLevel: 'UGEL' } }),
     ).toBe(3);
+  });
+
+  it('no cuenta aulas en silencio fuera de los periodos académicos', async () => {
+    // 2026-08-05 es miércoles, fuera del bimestre configurado.
+    const { body } = await compute('2026-08-05').expect(200);
+    expect(body).toMatchObject({
+      schools: 2,
+      computed: 0,
+      failed: 0,
+      outOfSession: 2,
+    });
+    expect(await prisma.schoolDailyStat.count()).toBe(0);
+  });
+
+  it('no calcula hoy ni fechas futuras', async () => {
+    await compute(todayInLima()).expect(400);
+    await compute('2099-03-02').expect(400);
+  });
+
+  it('recalcular un día pasado conserva los casos de ese día', async () => {
+    await compute(MONDAY).expect(200);
+    await alertsDb.case.updateMany({
+      where: { schoolId: fx.schoolA.id },
+      data: { closedAt: new Date() },
+    });
+    try {
+      await compute(MONDAY).expect(200);
+    } finally {
+      await alertsDb.case.updateMany({
+        where: { schoolId: fx.schoolA.id },
+        data: { closedAt: null },
+      });
+    }
+    const row = await prisma.schoolDailyStat.findFirstOrThrow({
+      where: { schoolId: fx.schoolA.id },
+    });
+    expect(row).toMatchObject({ openCases: 1, contactedCases: 1 });
   });
 
   it('solo MINEDU ejecuta el cálculo y con una fecha válida', async () => {

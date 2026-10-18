@@ -6,7 +6,9 @@ const regionCsv = doc('desercion_por_region_siagie_2023_2024.csv');
 const escaleCsv = doc('tasa_desercion_secundaria_escale.csv');
 
 describe('DROPOUT_BY_REGION_SIAGIE', () => {
-  const values = parseDataset('DROPOUT_BY_REGION_SIAGIE', regionCsv);
+  const values = parseDataset('DROPOUT_BY_REGION_SIAGIE', regionCsv, {
+    period: '2023-2024',
+  });
   const find = (code: string, geoCode: string) =>
     values.find((v) => v.code === code && v.geoCode === geoCode);
 
@@ -51,21 +53,51 @@ describe('DROPOUT_BY_REGION_SIAGIE', () => {
       '1,Ucayali,66211,3385,5.11',
       '1,Ucayali,66211,3385,6.11',
     );
-    expect(() => parseDataset('DROPOUT_BY_REGION_SIAGIE', broken)).toThrow(
-      DatasetError,
-    );
+    expect(() =>
+      parseDataset('DROPOUT_BY_REGION_SIAGIE', broken, { period: '2023-2024' }),
+    ).toThrow(DatasetError);
   });
 
   it('rechaza columnas faltantes y cifras no numéricas', () => {
     expect(() =>
-      parseDataset('DROPOUT_BY_REGION_SIAGIE', 'rank,region\n1,Ucayali'),
+      parseDataset('DROPOUT_BY_REGION_SIAGIE', 'rank,region\n1,Ucayali', {
+        period: '2023-2024',
+      }),
     ).toThrow(DatasetError);
     expect(() =>
       parseDataset(
         'DROPOUT_BY_REGION_SIAGIE',
         regionCsv.replace('66211', 'abc'),
+        { period: '2023-2024' },
       ),
     ).toThrow(DatasetError);
+  });
+});
+
+describe('DROPOUT_BY_REGION_SIAGIE: periodo y cobertura', () => {
+  const parse = (csv: string, period?: string) =>
+    parseDataset('DROPOUT_BY_REGION_SIAGIE', csv, { period });
+
+  it('exige el periodo y lo usa en todos los valores', () => {
+    expect(() => parse(regionCsv)).toThrow('periodo');
+    expect(() => parse(regionCsv, '2024')).toThrow('periodo');
+    expect(() => parse(regionCsv, '2024-2026')).toThrow('periodo');
+    expect(
+      parse(regionCsv, '2024-2025').every((v) => v.periodLabel === '2024-2025'),
+    ).toBe(true);
+  });
+
+  it('rechaza un archivo al que le faltan regiones', () => {
+    const partial = regionCsv
+      .split('\n')
+      .filter((l) => !l.includes(',Puno,'))
+      .join('\n');
+    expect(() => parse(partial, '2023-2024')).toThrow('Puno');
+  });
+
+  it('no cuenta Lima dos veces', () => {
+    const doubled = `${regionCsv.trimEnd()}\n26,Lima Metropolitana,10,1,10.00,10,1,10.00\n`;
+    expect(() => parse(doubled, '2023-2024')).toThrow('Lima');
   });
 });
 

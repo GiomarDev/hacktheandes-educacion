@@ -95,4 +95,6 @@ export interface EscaleSchool {
   name: string;
   ugel: { id: string; code: string; name: string };
   dre: { id: string; code: string; name: string };
+  // Solo cuando se consulta con fecha.
+  inSession?: boolean;
 }

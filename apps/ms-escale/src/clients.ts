@@ -27,8 +27,11 @@ async function get<T>(base: string, path: string): Promise<T> {
 
 @Injectable()
 export class SourcesClient {
-  schools() {
-    return get<EscaleSchool[]>('SIAGIE_URL', '/internal/escale/schools');
+  schools(date: string) {
+    return get<EscaleSchool[]>(
+      'SIAGIE_URL',
+      `/internal/escale/schools?${new URLSearchParams({ date })}`,
+    );
   }
   schoolReport(schoolId: string, date: string) {
     const q = new URLSearchParams({
