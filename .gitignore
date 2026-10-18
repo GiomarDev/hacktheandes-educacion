@@ -41,3 +41,6 @@ Thumbs.db
 *.tif
 *.psd
 *.raw
+
+# Dependencias
+node_modules/

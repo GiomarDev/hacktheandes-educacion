@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Dinámico: Flujo WhatsApp Docente — AmautaIA</title>
+  <style>
+    :root {
+      --bg-dark: #0B1320;
+      --card-bg: #162030;
+      --card-border: #26344A;
+      --text-white: #F8FAFC;
+      --text-muted: #94A3B8;
+      --whatsapp-green: #00A884;
+      --whatsapp-chat-bg: #0B141A;
+      --whatsapp-header: #202C33;
+      --bubble-bot: #005C4B;
+      --bubble-audio: #202C33;
+      --accent-amber: #F59E0B;
+      --accent-blue: #2563EB;
+      --accent-emerald: #10B981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header superior */
+    header {
+      background: rgba(22, 32, 48, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #00A884, #005C4B);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0, 168, 132, 0.3);
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--whatsapp-green);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #029474;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text-white);
+      border: 1px solid var(--card-border);
+    }
+    .btn-secondary:hover {
+      background: #1C2A3E;
+    }
+
+    /* Layout principal */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 32px;
+      padding: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Columna Celular */
+    .phone-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 90px;
+    }
+
+    .phone-mockup {
+      width: 380px;
+      height: 760px;
+      background: #1C2128;
+      border-radius: 48px;
+      padding: 12px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 2px #374151, inset 0 0 0 2px #4B5563;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-screen {
+      flex: 1;
+      background: var(--whatsapp-chat-bg);
+      border-radius: 36px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Barra de estado */
+    .status-bar {
+      height: 38px;
+      background: var(--whatsapp-header);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #E2E8F0;
+      z-index: 10;
+    }
+
+    .dynamic-island {
+      width: 90px;
+      height: 20px;
+      background: #000;
+      border-radius: 10px;
+      margin-top: 4px;
+    }
+
+    /* Header de WhatsApp */
+    .wa-header {
+      background: var(--whatsapp-header);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 10;
+    }
+
+    .wa-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--whatsapp-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      position: relative;
+    }
+
+    .online-dot {
+      width: 10px;
+      height: 10px;
+      background: #25D366;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      border: 2px solid var(--whatsapp-header);
+    }
+
+    .wa-title h3 {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .wa-title span {
+      font-size: 10px;
+      color: #25D366;
+    }
+
+    .wa-icons {
+      margin-left: auto;
+      display: flex;
+      gap: 14px;
+      color: #8696A0;
+      font-size: 14px;
+    }
+
+    /* Área de chat */
+    .chat-body {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .date-badge {
+      align-self: center;
+      background: #182229;
+      color: #8696A0;
+      padding: 3px 12px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    /* Burbujas de chat */
+    .message {
+      max-width: 90%;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      line-height: 1.4;
+      position: relative;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .message.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .msg-audio {
+      background: var(--bubble-audio);
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 240px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-bot {
+      background: var(--bubble-bot);
+      align-self: flex-end;
+      color: #F1F2F6;
+      border-bottom-right-radius: 4px;
+    }
+
+    .mic-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #6E50B4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .audio-controls {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 20px;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background: #8696A0;
+      border-radius: 2px;
+      height: 8px;
+      transition: height 0.15s ease;
+    }
+
+    .msg-audio.playing .wave-bar {
+      background: #25D366;
+      animation: pulseBar 0.8s infinite ease-in-out alternate;
+    }
+
+    @keyframes pulseBar {
+      0% { height: 6px; }
+      100% { height: 22px; }
+    }
+
+    .audio-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #8696A0;
+    }
+
+    .msg-time {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: right;
+      margin-top: 4px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .blue-check {
+      color: #53BDEB;
+      font-weight: bold;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      align-self: flex-end;
+      background: var(--bubble-bot);
+      padding: 8px 14px;
+      border-radius: 12px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .typing-indicator.active {
+      display: flex;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: #E2E8F0;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Barra inferior */
+    .wa-footer {
+      background: #111B21;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .input-mock {
+      flex: 1;
+      height: 38px;
+      background: #2A3942;
+      border-radius: 19px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      color: #8696A0;
+      font-size: 12px;
+    }
+
+    .mic-button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--whatsapp-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 168, 132, 0.4);
+    }
+
+    /* Columna de Explicación y Controles */
+    .explainer-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .timeline-nav {
+      display: flex;
+      gap: 8px;
+      background: var(--card-bg);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    .nav-tab {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .nav-tab.active {
+      background: #26344A;
+      color: var(--text-white);
+      border-left: 3px solid var(--whatsapp-green);
+    }
+
+    /* Tarjetas explicativas de los pasos */
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .step-card.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-green { background: rgba(0, 168, 132, 0.15); color: #25D366; }
+    .badge-amber { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+    .badge-blue { background: rgba(37, 99, 235, 0.15); color: #60A5FA; }
+
+    .step-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .step-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .details-grid { grid-template-columns: 1fr; }
+    }
+
+    .detail-box {
+      background: rgba(11, 20, 32, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .detail-box h4 {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .detail-box p {
+      font-size: 0.9rem;
+      color: var(--text-white);
+      line-height: 1.4;
+    }
+
+    .tech-pill {
+      background: rgba(38, 52, 74, 0.6);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #38BDF8;
+    }
+
+    .playback-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(22, 32, 48, 0.6);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo-badge">💬</div>
+      <div>
+        <h1>Amauta·IA — Copiloto Pedagógico WhatsApp</h1>
+        <p>Demostración interactiva de interacción en el aula (Hack the Andes 2026)</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <button class="btn btn-secondary" onclick="resetDemo()">↺ Reiniciar</button>
+      <button class="btn btn-primary" id="btn-play" onclick="toggleAutoPlay()">▶ Reproducir Flujo</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Celular WhatsApp -->
+    <div class="phone-column">
+      <div class="phone-mockup">
+        <div class="phone-screen">
+          <!-- Status Bar -->
+          <div class="status-bar">
+            <span>09:41</span>
+            <div class="dynamic-island"></div>
+            <span>5G 📶 100%</span>
+          </div>
+
+          <!-- WhatsApp Header -->
+          <div class="wa-header">
+            <span style="color:#00A884; font-size:18px;">‹</span>
+            <div class="wa-avatar">
+              🤖
+              <div class="online-dot"></div>
+            </div>
+            <div class="wa-title">
+              <h3>Amauta·IA Copiloto</h3>
+              <span>en línea (KeoIT)</span>
+            </div>
+            <div class="wa-icons">
+              <span>📹</span>
+              <span>📞</span>
+              <span>⋮</span>
+            </div>
+          </div>
+
+          <!-- Chat Body -->
+          <div class="chat-body" id="chat-body">
+            <div class="date-badge">HOY</div>
+
+            <!-- Paso 1: Audio 1 -->
+            <div class="message msg-audio" id="msg-audio-1">
+              <div class="mic-avatar">🎙️</div>
+              <div class="audio-controls">
+                <div class="waveform">
+                  <div class="wave-bar" style="height:6px"></div>
+                  <div class="wave-bar" style="height:12px"></div>
+                  <div class="wave-bar" style="height:18px"></div>
+                  <div class="wave-bar" style="height:14px"></div>
+                  <div class="wave-bar" style="height:22px"></div>
+                  <div class="wave-bar" style="height:10px"></div>
+                  <div class="wave-bar" style="height:16px"></div>
+                  <div class="wave-bar" style="height:8px"></div>
+                </div>
+                <div class="audio-meta">
+                  <span>0:03</span>
+                  <span>1:31 a.m. <span class="blue-check">✓✓</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paso 1: Bot 1 -->
+            <div class="message msg-bot" id="msg-bot-1">
+              <p>Entendí que un estudiante participó mucho en la clase de lectura, pero necesito que me indiques su nombre para poder registrar esta observación. ¿A quién te refieres? 📋</p>
+              <div class="msg-time">1:31 a.m. <span class="blue-check">✓✓</span></div>
+            </div>
+
+            <!-- Paso 2: Audio 2 -->
+            <div class="message msg-audio" id="msg-audio-2">
+              <div class="mic-avatar">🎙️</div>
+              <div class="audio-controls">
+                <div class="waveform">
+                  <div class="wave-bar" style="height:10px"></div>
+                  <div class="wave-bar" style="height:20px"></div>
+                  <div class="wave-bar" style="height:14px"></div>
+                  <div class="wave-bar" style="height:8px"></div>
+                </div>
+                <div class="audio-meta">
+                  <span>0:02 ("Huamán")</span>
+                  <span>1:31 a.m. <span class="blue-check">✓✓</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paso 2: Bot 2 -->
+            <div class="message msg-bot" id="msg-bot-2">
+              <p>Encontré a dos estudiantes con el apellido <strong>Huamán</strong> en tu lista:</p>
+              <p style="margin: 4px 0 4px 10px;">• <strong>Brayan Huamán Ríos</strong><br>• <strong>Sheyla Huamán Ríos</strong></p>
+              <p>¿Podrías confirmar a cuál de ellos te refieres? 🤔</p>
+              <div class="msg-time">1:31 a.m. <span class="blue-check">✓✓</span></div>
+            </div>
+
+            <!-- Paso 3: Audio 3 -->
+            <div class="message msg-audio" id="msg-audio-3">
+              <div class="mic-avatar">🎙️</div>
+              <div class="audio-controls">
+                <div class="waveform">
+                  <div class="wave-bar" style="height:8px"></div>
+                  <div class="wave-bar" style="height:16px"></div>
+                  <div class="wave-bar" style="height:10px"></div>
+                </div>
+                <div class="audio-meta">
+                  <span>0:02 ("Sheyla Huamán")</span>
+                  <span>1:32 a.m. <span class="blue-check">✓✓</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paso 3: Bot 3 -->
+            <div class="message msg-bot" id="msg-bot-3">
+              <p>✅ Registré la participación activa de <strong>Sheyla Huamán</strong> en la competencia <strong>Lee diversos tipos de textos escritos en su lengua materna</strong>.</p>
+              <p style="margin-top: 4px;">¿Algo más que quieras anotar?</p>
+              <div class="msg-time">1:32 a.m. <span class="blue-check">✓✓</span></div>
+            </div>
+
+            <!-- Indicador escribiendo -->
+            <div class="typing-indicator" id="typing-bubble">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+
+          <!-- WhatsApp Footer -->
+          <div class="wa-footer">
+            <div class="input-mock">Mensaje de audio o texto...</div>
+            <div class="mic-button">🎙️</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Explicativa -->
+    <div class="explainer-column">
+      <!-- Navegación de pasos -->
+      <div class="timeline-nav">
+        <button class="nav-tab active" onclick="goToStep(1)">Paso 1: Solicitud</button>
+        <button class="nav-tab" onclick="goToStep(2)">Paso 2: Búsqueda</button>
+        <button class="nav-tab" onclick="goToStep(3)">Paso 3: Confirmación</button>
+        <button class="nav-tab" onclick="goToStep(4)">Ver Todo</button>
+      </div>
+
+      <!-- Paso 1 -->
+      <div class="step-card active" id="card-step-1">
+        <div class="step-header">
+          <span class="badge badge-green">Paso 1 · Voz en el Aula</span>
+          <span style="font-size:0.85rem; color:var(--text-muted)">Tiempo: 3 segundos</span>
+        </div>
+        <h2 class="step-title">Captura Rápida por Audio y Detección de Intención</h2>
+        <p class="step-desc">El docente está en plena dinámica pedagógica con 30 alumnos. No abre laptops ni formularios web: simplemente presiona el micrófono de WhatsApp y habla de forma natural.</p>
+        
+        <div class="details-grid">
+          <div class="detail-box">
+            <h4>🎙️ Lo que dice el profesor</h4>
+            <p><em>"Un estudiante participó mucho en la clase de lectura hoy, pero se me pasó anotar su nombre en el momento..."</em></p>
+          </div>
+          <div class="detail-box">
+            <h4>⚙️ Procesamiento de la IA</h4>
+            <p><span class="tech-pill">Whisper</span> transcribe el audio. El LLM identifica el área formativa (Lectura) pero detecta que falta una entidad crítica: el nombre del alumno.</p>
+          </div>
+        </div>
+
+        <div class="detail-box" style="border-left: 3px solid var(--whatsapp-green);">
+          <h4>💡 Comportamiento Asistencial</h4>
+          <p>En lugar de fallar o arrojar un error técnico, el copiloto guía amablemente: <strong>"¿A quién te refieres? 📋"</strong></p>
+        </div>
+      </div>
+
+      <!-- Paso 2 -->
+      <div class="step-card" id="card-step-2">
+        <div class="step-header">
+          <span class="badge badge-amber">Paso 2 · Validación en Nómina</span>
+          <span style="font-size:0.85rem; color:var(--text-muted)">Tiempo: 2 segundos</span>
+        </div>
+        <h2 class="step-title">Resolución Inteligente de Ambigüedad (Homónimos)</h2>
+        <p class="step-desc">El docente responde solo el apellido por voz. En las escuelas peruanas es muy habitual la coincidencia de apellidos entre hermanos o familiares de la misma sección.</p>
+
+        <div class="details-grid">
+          <div class="detail-box">
+            <h4>🎙️ Lo que dice el profesor</h4>
+            <p>Envía un audio de 2 segundos: <em>"Huamán"</em>.</p>
+          </div>
+          <div class="detail-box">
+            <h4>⚙️ Consulta a la Base de Datos</h4>
+            <p>Busca en el padrón de estudiantes de la sección y detecta dos coincidencias: <span class="tech-pill">Brayan Huamán Ríos</span> y <span class="tech-pill">Sheyla Huamán Ríos</span>.</p>
+          </div>
+        </div>
+
+        <div class="detail-box" style="border-left: 3px solid var(--accent-amber);">
+          <h4>🛡️ Integridad de los Datos</h4>
+          <p>El sistema <strong>nunca adivina</strong>. Presenta ambas opciones con viñetas limpias para que el docente confirme con total certeza.</p>
+        </div>
+      </div>
+
+      <!-- Paso 3 -->
+      <div class="step-card" id="card-step-3">
+        <div class="step-header">
+          <span class="badge badge-blue">Paso 3 · Mapeo Curricular</span>
+          <span style="font-size:0.85rem; color:var(--text-muted)">Tiempo: 2 segundos</span>
+        </div>
+        <h2 class="step-title">Vinculación con el Currículo Nacional (CNEB) y Cierre</h2>
+        <p class="step-desc">Al confirmar el nombre, el copiloto traduce la observación informal en una competencia curricular oficial estandarizada para SIAGIE.</p>
+
+        <div class="details-grid">
+          <div class="detail-box">
+            <h4>🎙️ Confirmación Docente</h4>
+            <p>Envía audio: <em>"A Sheyla Huamán"</em>.</p>
+          </div>
+          <div class="detail-box">
+            <h4>📋 Mapeo CNEB Automático</h4>
+            <p>Asocia el logro a la competencia oficial: <span class="tech-pill">Lee diversos tipos de textos escritos en su lengua materna</span>.</p>
+          </div>
+        </div>
+
+        <div class="detail-box" style="border-left: 3px solid var(--accent-emerald);">
+          <h4>✅ Impacto Inmediato</h4>
+          <p>El registro queda indexado en el portafolio formativo de Sheyla Huamán, listo para reportes directivos y prevención temprana sin papeleo manual.</p>
+        </div>
+      </div>
+
+      <!-- Ver Todo -->
+      <div class="step-card" id="card-step-4">
+        <div class="step-header">
+          <span class="badge badge-green">Resumen del Flujo Completo</span>
+          <span style="font-size:0.85rem; color:var(--text-muted)">Total: ~15 segundos</span>
+        </div>
+        <h2 class="step-title">De 45 Minutos de Burocracia a 15 Segundos en WhatsApp</h2>
+        <p class="step-desc">La secuencia completa demuestra cómo el docente interactúa de manera 100% natural, sin salir de la dinámica de su clase.</p>
+
+        <div class="playback-bar">
+          <span style="font-size:1.4rem;">⚡</span>
+          <div>
+            <strong>100% Adopción Inmediata:</strong>
+            <p style="font-size:0.85rem; color:var(--text-muted)">Ningún profesor necesita instalar otra app ni aprender un software complejo. Todo vive dentro de su WhatsApp diario.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de navegación inferior -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+        <button class="btn btn-secondary" onclick="prevStep()">‹ Anterior</button>
+        <span id="step-indicator" style="font-size:0.85rem; color:var(--text-muted)">Paso 1 de 3</span>
+        <button class="btn btn-primary" onclick="nextStep()">Siguiente ›</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentStep = 1;
+    let isPlaying = false;
+    let playInterval = null;
+
+    const messages = {
+      1: ['msg-audio-1', 'msg-bot-1'],
+      2: ['msg-audio-1', 'msg-bot-1', 'msg-audio-2', 'msg-bot-2'],
+      3: ['msg-audio-1', 'msg-bot-1', 'msg-audio-2', 'msg-bot-2', 'msg-audio-3', 'msg-bot-3'],
+      4: ['msg-audio-1', 'msg-bot-1', 'msg-audio-2', 'msg-bot-2', 'msg-audio-3', 'msg-bot-3']
+    };
+
+    function updateView() {
+      // Ocultar todos los mensajes primero
+      document.querySelectorAll('.message').forEach(m => m.classList.remove('visible'));
+
+      // Mostrar mensajes correspondientes al paso
+      const visibleIds = messages[currentStep] || [];
+      visibleIds.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (el) {
+          setTimeout(() => {
+            el.classList.add('visible');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, idx * 60);
+        }
+      });
+
+      // Actualizar pestañas
+      document.querySelectorAll('.nav-tab').forEach((t, i) => {
+        t.classList.toggle('active', i + 1 === currentStep);
+      });
+
+      // Actualizar tarjetas
+      document.querySelectorAll('.step-card').forEach((c, i) => {
+        c.classList.toggle('active', i + 1 === currentStep);
+      });
+
+      // Indicador
+      const ind = document.getElementById('step-indicator');
+      if (currentStep === 4) {
+        ind.innerText = 'Vista General Completa';
+      } else {
+        ind.innerText = `Paso ${currentStep} de 3`;
+      }
+    }
+
+    function goToStep(step) {
+      currentStep = step;
+      updateView();
+    }
+
+    function nextStep() {
+      if (currentStep < 4) {
+        currentStep++;
+      } else {
+        currentStep = 1;
+      }
+      updateView();
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateView();
+      }
+    }
+
+    function resetDemo() {
+      stopAutoPlay();
+      currentStep = 1;
+      updateView();
+    }
+
+    function toggleAutoPlay() {
+      if (isPlaying) {
+        stopAutoPlay();
+      } else {
+        startAutoPlay();
+      }
+    }
+
+    function startAutoPlay() {
+      isPlaying = true;
+      document.getElementById('btn-play').innerText = '⏸ Pausar';
+      currentStep = 1;
+      updateView();
+
+      playInterval = setInterval(() => {
+        if (currentStep < 3) {
+          currentStep++;
+          updateView();
+        } else if (currentStep === 3) {
+          currentStep = 4;
+          updateView();
+          stopAutoPlay();
+        }
+      }, 3500);
+    }
+
+    function stopAutoPlay() {
+      isPlaying = false;
+      document.getElementById('btn-play').innerText = '▶ Reproducir Flujo';
+      if (playInterval) {
+        clearInterval(playInterval);
+        playInterval = null;
+      }
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      updateView();
+    });
+  </script>
+</body>
+</html>
