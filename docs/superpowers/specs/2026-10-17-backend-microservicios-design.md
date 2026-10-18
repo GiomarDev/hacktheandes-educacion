@@ -1,6 +1,6 @@
 # Diseño del backend — auth + 4 microservicios (NestJS + Prisma + PostgreSQL)
 
-**Estado:** borrador para aprobación del equipo. No se ha ejecutado nada.
+**Estado:** diseño de referencia del backend. Fundación (`ms-auth`/`ms-siagie`) y F2 (`ms-alerta`) implementadas y verificadas sobre schemas de prueba. F3/F4 y las decisiones de dominio de la sección 8 siguen pendientes. Ver [continuidad-backend.md](../../continuidad-backend.md) para estado de migraciones y resultados de pruebas.
 **Fecha:** 2026-10-17
 **Fuentes:** reunión con la docente Maritta Carrión (17 oct 2026), diagrama y tabla "Lo que hoy existe en MINEDU" del equipo, `docs/soluciones_y_preguntas_clave.md`, `docs/alerta_escuela_documentacion.md`.
 

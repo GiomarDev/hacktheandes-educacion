@@ -9,3 +9,4 @@ export * from './auth/jwt-auth.guard.js';
 export * from './internal/internal-key.guard.js';
 export * from './http/prisma-error.filter.js';
 export * from './time/lima-date.js';
+export * from './events/school-event.js';

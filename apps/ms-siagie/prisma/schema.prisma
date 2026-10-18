@@ -401,6 +401,23 @@ model QrCredential {
   @@map("qr_credentials")
 }
 
+// Entrega HTTP persistente hacia ms-alerta, sin datos personales en el payload.
+model OutboxEvent {
+  id String @id @default(uuid(7)) @db.Uuid
+  type String @db.VarChar(40)
+  resourceId String @map("resource_id") @db.Uuid
+  date String @db.Char(10)
+  deliveredAt DateTime? @map("delivered_at") @db.Timestamptz(6)
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now()) @map("next_attempt_at") @db.Timestamptz(6)
+  lockedUntil DateTime? @map("locked_until") @db.Timestamptz(6)
+  error String? @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  @@index([deliveredAt, nextAttemptAt])
+  @@map("outbox_events")
+}
+
 model AccessEvent {
   id               String       @id @default(uuid(7)) @db.Uuid
   studentId        String       @map("student_id") @db.Uuid

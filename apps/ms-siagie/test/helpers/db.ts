@@ -2,6 +2,7 @@ import { pgConnectionFromUrl } from '@app/common';
 import { PrismaService } from '../../src/prisma.service.js';
 
 const TABLES = [
+  'outbox_events',
   'audit_logs', 'period_grades', 'grade_entries', 'access_events', 'qr_credentials', 'attendance_records',
   'class_sessions', 'enrollments', 'student_guardians', 'guardians', 'students', 'teaching_assignments',
   'competencies', 'curricular_areas', 'sections', 'academic_periods', 'schools', 'ugels', 'dres',

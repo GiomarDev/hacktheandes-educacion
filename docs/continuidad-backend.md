@@ -4,7 +4,7 @@ Relevo de Claude a Codex, 17 de octubre de 2026. Rama: `feat/backend-fundacion`.
 
 ## Alcance recuperado
 
-El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. La [especificación](superpowers/specs/2026-10-17-backend-microservicios-design.md) incluye después `ms-alerta`, `ms-simon` y `ms-escale`. Estos tres servicios y el frontend aún no están implementados.
+El [plan de fundación](superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md) comprende 13 tareas para `ms-auth` y `ms-siagie`. Después del relevo se implementó **F2 — ms-alerta**, según su [plan](superpowers/plans/2026-10-17-ms-alerta.md) y [contratos de API](ms-alerta.md). `ms-simon`, `ms-escale` y el frontend siguen pendientes.
 
 Al iniciar el relevo, las tareas 1–12 ya estaban en Git; el último commit era `8feaff1`. La tarea 13 tenía archivos sin commit: seeds de ambos servicios, IDs compartidos, resumen del estudiante y prueba entre servicios. El registro local de Claude está en `.superpowers/sdd/2026-10-17-backend-fundacion-auth-siagie/progress.md` (ignorado por Git).
 
@@ -45,7 +45,7 @@ Usar los comandos de la sección Backend del README. Las pruebas e2e comparten t
 
 La primera ejecución registró 39 pruebas unitarias aprobadas y 87 e2e aprobadas; tres nuevas regresiones fallaron como se esperaba antes de corregirlas. Las 20 pruebas dirigidas a QR, resumen e integración pasaron después de las correcciones.
 
-Resultado final del 17/10/2026:
+Resultado del relevo de fundación del 17/10/2026, antes de F2:
 
 | Verificación | Resultado |
 | --- | --- |
@@ -60,10 +60,24 @@ Resultado final del 17/10/2026:
 
 Las migraciones de los schemas reales se consultaron **sin modificar datos** mediante `prisma migrate status`: `auth` (2 migraciones) y `siagie` (1 migración) están actualizados. La carga de demo en esos schemas sigue pendiente.
 
+## Continuación F2 — ms-alerta
+
+Implementado un tercer servicio NestJS/Prisma en puerto 3002. Incluye las siete reglas iniciales, alertas filtradas por ámbito, caso único abierto por estudiante e IE, bitácora, contacto simulado y respuesta familiar idempotente. El escalamiento resuelve dirección, psicólogo/comité y UGEL mediante la API interna de auth.
+
+SIAGIE guarda eventos de asistencia, acceso y notas en una outbox transaccional. Alerta recibe referencias en una inbox persistente y consulta evidencia mediante HTTP interno; no lee schemas ajenos ni replica nombres o teléfonos. Los workers reintentan tras fallos, conservan registros y revalidan las preferencias del apoderado. `ConsoleProvider` solo imprime IDs técnicos.
+
+Migraciones nuevas: `apps/ms-siagie/prisma/migrations/20261018000000_event_outbox` y `apps/ms-alerta/prisma/migrations/20261018000000_init`. **Aplicadas solo a `siagie_test` y `alerta_test`**. El estado real de migraciones descrito arriba corresponde al relevo anterior; para poner F2 en marcha sobre schemas reales hay que aplicar estas dos migraciones primero, siguiendo el README. No se ejecutaron seeds de usuarios/alumnos reales.
+
+Se ampliaron la protección de URLs de test y la prueba de arranque a los tres servicios. Resultado de la suite completa: **55 pruebas unitarias y 111 de integración aprobadas**, sin saltos. Se conservó el contrato existente de `/internal/schools/:id` y se separó el contexto adicional en las nuevas rutas de riesgo.
+
+Después del último ajuste, la suite específica de F2 pasó **18 de 18 pruebas**, incluida la cancelación de mensajes al cerrar un caso. La cobertura verificada suma **55 unitarias + 94 e2e de fundación + 18 e2e de F2 = 167 pruebas únicas**. Tipos, lint y compilación de los tres servicios sin errores. El arranque compilado de los tres procesos devuelve `/health` correctamente.
+
+Los escenarios verificados incluyen entrega repetida y simultánea sin duplicados, caída de alerta sin perder el pase de lista, reintento de inbox, permisos de IE y UGEL, cambio de responsable, psicólogo disponible, consentimiento revocado, avisos de ingreso/salida, nota sin asistencia, cierre y respuesta tardía, y restricciones de destinatarios en PostgreSQL. La prueba de arranque se ejecuta por separado de las suites e2e, porque iniciar alerta también inicializa reglas globales faltantes.
+
 ## Pendientes ordenados
 
 1. **Carga de demo en schemas reales:** paso 4 de la tarea 13. Requiere confirmación explícita; no es requisito para probar ni desarrollar sobre los schemas de test.
-2. **F2 — ms-alerta:** redactar el plan de implementación con eventos internos de SIAGIE, reglas de riesgo, alertas, casos, escalamiento y proveedor de notificaciones por consola. Prueba objetivo: tres faltas → alerta → caso → borrador/mensaje simulado → respuesta → contacto registrado.
+2. **Puesta en marcha de F2:** aplicar las migraciones nuevas en los schemas reales cuando se autorice esa puesta en marcha. El desarrollo y las verificaciones usan los schemas de prueba. Los contratos y límites de la demo están en `docs/ms-alerta.md`.
 3. **F3 — ms-simon:** reportes mensuales y de meta de atención; planes de apoyo manuales y control de información sensible.
 4. **F4 — ms-escale:** importar CSV oficiales del repositorio y construir agregados e indicadores verificables por UGEL.
 5. **Frontend:** recuperar los prototipos que el README menciona bajo `STICH_ITERATION_1/` (esa carpeta no está en este checkout), conectar Stitch y construir la interfaz sobre APIs verificadas.

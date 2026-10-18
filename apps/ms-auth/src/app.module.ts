@@ -12,9 +12,16 @@ import { KeysService } from './keys/keys.service.js';
 import { AuthController } from './auth/auth.controller.js';
 import { AuthService } from './auth/auth.service.js';
 import { TokensService } from './auth/tokens.service.js';
+import { InternalStaffController } from './users/internal-staff.controller.js';
 
 @Module({
-  controllers: [HealthController, JwksController, AuthController, UsersController],
+  controllers: [
+    HealthController,
+    JwksController,
+    AuthController,
+    UsersController,
+    InternalStaffController,
+  ],
   providers: [
     PrismaService,
     KeysService,

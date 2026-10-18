@@ -40,6 +40,9 @@
     },
     {
       "path": "./apps/ms-siagie/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/ms-alerta/tsconfig.app.json"
     }
   ]
 }

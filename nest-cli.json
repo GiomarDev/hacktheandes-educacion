@@ -37,6 +37,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "ms-alerta": {
+      "type": "application",
+      "root": "apps/ms-alerta",
+      "entryFile": "main",
+      "sourceRoot": "apps/ms-alerta/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ms-alerta/tsconfig.app.json"
+      }
     }
   }
 }

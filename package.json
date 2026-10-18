@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "build": "npm run build:auth && npm run build:siagie",
+    "build": "npm run build:auth && npm run build:siagie && npm run build:alerta",
     "build:auth": "nest build ms-auth",
     "build:siagie": "nest build ms-siagie",
     "start:auth": "nest start ms-auth --watch",
@@ -16,7 +16,7 @@
     "start:siagie:prod": "node dist/apps/ms-siagie/main.js",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint": "oxlint apps/ libs/ scripts/ test/",
-    "typecheck": "tsc -p apps/ms-auth/tsconfig.app.json --noEmit && tsc -p apps/ms-siagie/tsconfig.app.json --noEmit",
+    "typecheck": "tsc -p apps/ms-auth/tsconfig.app.json --noEmit && tsc -p apps/ms-siagie/tsconfig.app.json --noEmit && tsc -p apps/ms-alerta/tsconfig.app.json --noEmit",
     "test": "vitest run",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "test:e2e:cross": "vitest run --config ./vitest.config.e2e.ts apps/ms-siagie/test/cross-service.e2e-spec.ts",
@@ -29,7 +29,14 @@
     "siagie:generate": "prisma generate --config apps/ms-siagie/prisma.config.ts",
     "siagie:migrate": "prisma migrate dev --config apps/ms-siagie/prisma.config.ts",
     "siagie:seed": "tsx apps/ms-siagie/prisma/seed.ts",
-    "db:create": "node scripts/create-database.mjs"
+    "db:create": "node scripts/create-database.mjs",
+    "build:alerta": "nest build ms-alerta",
+    "start:alerta": "nest start ms-alerta --watch",
+    "start:alerta:prod": "node dist/apps/ms-alerta/main.js",
+    "alerta:generate": "prisma generate --config apps/ms-alerta/prisma.config.ts",
+    "alerta:migrate": "prisma migrate dev --config apps/ms-alerta/prisma.config.ts",
+    "alerta:seed": "tsx apps/ms-alerta/prisma/seed.ts",
+    "test:e2e:alerta": "vitest run --config ./vitest.config.e2e.ts apps/ms-alerta"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

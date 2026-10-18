@@ -9,6 +9,7 @@ import { once } from 'node:events';
 for (const [variable, schema] of [
   ['AUTH_TEST_DATABASE_URL', 'auth_test'],
   ['SIAGIE_TEST_DATABASE_URL', 'siagie_test'],
+  ['ALERTA_TEST_DATABASE_URL', 'alerta_test'],
 ]) {
   assert.equal(
     new URL(process.env[variable]).searchParams.get('schema'),
@@ -28,7 +29,7 @@ async function unusedPort() {
   return port;
 }
 
-for (const service of ['ms-auth', 'ms-siagie']) {
+for (const service of ['ms-auth', 'ms-siagie', 'ms-alerta']) {
   const port = await unusedPort();
   const child = spawn(process.execPath, [`dist/apps/${service}/main.js`], {
     env: {
@@ -36,6 +37,8 @@ for (const service of ['ms-auth', 'ms-siagie']) {
       PORT: String(port),
       AUTH_DATABASE_URL: process.env.AUTH_TEST_DATABASE_URL,
       SIAGIE_DATABASE_URL: process.env.SIAGIE_TEST_DATABASE_URL,
+      ALERTA_DATABASE_URL: process.env.ALERTA_TEST_DATABASE_URL,
+      BACKGROUND_JOBS_ENABLED: 'false',
     },
     stdio: ['ignore', 'ignore', 'pipe'],
   });

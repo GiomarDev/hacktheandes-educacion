@@ -6,22 +6,24 @@ Guía para agentes de IA (Claude Code, Codex, Cursor, etc.) que trabajan en este
 
 **hacktheandes-educacion** — proyecto de KeoIT para el reto de educación de Hack the Andes.
 
-Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú. Docentes, tutores y directivos registran matrícula, asistencia y notas; los especialistas de UGEL/DRE acceden según su ámbito. La siguiente fase incorporará alertas e intervenciones tempranas.
+Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú. Docentes, tutores y directivos registran matrícula, asistencia y notas; `ms-alerta` detecta riesgos, abre casos y simula el contacto familiar. Los especialistas de UGEL/DRE acceden según su ámbito. La siguiente fase incorporará reportes y planes de apoyo (`ms-simon`).
 
 ## Stack
 
-Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. Frontend y despliegue pendientes.
+Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. Frontend y despliegue pendientes.
 
 | Tarea        | Comando |
 |--------------|---------|
-| Instalar     | `npm ci` y `npm run auth:generate && npm run siagie:generate` |
-| Desarrollo   | `npm run start:auth` y `npm run start:siagie` en terminales separadas |
+| Instalar     | `npm ci`, `npm run auth:generate`, `npm run siagie:generate` y `npm run alerta:generate` |
+| Desarrollo   | `npm run start:auth`, `npm run start:siagie` y `npm run start:alerta` en terminales separadas |
 | Tests        | `npm test`, `npm run test:e2e`, `npm run test:smoke` (requiere build previo) |
 | Lint/format  | `npm run lint`, `npm run typecheck`, `npm run format` |
 | Build        | `npm run build` |
 
 - Configuración en `.env.example`; nunca mostrar ni commitear los secretos del `.env`.
-- Las pruebas solo usan `auth_test` y `siagie_test`. `test/test-databases.ts` aborta ante otro schema. No ejecutar suites de integración simultáneas: comparten tablas de prueba y las limpian entre casos.
+- Las pruebas solo usan `auth_test`, `siagie_test` y `alerta_test`. `test/test-databases.ts` aborta ante otro schema. No ejecutar suites de integración simultáneas: comparten tablas de prueba y las limpian entre casos.
+- Las notificaciones de F2 son simuladas por `ConsoleProvider`. No imprimir datos personales ni textos de las familias en logs. Webhooks y rutas internas exigen `x-internal-key`.
+- Las escrituras de SIAGIE guardan eventos en una outbox en la misma transacción. No introducir llamadas HTTP que hagan fallar una escritura ya confirmada. Workers de entrega/inbox/notificaciones cada minuto; evaluación global cada hora. `BACKGROUND_JOBS_ENABLED=false` los desactiva para tests.
 - No ejecutar seeds sobre `auth` o `siagie` sin confirmación explícita del usuario.
 - Estado y pendientes: `docs/continuidad-backend.md`. Plan detallado: `docs/superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md`.
 
@@ -32,7 +34,7 @@ Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sir
 ├── .agents/      # Subagentes compartidos (fuente única; .claude/agents apunta aquí)
 ├── .commands/    # Comandos/prompts reutilizables (fuente única; .claude/commands apunta aquí)
 ├── .claude/      # Config de Claude Code (settings.json + symlinks a .agents y .commands)
-├── apps/         # ms-auth y ms-siagie, cada uno con Prisma y tests propios
+├── apps/         # ms-auth, ms-siagie y ms-alerta, cada uno con Prisma y tests propios
 ├── libs/         # common (autorización y utilidades) y fixtures (IDs sintéticos compartidos)
 ├── test/         # Configuración y protección de las bases de prueba
 ├── scripts/      # Creación de base de datos y prueba de arranque compilado

@@ -1,4 +1,11 @@
-import { Controller, Get, NotFoundException, Param, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { InternalKeyGuard, Public } from '@app/common';
 import { PrismaService } from '../prisma.service.js';
 
@@ -11,9 +18,16 @@ export class InternalController {
 
   @Get('schools/:id')
   async school(@Param('id', ParseUUIDPipe) id: string) {
-    const school = await this.prisma.school.findUnique({ where: { id }, include: { ugel: true } });
+    const school = await this.prisma.school.findUnique({
+      where: { id },
+      include: { ugel: true },
+    });
     if (!school) throw new NotFoundException('IE no encontrada');
-    return { id: school.id, ugelId: school.ugelId, dreId: school.ugel.dreId };
+    return {
+      id: school.id,
+      ugelId: school.ugelId,
+      dreId: school.ugel.dreId,
+    };
   }
 
   @Get('ugels/:id')

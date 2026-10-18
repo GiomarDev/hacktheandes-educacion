@@ -1,6 +1,12 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { HttpJwksKeyResolver, JwksKeyResolver, JwtAuthGuard, PrismaErrorFilter, requireEnv } from '@app/common';
+import {
+  HttpJwksKeyResolver,
+  JwksKeyResolver,
+  JwtAuthGuard,
+  PrismaErrorFilter,
+  requireEnv,
+} from '@app/common';
 import { HealthController } from './health.controller.js';
 import { PrismaService } from './prisma.service.js';
 import { SchoolAccessService } from './school-access.service.js';
@@ -16,6 +22,9 @@ import { GradesController } from './grades/grades.controller.js';
 import { GradesService } from './grades/grades.service.js';
 import { AccessController } from './access/access.controller.js';
 import { QrService } from './access/qr.service.js';
+import { RiskContextController } from './internal/risk-context.controller.js';
+import { OutboxController } from './events/outbox.controller.js';
+import { OutboxService } from './events/outbox.service.js';
 
 @Module({
   controllers: [
@@ -28,6 +37,8 @@ import { QrService } from './access/qr.service.js';
     AttendanceController,
     GradesController,
     AccessController,
+    RiskContextController,
+    OutboxController,
   ],
   providers: [
     PrismaService,
@@ -36,7 +47,11 @@ import { QrService } from './access/qr.service.js';
     AttendanceService,
     GradesService,
     QrService,
-    { provide: JwksKeyResolver, useFactory: () => new HttpJwksKeyResolver(requireEnv('AUTH_JWKS_URL')) },
+    OutboxService,
+    {
+      provide: JwksKeyResolver,
+      useFactory: () => new HttpJwksKeyResolver(requireEnv('AUTH_JWKS_URL')),
+    },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_FILTER, useClass: PrismaErrorFilter },
   ],
