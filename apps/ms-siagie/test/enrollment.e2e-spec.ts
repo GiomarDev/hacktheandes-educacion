@@ -135,6 +135,11 @@ describe('secciones, estudiantes y matrícula', () => {
       .set(bearer(secretary))
       .send({ studentId: student.body.id, sectionId: fx.sectionA.id, enrolledAt: '2026-03-02' })
       .expect(201);
+    // El docente solo lee la nómina de las secciones donde dicta.
+    await http().get(`/sections/${fx.sectionA.id}/students`).set(bearer(teacher)).expect(403);
+    await prisma.teachingAssignment.create({
+      data: { sectionId: fx.sectionA.id, areaId: fx.area.id, teacherUserId: USERS.teacherA, weeklyHours: 4 },
+    });
     const res = await http().get(`/sections/${fx.sectionA.id}/students`).set(bearer(teacher)).expect(200);
     expect(res.body).toHaveLength(1);
     expect(res.body[0].student.firstName).toBe('Rosa');
