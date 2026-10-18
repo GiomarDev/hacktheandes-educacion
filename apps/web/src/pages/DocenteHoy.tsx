@@ -108,7 +108,7 @@ export function DocenteHoyPage() {
             : 'Tus secciones aparecerán aquí cuando dirección te asigne una.'
         }
         action={
-          <Link to="/docente/aula">
+          <Link viewTransition to="/docente/aula">
             <Button variant="primary">
               <CalendarCheck className="size-4" aria-hidden /> Pasar lista
             </Button>
@@ -201,14 +201,14 @@ export function DocenteHoyPage() {
                       </p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {relatedCase && (
-                          <Link to={`/casos/${relatedCase.id}`}>
+                          <Link viewTransition to={`/casos/${relatedCase.id}`}>
                             <Button variant="primary">
                               <FolderOpen className="size-3.5" aria-hidden />{' '}
                               Atender caso
                             </Button>
                           </Link>
                         )}
-                        <Link to={`/estudiantes/${studentId}`}>
+                        <Link viewTransition to={`/estudiantes/${studentId}`}>
                           <Button>Ver ficha</Button>
                         </Link>
                       </div>
@@ -227,6 +227,7 @@ export function DocenteHoyPage() {
             {pendingRollCall.map((s) => (
               <li key={s.id}>
                 <Link
+                  viewTransition
                   to={`/docente/aula?seccion=${s.id}`}
                   className="flex items-center gap-3 px-4 py-3 hover:bg-canvas"
                 >
@@ -251,6 +252,7 @@ export function DocenteHoyPage() {
               return (
                 <li key={c.id}>
                   <Link
+                    viewTransition
                     to={`/casos/${c.id}`}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-canvas"
                   >

@@ -117,6 +117,7 @@ export function PanoramaPage() {
             </div>
           </div>
           <Link
+            viewTransition
             to="/alertas"
             className="text-[0.9375rem] font-medium text-critical hover:underline"
           >
@@ -359,6 +360,7 @@ export function PanoramaPage() {
             subtitle="Ordenadas por alertas abiertas · clic para ver el detalle"
             action={
               <Link
+                viewTransition
                 to="/escuelas"
                 className="text-[0.9375rem] text-gob hover:underline"
               >
@@ -379,6 +381,7 @@ export function PanoramaPage() {
                 return (
                   <li key={s.id}>
                     <Link
+                      viewTransition
                       to={`/escuelas/${s.id}`}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-canvas"
                     >

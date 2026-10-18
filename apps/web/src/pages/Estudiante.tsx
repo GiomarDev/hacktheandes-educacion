@@ -1,3 +1,4 @@
+import { PageSkeleton } from '../ui/motion';
 import { Link, useParams } from 'react-router';
 import { useCases, useStudentSummary } from '../api/queries';
 import { ageOf, CASE_STATUS, formatDate, fullName, pct } from '../lib/format';
@@ -9,7 +10,6 @@ import {
   Empty,
   ErrorNote,
   Kpi,
-  Loading,
   PageHeader,
 } from '../ui/kit';
 
@@ -24,7 +24,7 @@ export function EstudiantePage() {
   const { id } = useParams();
   const summary = useStudentSummary(id);
   const cases = useCases();
-  if (summary.isPending) return <Loading />;
+  if (summary.isPending) return <PageSkeleton />;
   if (summary.error) return <ErrorNote error={summary.error} />;
   const { student, attendance, periodGrades, enrollment } = summary.data;
   const studentCases = (cases.data ?? []).filter((c) => c.studentId === id);
@@ -133,7 +133,7 @@ export function EstudiantePage() {
                         : 'sin contacto aún'}
                     </div>
                   </div>
-                  <Link to={`/casos/${c.id}`}>
+                  <Link viewTransition to={`/casos/${c.id}`}>
                     <Button>Ver caso</Button>
                   </Link>
                 </li>

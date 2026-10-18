@@ -73,13 +73,11 @@ describe('apiFetch', () => {
   it('traduce el mensaje de error del backend', async () => {
     vi.stubGlobal(
       'fetch',
-      vi
-        .fn()
-        .mockResolvedValue(
-          json(400, {
-            message: ['date must be a valid ISO 8601 date string', 'otro'],
-          }),
-        ),
+      vi.fn().mockResolvedValue(
+        json(400, {
+          message: ['date must be a valid ISO 8601 date string', 'otro'],
+        }),
+      ),
     );
     const error = (await apiFetch('escale', '/stats/compute', {
       method: 'POST',
@@ -120,8 +118,17 @@ describe('apiFetch', () => {
 describe('seg', () => {
   it('acepta un UUID y rechaza segmentos que cambian la ruta', async () => {
     const { seg } = await import('./client');
-    expect(seg('01920000-0000-7000-8000-000000000010')).toBe('01920000-0000-7000-8000-000000000010');
-    for (const bad of ['../users', '..%2F..%2Fauth', 'abc?x=1', 'a#b', '', undefined])
+    expect(seg('01920000-0000-7000-8000-000000000010')).toBe(
+      '01920000-0000-7000-8000-000000000010',
+    );
+    for (const bad of [
+      '../users',
+      '..%2F..%2Fauth',
+      'abc?x=1',
+      'a#b',
+      '',
+      undefined,
+    ])
       expect(() => seg(bad)).toThrow(ApiError);
   });
 });

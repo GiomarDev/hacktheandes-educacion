@@ -70,6 +70,7 @@ export function EscuelasPage() {
                   >
                     <td className="px-4 py-2.5">
                       <Link
+                        viewTransition
                         to={`/escuelas/${s.id}`}
                         className="font-medium hover:underline"
                       >

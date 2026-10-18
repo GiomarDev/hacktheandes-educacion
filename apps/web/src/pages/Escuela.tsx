@@ -1,3 +1,4 @@
+import { PageSkeleton } from '../ui/motion';
 import { Link, useParams } from 'react-router';
 import { CalendarCheck, FileText } from 'lucide-react';
 import { useSession } from '../auth/AuthProvider';
@@ -57,7 +58,7 @@ export function EscuelaPage() {
   const reports = useReports({ schoolId: id });
   const canReadAlerts = active.role !== 'SECRETARY';
 
-  if (school.isPending) return <Loading />;
+  if (school.isPending) return <PageSkeleton />;
   if (school.error) return <ErrorNote error={school.error} />;
   const s = school.data;
   const list = sections.data ?? [];
@@ -85,13 +86,13 @@ export function EscuelaPage() {
         action={
           isDirector ? (
             <div className="flex gap-2">
-              <Link to="/docente/aula">
+              <Link viewTransition to="/docente/aula">
                 <Button>
                   <CalendarCheck className="size-4" aria-hidden /> Pase de lista
                 </Button>
               </Link>
               {active.role === 'DIRECTOR' && (
-                <Link to="/reportes">
+                <Link viewTransition to="/reportes">
                   <Button variant="primary">
                     <FileText className="size-4" aria-hidden /> Reportes
                   </Button>
@@ -243,6 +244,7 @@ export function EscuelaPage() {
               )}
               <div className="border-t border-line px-4 py-2.5">
                 <Link
+                  viewTransition
                   to="/alertas"
                   className="text-[0.9375rem] text-gob hover:underline"
                 >

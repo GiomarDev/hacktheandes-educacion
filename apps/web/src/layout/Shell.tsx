@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { BarChart3, LogOut, MoreHorizontal, Compass } from 'lucide-react';
 import { NavigationIcon } from '../ui/NavigationIcon';
@@ -12,6 +12,7 @@ import { Tour } from '../onboarding/Tour';
 import { useOnboarding } from '../onboarding/useOnboarding';
 import { Flag, Wordmark } from '../ui/Brand';
 import { cx } from '../ui/kit';
+import { DataProgress } from '../ui/motion';
 
 function initials(name: string) {
   return name
@@ -28,6 +29,16 @@ export function Shell() {
   const mascot = useMascot();
   const tour = useOnboarding(active.role);
   const { pathname } = useLocation();
+  // Al cambiar de módulo, el foco pasa al contenido nuevo (lectores de pantalla y teclado).
+  const mainRef = useRef<HTMLElement>(null);
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    mainRef.current?.focus({ preventScroll: true });
+  }, [pathname]);
   const canSeeAlerts = items.some((i) => i.to === '/alertas');
   const openAlerts = useAlerts({ status: 'OPEN' });
   const alertCount = canSeeAlerts ? (openAlerts.data?.length ?? 0) : 0;
@@ -56,6 +67,7 @@ export function Shell() {
           {items.map((item) => {
             return (
               <NavLink
+                viewTransition
                 key={item.to}
                 to={item.to}
                 end={item.to === '/docente'}
@@ -70,7 +82,10 @@ export function Shell() {
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <span className="absolute top-1/2 left-0 h-[22px] w-[3px] -translate-y-1/2 rounded-r bg-amauti" />
+                      <span
+                        className="nav-indicator absolute top-1/2 left-0 h-[22px] w-[3px] -translate-y-1/2 rounded-r bg-amauti"
+                        aria-hidden
+                      />
                     )}
                     <NavigationIcon
                       name={item.icon}
@@ -198,9 +213,11 @@ export function Shell() {
               </select>
             </div>
           )}
+          <DataProgress />
         </header>
 
         <main
+          ref={mainRef}
           id="main-content"
           tabIndex={-1}
           className="flex-1 px-4 pt-7 pb-28 outline-none md:pb-10 lg:px-8 lg:pt-9"
@@ -208,7 +225,7 @@ export function Shell() {
           {/* La entrada es única por pantalla, sin mover los bloques durante la lectura. */}
           <div
             key={pathname}
-            className="page-enter mx-auto w-full max-w-[1560px]"
+            className="page-enter page-view mx-auto w-full max-w-[1560px]"
           >
             <Outlet />
           </div>
@@ -245,6 +262,7 @@ export function Shell() {
           {moreItems.map((item) => {
             return (
               <NavLink
+                viewTransition
                 key={item.to}
                 to={item.to}
                 onClick={() => setMoreOpen(false)}
@@ -273,6 +291,7 @@ export function Shell() {
         {mobileItems.map((item) => {
           return (
             <NavLink
+              viewTransition
               key={item.to}
               to={item.to}
               end={item.to === '/docente'}

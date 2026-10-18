@@ -1,3 +1,4 @@
+import { PageSkeleton } from '../ui/motion';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useParams } from 'react-router';
@@ -26,7 +27,6 @@ import {
   ErrorNote,
   Field,
   inputClass,
-  Loading,
   PageHeader,
 } from '../ui/kit';
 
@@ -60,7 +60,7 @@ export function CasoPage() {
   const [requestId] = useState(() => crypto.randomUUID());
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  if (record.isPending) return <Loading />;
+  if (record.isPending) return <PageSkeleton />;
   if (record.error) return <ErrorNote error={record.error} />;
   const c = record.data;
   const closed = !!c.closedAt;

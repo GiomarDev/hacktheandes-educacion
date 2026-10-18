@@ -1,3 +1,4 @@
+import { PageSkeleton } from '../ui/motion';
 import { Link, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -40,7 +41,7 @@ export function AulaPage() {
     setParams(next, { replace: true });
   };
 
-  if (sections.isPending) return <Loading />;
+  if (sections.isPending) return <PageSkeleton />;
   if (sections.error) return <ErrorNote error={sections.error} />;
   if (!list.length)
     return (
@@ -115,6 +116,7 @@ export function AulaPage() {
           }
           action={
             <Link
+              viewTransition
               to="/docente"
               className="text-[0.9375rem] text-gob hover:underline"
             >

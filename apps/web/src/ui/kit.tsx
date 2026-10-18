@@ -93,7 +93,7 @@ export function Kpi({
     gob: 'text-gob',
   }[tone];
   return (
-    <Card className="px-5 py-4">
+    <Card className="kpi-in px-5 py-4">
       <div className="text-[0.9375rem] text-muted">{label}</div>
       <div className={cx('metric-value mt-2 tabular', color)}>{value}</div>
       {hint && <div className="mt-1 text-[0.875rem] text-faint">{hint}</div>}

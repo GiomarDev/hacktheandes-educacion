@@ -1,3 +1,4 @@
+import { PageSkeleton } from '../ui/motion';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useParams } from 'react-router';
@@ -32,7 +33,6 @@ import {
   ErrorNote,
   Field,
   inputClass,
-  Loading,
   PageHeader,
 } from '../ui/kit';
 
@@ -314,7 +314,7 @@ export function PlanPage() {
   const [editingVersion, setEditingVersion] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
-  if (plan.isPending) return <Loading />;
+  if (plan.isPending) return <PageSkeleton />;
   if (plan.error) return <ErrorNote error={plan.error} />;
   const p = plan.data;
   const archived = p.status === 'ARCHIVED';
@@ -344,7 +344,7 @@ export function PlanPage() {
     <>
       <PageHeader
         eyebrow={
-          <Link to="/planes" className="hover:underline">
+          <Link viewTransition to="/planes" className="hover:underline">
             Planes de apoyo
           </Link>
         }

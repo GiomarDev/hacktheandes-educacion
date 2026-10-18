@@ -59,7 +59,7 @@ export function PlanesPage() {
       ...(strengths.trim() ? { strengths } : {}),
       ...(diagnosis.trim() ? { diagnosis } : {}),
     });
-    navigate(`/planes/${plan.id}`);
+    navigate(`/planes/${plan.id}`, { viewTransition: true });
   }
 
   return (
@@ -89,6 +89,7 @@ export function PlanesPage() {
               {plans.data.map((p) => (
                 <li key={p.id}>
                   <Link
+                    viewTransition
                     to={`/planes/${p.id}`}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-soft"
                   >

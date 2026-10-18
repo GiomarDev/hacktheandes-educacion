@@ -151,6 +151,7 @@ export function AlertasPage() {
                         {alertType(a.type)}
                         {nameOf(a.studentId) && (
                           <Link
+                            viewTransition
                             to={`/estudiantes/${a.studentId}`}
                             className="font-normal text-muted hover:underline"
                           >
@@ -162,6 +163,7 @@ export function AlertasPage() {
                       <div className="text-[0.9375rem] text-muted">
                         {school ? (
                           <Link
+                            viewTransition
                             to={`/escuelas/${school.id}`}
                             className="hover:underline"
                           >
@@ -177,7 +179,7 @@ export function AlertasPage() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {a.caseId && (
-                        <Link to={`/casos/${a.caseId}`}>
+                        <Link viewTransition to={`/casos/${a.caseId}`}>
                           <Button variant="primary">Ver caso</Button>
                         </Link>
                       )}
@@ -239,6 +241,7 @@ export function AlertasPage() {
                 return (
                   <li key={c.id}>
                     <Link
+                      viewTransition
                       to={`/casos/${c.id}`}
                       className="block px-4 py-3 hover:bg-canvas"
                     >

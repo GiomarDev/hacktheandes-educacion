@@ -9,22 +9,8 @@ import { useAuth } from './auth/AuthProvider';
 import { homeFor } from './auth/roles';
 import { Shell } from './layout/Shell';
 import { ChangePasswordPage, LoginPage } from './pages/Login';
-import { DocenteHoyPage } from './pages/DocenteHoy';
-import { AulaPage } from './pages/Aula';
-import { EstudiantePage } from './pages/Estudiante';
-import { AlertasPage } from './pages/Alertas';
-import { CasoPage } from './pages/Caso';
-import { PanoramaPage } from './pages/Panorama';
-import { EscuelasPage } from './pages/Escuelas';
-import { EscuelaPage } from './pages/Escuela';
-import { ReportesPage } from './pages/Reportes';
-import { FuentesPage } from './pages/Fuentes';
-import { NotasPage } from './pages/Notas';
-import { PlanesPage } from './pages/Planes';
-import { PlanPage } from './pages/Plan';
-import { VisitasPage } from './pages/Visitas';
-import { AdminPage } from './pages/Admin';
-import { Empty, Loading } from './ui/kit';
+import { Empty } from './ui/kit';
+import { PageSkeleton } from './ui/motion';
 import { MascotProvider } from './mascot/MascotProvider';
 
 function Home() {
@@ -35,33 +21,87 @@ function Home() {
 function NotFound() {
   return (
     <Empty title="Página no encontrada">
-      <Link to="/" className="text-gob hover:underline">
+      <Link viewTransition to="/" className="text-gob hover:underline">
         Volver al inicio
       </Link>
     </Empty>
   );
 }
 
+// Cada pantalla se carga al visitarla; el router espera el módulo antes de la transición.
+function page<M extends Record<string, unknown>>(
+  load: () => Promise<M>,
+  name: keyof M,
+) {
+  return async () => ({
+    Component: (await load())[name] as React.ComponentType,
+  });
+}
+
 const routes = [
   {
     element: <Shell />,
+    hydrateFallbackElement: (
+      <div className="mx-auto w-full max-w-[1560px] px-4 py-8 lg:px-8">
+        <PageSkeleton />
+      </div>
+    ),
     children: [
       { index: true, element: <Home /> },
-      { path: 'docente', element: <DocenteHoyPage /> },
-      { path: 'docente/aula', element: <AulaPage /> },
-      { path: 'estudiantes/:id', element: <EstudiantePage /> },
-      { path: 'notas', element: <NotasPage /> },
-      { path: 'alertas', element: <AlertasPage /> },
-      { path: 'casos/:id', element: <CasoPage /> },
-      { path: 'panorama', element: <PanoramaPage /> },
-      { path: 'escuelas', element: <EscuelasPage /> },
-      { path: 'escuelas/:id', element: <EscuelaPage /> },
-      { path: 'reportes', element: <ReportesPage /> },
-      { path: 'fuentes', element: <FuentesPage /> },
-      { path: 'planes', element: <PlanesPage /> },
-      { path: 'planes/:id', element: <PlanPage /> },
-      { path: 'visitas', element: <VisitasPage /> },
-      { path: 'admin', element: <AdminPage /> },
+      {
+        path: 'docente',
+        lazy: page(() => import('./pages/DocenteHoy'), 'DocenteHoyPage'),
+      },
+      {
+        path: 'docente/aula',
+        lazy: page(() => import('./pages/Aula'), 'AulaPage'),
+      },
+      {
+        path: 'estudiantes/:id',
+        lazy: page(() => import('./pages/Estudiante'), 'EstudiantePage'),
+      },
+      { path: 'notas', lazy: page(() => import('./pages/Notas'), 'NotasPage') },
+      {
+        path: 'alertas',
+        lazy: page(() => import('./pages/Alertas'), 'AlertasPage'),
+      },
+      {
+        path: 'casos/:id',
+        lazy: page(() => import('./pages/Caso'), 'CasoPage'),
+      },
+      {
+        path: 'panorama',
+        lazy: page(() => import('./pages/Panorama'), 'PanoramaPage'),
+      },
+      {
+        path: 'escuelas',
+        lazy: page(() => import('./pages/Escuelas'), 'EscuelasPage'),
+      },
+      {
+        path: 'escuelas/:id',
+        lazy: page(() => import('./pages/Escuela'), 'EscuelaPage'),
+      },
+      {
+        path: 'reportes',
+        lazy: page(() => import('./pages/Reportes'), 'ReportesPage'),
+      },
+      {
+        path: 'fuentes',
+        lazy: page(() => import('./pages/Fuentes'), 'FuentesPage'),
+      },
+      {
+        path: 'planes',
+        lazy: page(() => import('./pages/Planes'), 'PlanesPage'),
+      },
+      {
+        path: 'planes/:id',
+        lazy: page(() => import('./pages/Plan'), 'PlanPage'),
+      },
+      {
+        path: 'visitas',
+        lazy: page(() => import('./pages/Visitas'), 'VisitasPage'),
+      },
+      { path: 'admin', lazy: page(() => import('./pages/Admin'), 'AdminPage') },
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -71,7 +111,12 @@ export function App() {
   const { status, mustChangePassword, user, active } = useAuth();
   // Un router por sesión y rol activo: arranca en la URL actual (que login y cambio de rol llevan a "/").
   const router = useMemo(() => createBrowserRouter(routes), [user?.id, active]);
-  if (status === 'loading') return <Loading label="Restaurando sesión…" />;
+  if (status === 'loading')
+    return (
+      <div className="mx-auto w-full max-w-[1560px] px-4 py-8 lg:px-8">
+        <PageSkeleton label="Restaurando sesión…" />
+      </div>
+    );
   if (status === 'anonymous') return <LoginPage />;
   if (mustChangePassword) return <ChangePasswordPage />;
   return (

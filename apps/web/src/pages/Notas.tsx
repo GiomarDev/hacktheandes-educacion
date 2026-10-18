@@ -1,3 +1,4 @@
+import { PageSkeleton } from '../ui/motion';
 import { useSearchParams } from 'react-router';
 import { useSession } from '../auth/AuthProvider';
 import {
@@ -58,7 +59,7 @@ export function NotasPage() {
     setParams(next, { replace: true });
   };
 
-  if (sections.isPending) return <Loading />;
+  if (sections.isPending) return <PageSkeleton />;
   if (sections.error) return <ErrorNote error={sections.error} />;
   if (!list.length)
     return (
