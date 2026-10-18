@@ -114,13 +114,42 @@ Verificación final: lint, tipos y build de los cinco servicios sin errores; **9
 
 Migración `apps/ms-escale/prisma/migrations/20261018020000_init`: **aplicada solo a `escale_test`**. La URL de `escale_test` se deriva de `SIMON_TEST_DATABASE_URL` cuando falta `ESCALE_TEST_DATABASE_URL`. Para correr el servicio sobre el schema real hay que agregar `ESCALE_DATABASE_URL` al `.env`; los marcadores ya están en `.env.example`.
 
+## Frontend — Centinela Escolar
+
+Claude implementó `apps/web` a partir del [bosquejo de Claude Design](https://claude.ai/artifact/UT5n57ZJPMv7sX4mY3XqhB), siguiendo su [plan](superpowers/plans/2026-10-17-frontend-centinela.md). Las pantallas cubren tres grupos de usuarios: el portal docente (Hoy, pase de lista, ficha del estudiante), dirección (Escuela) y los especialistas o MINEDU (Panorama). Además hay centro de alertas, detalle de caso con bitácora y contacto simulado, reportes SIMON con envío y revisión, y fuentes de datos para importar los CSV.
+
+Los datos visibles salen de las APIs. Lo que el bosquejo mostraba sin respaldo en el backend se reemplazó por datos reales:
+- El score de ML, los pesos SHAP y los textos de heladas o infraestructura pasaron a ser alertas por regla y asistencia.
+- Las cifras nacionales inventadas pasaron a ser la deserción SIAGIE y ESCALE importada.
+
+La cabecera dice "Piloto · Hack the Andes" en lugar de "Gobierno del Perú · Ministerio de Educación", para no presentarnos como esa institución.
+
+Cambios de backend que pidió el frontend, cada uno con sus pruebas e2e:
+- `GET /sections`: secciones a cargo de cada usuario.
+- `GET /attendance`: asistencia diaria de una sección por rango.
+- `GET /internal/staff/:userId/sections`.
+
+Correcciones de seguridad que reportó la revisión automática del push: el personal de aula solo lee fichas, nóminas, alertas y casos de sus secciones.
+
+`npm run demo:stack` levanta la demo completa sobre los schemas `_test`: los limpia, siembra datos sintéticos, genera 10 días de asistencia, importa los CSV y calcula indicadores. Mientras corre, no se pueden ejecutar las suites e2e. También se corrigieron los scripts `*:seed`: tsx no aplicaba los decoradores porque el `tsconfig` raíz tiene `"files": []`.
+
+Verificación del frontend:
+- 15 pruebas: cliente con renovación única del token, roles, shell, pase de lista y escala del mapa.
+- Tipos y build sin errores.
+- Recorrido visual con Playwright a 1440 px y 390 px con los roles de tutor, UGEL y dirección: login, pase de lista guardado, alertas, caso, panorama, escuela y reporte generado.
+
 ## Pendientes ordenados
 
 1. **Carga de demo en schemas reales:** paso 4 de la tarea 13. Requiere confirmación explícita; no es requisito para probar ni desarrollar sobre los schemas de test.
 2. **Puesta en marcha de F2:** aplicar las migraciones nuevas en los schemas reales cuando se autorice esa puesta en marcha. El desarrollo y las verificaciones usan los schemas de prueba. Los contratos y límites de la demo están en `docs/ms-alerta.md`.
 3. **Puesta en marcha de F3:** aplicar la migración de SIMON en su schema real cuando se autorice; conservar la clave propia de cifrado de diagnóstico. No se requiere para seguir desarrollando sobre tests.
 4. **Puesta en marcha de F4:** agregar `ESCALE_DATABASE_URL` al `.env`, aplicar la migración de ms-escale en su schema real cuando se autorice e importar los dos CSV con `POST /imports`. Los hallazgos menores de la revisión están listados en la sección de F4.
-5. **Frontend:** la carpeta `STICH_ITERATION_1/` se eliminó del repositorio a pedido del equipo; partir de los diseños de Stitch, conectar Stitch y construir la interfaz sobre APIs verificadas.
+5. **Frontend, siguientes módulos:**
+   - Calificaciones (faltan rutas de lectura de periodos y competencias).
+   - Reporte bimestral (falta una ruta pública de periodos).
+   - Planes de apoyo y visitas SIMON.
+   - Administración de usuarios y reglas.
+   - Despliegue del build estático detrás de un proxy hacia los servicios.
 6. **Operación:** definir despliegue, CI y limitación por IP de autenticación. La limitación por cuenta ya existe; la limitación por IP quedó diferida en el registro de Claude.
 7. **Validación de dominio:** confirmar código oficial del estudiante y cálculo oficial de notas. La moda con desempate por última columna es una decisión provisional del plan, no una regla oficial validada.
 8. **Entorno:** al actualizar el runtime, elegir una versión de Node admitida por las herramientas del CLI; Node 25.8.1 produce advertencias de engines en Angular Devkit aunque las verificaciones del proyecto funcionan.

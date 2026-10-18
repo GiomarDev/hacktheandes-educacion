@@ -10,7 +10,7 @@ Backend de AmautaIA para prevenir deserción y bajo rendimiento escolar en Perú
 
 ## Stack
 
-Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. Frontend y despliegue pendientes.
+Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sirve identidad y JWT RS256/JWKS (puerto 3000); `ms-siagie` sirve los datos escolares (3001); `ms-alerta` sirve reglas, alertas y casos (3002); `ms-simon` sirve reportes, planes y visitas (3003); `ms-escale` sirve indicadores (3004). Vitest + Supertest para pruebas, oxlint para lint y Rspack para compilar incluyendo las librerías compartidas. El frontend `apps/web` (Centinela Escolar: React 19 + Vite + TanStack Query + Tailwind) es un paquete propio con su `package.json`; en desarrollo Vite enruta `/api/<servicio>` a cada puerto. Despliegue pendiente.
 
 | Tarea        | Comando |
 |--------------|---------|
@@ -19,6 +19,8 @@ Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sir
 | Tests        | `npm test`, `npm run test:e2e`, `npm run test:smoke` (requiere build previo) |
 | Lint/format  | `npm run lint`, `npm run typecheck`, `npm run format` |
 | Build        | `npm run build` |
+| Demo local   | `npm run build && npm run demo:stack` (schemas `_test`) y `npm run web:dev` |
+| Frontend     | `npm --prefix apps/web ci`, `npm run web:test`, `npm run web:build` |
 
 - Configuración en `.env.example`; nunca mostrar ni commitear los secretos del `.env`.
 - Las pruebas solo usan `auth_test`, `siagie_test`, `alerta_test`, `simon_test` y `escale_test` (derivado de la URL de prueba de SIMON si falta `ESCALE_TEST_DATABASE_URL`). `test/test-databases.ts` aborta ante otro schema. No ejecutar suites de integración simultáneas: comparten tablas de prueba y las limpian entre casos.
@@ -27,6 +29,7 @@ Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sir
 - No ejecutar seeds sobre `auth` o `siagie` sin confirmación explícita del usuario.
 - SIMON: diagnóstico cifrado con clave propia; solo tutor asignado, psicología y dirección pueden leerlo. Nunca devolver ciphertext ni incluir diagnóstico en listados, reportes o auditoría. Contratos en `docs/ms-simon.md`.
 - ESCALE: los indicadores oficiales son datos abiertos; los calculados se filtran por UGEL/DRE. El catálogo de indicadores vive en la migración. Contratos en `docs/ms-escale.md`.
+- Frontend: ningún número sin fuente en una API; no guardar datos personales en `localStorage` (refresh token en `sessionStorage`, access token en memoria). `demo:stack` limpia y siembra solo schemas `_test`: no correrlo junto a las suites e2e.
 - Estado y pendientes: `docs/continuidad-backend.md`. Plan detallado: `docs/superpowers/plans/2026-10-17-backend-fundacion-auth-siagie.md`.
 
 ## Estructura
@@ -36,7 +39,7 @@ Monorepo ESM: NestJS 12, TypeScript 6, Prisma 7.10.1 y PostgreSQL. `ms-auth` sir
 ├── .agents/      # Subagentes compartidos (fuente única; .claude/agents apunta aquí)
 ├── .commands/    # Comandos/prompts reutilizables (fuente única; .claude/commands apunta aquí)
 ├── .claude/      # Config de Claude Code (settings.json + symlinks a .agents y .commands)
-├── apps/         # ms-auth, ms-siagie, ms-alerta, ms-simon y ms-escale, cada uno con Prisma y tests propios
+├── apps/         # ms-auth, ms-siagie, ms-alerta, ms-simon y ms-escale (Prisma y tests propios) y web (frontend)
 ├── libs/         # common (autorización y utilidades) y fixtures (IDs sintéticos compartidos)
 ├── test/         # Configuración y protección de las bases de prueba
 ├── scripts/      # Creación de base de datos y prueba de arranque compilado

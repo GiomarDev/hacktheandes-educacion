@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+/* Tokens del bosquejo de Claude Design (Centinela Escolar). */
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-ink: #1a2332;
+  --color-ink-2: #243043;
+  --color-muted: #5a6578;
+  --color-faint: #8a95a8;
+  --color-line: #e1e5eb;
+  --color-soft: #f0f3f7;
+  --color-canvas: #f5f7fa;
+  --color-card: #ffffff;
+  --color-peru: #d91023;
+  --color-gob: #003876;
+  --color-critical: #c8102e;
+  --color-high: #f0633b;
+  --color-medium: #e6a316;
+  --color-low: #78b04b;
+  --color-stable: #2b8a3e;
+  --color-critical-soft: #ffeef0;
+  --color-high-soft: #fdede4;
+  --color-medium-soft: #fef6e6;
+  --color-stable-soft: #e8f3ec;
+  --color-gob-soft: #e6eef5;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.45;
+  font-feature-settings: 'cv11', 'ss01';
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+:focus-visible {
+  outline: 2px solid var(--color-gob);
+  outline-offset: 2px;
+}

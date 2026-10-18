@@ -91,6 +91,29 @@ La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No e
 
 ---
 
+## Frontend: Centinela Escolar
+
+`apps/web` (React 19, Vite, TanStack Query, React Router y Tailwind) implementa el [bosquejo de Claude Design del equipo](https://claude.ai/artifact/UT5n57ZJPMv7sX4mY3XqhB) conectado a los cinco microservicios. Los datos mostrados vienen de las APIs: el score de ML y otras cifras del bosquejo sin respaldo se reemplazaron por datos reales con su fuente.
+
+| Rol | Pantalla de inicio | Módulos |
+| --- | --- | --- |
+| Tutor, docente o auxiliar | **Hoy** | Alumnos con alertas, pendientes, pase de lista diario, ficha del estudiante, casos propios |
+| Dirección, secretaría o psicología | **Escuela** | Secciones y asistencia, factores de riesgo, alertas y casos, reportes SIMON |
+| Especialista UGEL o DRE, MINEDU | **Panorama** | Mapa de deserción oficial por región, tendencia ESCALE, indicadores por UGEL, IEs del ámbito, revisión de reportes, fuentes de datos |
+
+Demo local completa, con datos sintéticos en los schemas `_test`, sin tocar los reales:
+
+```sh
+npm run build
+npm run demo:stack          # migra, siembra, genera asistencia y arranca los 5 servicios (Ctrl+C detiene)
+npm --prefix apps/web ci    # una vez
+npm run web:dev             # http://localhost:5173
+```
+
+Los usuarios de demo usan los DNI `70000100` (MINEDU), `70000101` (UGEL), `70000102` (dirección), `70000104` (tutor) y `70000108` (auxiliar). La contraseña es la de `SEED_PASSWORD`. En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
+
+---
+
 ## 🎯 Problema, Diagnóstico y Oportunidad
 
 A partir de un proceso exhaustivo de análisis cuantitativo oficial y validación cualitativa en campo, se identificaron los siguientes ejes críticos:
@@ -148,7 +171,7 @@ El repositorio integra investigaciones profundas originadas en el proceso de an�
 
 ## 🎨 Diseños y Mockups de Interfaz (Google Stitch)
 
-> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` mencionada a continuación no está en este checkout. Recuperar esos archivos o los diseños de Stitch antes de usar el visor local. El frontend todavía está pendiente de implementación.
+> Registro de prototipado previo: la carpeta `STICH_ITERATION_1/` mencionada a continuación se retiró del repositorio. El frontend implementado (Centinela Escolar) sigue el bosquejo de Claude Design descrito en la sección Frontend.
 
 Como parte de la fase de prototipado y validación de la solución, se diseñó la primera versión interactiva de **AmautaIA — Sistema Nacional de Mentoría Quirúrgica y Burocracia Cero**. Los prototipos fueron generados e iterados a través de la integración agéntica con **Google Stitch MCP** en el proyecto `Hack The Andes Test` (`projects/1503192843636542264`), bajo el sistema de diseño semántico **AmautaIA Institucional Claro (MINEDU GovTech)** (`assets/764693782689717926`).
 
@@ -189,7 +212,7 @@ Para más detalles sobre los componentes y sugerencias de iteración devueltas p
 │       └── stitch-*/                       # Skills especializadas para Google Stitch
 ├── .claude/                                # Configuración de Claude Code
 ├── .commands/                              # Comandos reutilizables (/commit, /review)
-├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002), ms-simon (3003) y ms-escale (3004)
+├── apps/                                   # ms-auth (3000), ms-siagie (3001), ms-alerta (3002), ms-simon (3003), ms-escale (3004) y web (Centinela Escolar)
 ├── libs/                                   # Autorización, contratos de eventos y fixtures sintéticos
 ├── test/                                   # Entornos y protección de schemas de prueba
 ├── scripts/                                # Creación de base y verificación del arranque compilado
