@@ -1,0 +1,281 @@
+{
+  "verifiedAt": "2026-10-18T05:29:08.308Z",
+  "environment": "demo_test",
+  "passwordSource": "SEED_PASSWORD (no se registra el valor)",
+  "services": 5,
+  "accounts": [
+    {
+      "documentNumber": "70000100",
+      "roles": [
+        "MINEDU_ADMIN"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000101",
+      "roles": [
+        "UGEL_SPECIALIST"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000102",
+      "roles": [
+        "DIRECTOR"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000103",
+      "roles": [
+        "SECRETARY"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000104",
+      "roles": [
+        "TUTOR",
+        "TEACHER"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000105",
+      "roles": [
+        "TUTOR",
+        "TEACHER"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000106",
+      "roles": [
+        "TEACHER"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000107",
+      "roles": [
+        "TEACHER"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000108",
+      "roles": [
+        "AUXILIAR"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    },
+    {
+      "documentNumber": "70000109",
+      "roles": [
+        "PSYCHOLOGIST"
+      ],
+      "loginVerified": true,
+      "mustChangePassword": false
+    }
+  ],
+  "datasets": [
+    {
+      "fileName": "desercion_por_region_siagie_2023_2024.csv",
+      "dataset": "DROPOUT_BY_REGION_SIAGIE",
+      "checksum": "e9904910f1d8e3827b84c18769b784f6dadf31690325bb321c01b18eca6efda6",
+      "importedRows": 25,
+      "verifiedValues": 52,
+      "alreadyPresent": true,
+      "totals": [
+        {
+          "code": "DROPOUT_RATE_SEC_SIAGIE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2023-2024",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 2.5426,
+          "numerator": 72282,
+          "denominator": 2842831
+        },
+        {
+          "code": "DROPOUT_RATE_PRI_SIAGIE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2023-2024",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 1.732,
+          "numerator": 64463,
+          "denominator": 3721852
+        }
+      ]
+    },
+    {
+      "fileName": "tasa_desercion_secundaria_escale.csv",
+      "dataset": "DROPOUT_RATE_SECONDARY_ESCALE",
+      "checksum": "f8e2f021b8a602b8a8379e6d48b63337612110801b1fffb7ba433dff0860eb4b",
+      "importedRows": 33,
+      "verifiedValues": 396,
+      "alreadyPresent": true,
+      "totals": [
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2013-2014",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 5.3,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2014-2015",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 4.3,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2015-2016",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 4.1,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2016-2017",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 4,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2017-2018",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 4,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2018-2019",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 3.5,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2019-2020",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 2.5,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2020-2021",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 1.9,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2021-2022",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 3,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2022-2023",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 2.6,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2023-2024",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 2.5,
+          "numerator": null,
+          "denominator": null
+        },
+        {
+          "code": "DROPOUT_RATE_SEC_ESCALE",
+          "geoLevel": "NATIONAL",
+          "geoCode": "00",
+          "geoName": "Perú",
+          "periodLabel": "2024-2025",
+          "dimension": null,
+          "dimensionValue": null,
+          "value": 2.7,
+          "numerator": null,
+          "denominator": null
+        }
+      ]
+    }
+  ],
+  "browserResponsiveValidation": "No incluida en este comando; requiere inspección de navegador aparte."
+}

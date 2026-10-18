@@ -186,3 +186,11 @@ Rediseño tipográfico de Amauti con Source Sans 3 y Source Serif 4 locales, esc
 Instaladas frontend-design (Anthropic), better-icons y reverse-engineer-anything (REA), con origen/hash en skills-lock.json y enlaces para Claude Code. La conexión de un proyecto web Adobe queda preparada mediante variables VITE_ADOBE_* opcionales; la cuenta no pudo configurarse porque el navegador mantuvo bloqueado fonts.adobe.com. El acceso a Creative Cloud sí quedó habilitado.
 
 Verificación: 34 pruebas de frontend aprobadas, tipos/build de web y build de cinco servicios correctos; lint y revisión del diff sin errores. No se realizaron capturas ni revisión visual automatizada porque el navegador también bloqueó el origen local. Demo de cinco servicios y frontend dejados corriendo, solo sobre schemas _test, con 570 registros sintéticos e indicadores importados/calculados. Las migraciones de demo funcionaron con Node 22.22.2 ya instalado; los primeros intentos con Node 25 devolvieron un error genérico del motor de schema. No ejecutar e2e simultáneamente con la demo.
+
+## Datos oficiales y cuentas de demo — 18/10/2026
+
+Agregado `npm run demo:verify`: comprueba salud de los cinco servicios, login y roles/ámbito de diez cuentas sintéticas y los 448 valores oficiales importados desde los dos CSV del repositorio. No vacía tablas, no ejecuta seeds ni importa datos faltantes; cierra sus sesiones temporales. Evidencia sin secretos en [resultado de datos y cuentas](testing/2026-10-18-demo-data.json). No verifica visualmente el frontend ni sustituye las suites de autorización.
+
+README actualizado con los diez DNI, roles, ámbitos y recorridos, referencia a `SEED_PASSWORD`, cobertura histórica de SIAGIE/ESCALE y distinción entre indicadores oficiales y registros escolares sintéticos. No se crearon expedientes reales de estudiantes/familias. Los dos CSV ya estaban cargados; la verificación no agregó importaciones.
+
+Pendiente prioritario: recorrido responsive del rediseño actual. El navegador conserva un bloqueo del origen local y Computer Use impide controlar la propia app Codex para cambiarlo. El usuario debe permitir el origen en Configuración → Navegador → Permisos del agente; no se intentaron vías alternativas para eludir ese bloqueo. Demo y frontend se conservan en ejecución. No correr e2e junto a la demo.

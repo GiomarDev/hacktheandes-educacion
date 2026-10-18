@@ -95,11 +95,7 @@ La suite e2e aplica migraciones y limpia únicamente los schemas de prueba. No e
 
 `apps/web` (React 19, Vite, TanStack Query, React Router y Tailwind) implementa el [bosquejo de Claude Design del equipo](https://claude.ai/artifact/UT5n57ZJPMv7sX4mY3XqhB) conectado a los cinco microservicios. Los datos mostrados vienen de las APIs: el score de ML y otras cifras del bosquejo sin respaldo se reemplazaron por datos reales con su fuente.
 
-| Rol | Pantalla de inicio | Módulos |
-| --- | --- | --- |
-| Tutor, docente o auxiliar | **Hoy** | Alumnos con alertas, pendientes, pase de lista diario, ficha del estudiante, casos propios; tutor y docente también **registro de notas**, **planes de apoyo** y sus **visitas de monitoreo** |
-| Dirección, secretaría o psicología | **Escuela** | Secciones y asistencia, factores de riesgo, alertas y casos, notas, reportes SIMON (mensuales y **bimestral**), planes de apoyo; dirección además agenda **visitas** y **administra** cuentas, roles y reglas de alerta |
-| Especialista UGEL o DRE, MINEDU | **Panorama** | Mapa de deserción oficial por región, tendencia ESCALE, indicadores por UGEL, IEs del ámbito, revisión de reportes, visitas, fuentes de datos; UGEL y MINEDU administran cuentas |
+Los accesos dependen del rol y del ámbito asignado; el servidor comprueba los permisos de cada operación. Las cuentas concretas de la demo y sus límites aparecen más abajo.
 
 Demo local completa, con datos sintéticos en los schemas `_test`, sin tocar los reales:
 
@@ -110,7 +106,53 @@ npm --prefix apps/web ci    # una vez
 npm run web:dev             # http://localhost:5173
 ```
 
-Los usuarios de demo usan los DNI `70000100` (MINEDU), `70000101` (UGEL), `70000102` (dirección), `70000104` (tutor), `70000106` (docente de Matemática), `70000107` (docente de Comunicación) y `70000108` (auxiliar). Si el puerto 5173 está ocupado, Vite usa el siguiente libre (lo indica al arrancar). La contraseña es la de `SEED_PASSWORD`. En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
+Si el puerto 5173 está ocupado, Vite usa el siguiente libre (lo indica al arrancar). En desarrollo, Vite enruta `/api/<servicio>` a los puertos 3000–3004, así que el backend no necesita CORS. `npm run web:test` corre las pruebas del frontend y `npm run web:build` genera `apps/web/dist`.
+
+### Cuentas y roles para probar
+
+Acceso local: **http://127.0.0.1:5173/**. Se inicia sesión con el DNI de la tabla y la contraseña configurada en **`SEED_PASSWORD` del `.env` local**. No publicar esa contraseña en este archivo. Los diez accesos y sus roles se comprobaron contra `/auth/login` y `/auth/me`; el [resultado de la verificación](docs/testing/2026-10-18-demo-data.json) no contiene contraseñas ni tokens.
+
+| DNI sintético | Rol de la cuenta    | Ámbito y recorrido sugerido                                                                                                                                                       |
+| ------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `70000100`    | `MINEDU_ADMIN`      | Nacional. Panorama, escuelas, indicadores oficiales/calculados, reportes, visitas, administración y **Fuentes** para importar CSV.                                                |
+| `70000101`    | `UGEL_SPECIALIST`   | UGEL Coronel Portillo. Panorama y escuelas del ámbito, revisión de reportes enviados, visitas y administración del ámbito.                                                        |
+| `70000102`    | `DIRECTOR`          | IE de demo. Escuela, aulas, lectura de notas, alertas/casos, generación y envío de reportes, planes con diagnóstico, visitas y administración de la IE.                           |
+| `70000103`    | `SECRETARY`         | IE de demo. Escuela, aulas, lectura de notas, generación de reportes y planes sin diagnóstico. No tiene acceso a alertas, visitas ni administración.                              |
+| `70000104`    | `TUTOR` + `TEACHER` | Tutor de 1.º A. Hoy, Mi aula, asistencia, notas y alertas de sus secciones, planes y visitas propias. Como tutor asignado puede leer el diagnóstico y aprobar versiones del plan. |
+| `70000105`    | `TUTOR` + `TEACHER` | Tutor de 1.º B. Mismo recorrido del tutor anterior, en su sección.                                                                                                                |
+| `70000106`    | `TEACHER`           | Matemática, 1.º A y B. Asistencia, alertas, edición de notas de su área, colaboración en versiones de planes y visitas propias. Sin acceso al diagnóstico ni aprobación del plan. |
+| `70000107`    | `TEACHER`           | Comunicación, 1.º A y B. Mismos accesos del docente anterior, con edición de notas de Comunicación.                                                                               |
+| `70000108`    | `AUXILIAR`          | 1.º A y B. Hoy, Mi aula, asistencia y alertas/casos de sus secciones. Sin notas, planes, reportes, visitas ni administración.                                                     |
+| `70000109`    | `PSYCHOLOGIST`      | IE de demo. Escuela, alertas/casos y planes con diagnóstico. La aprobación de versiones corresponde al tutor asignado.                                                            |
+
+En las cuentas de tutor se puede cambiar entre Tutoría y Docente desde el selector de rol. `DRE_SPECIALIST` está implementado, pero esta demo no siembra una cuenta DRE. Para probar aislamiento, comparar los tutores A y B; para probar restricciones, comparar secretaría, auxiliar y dirección. Los DNI y las asignaciones se definen en `libs/fixtures/src/seed-ids.ts` y en los seeds de identidad/SIAGIE.
+
+### Datos oficiales y datos de demostración
+
+La demo importa los siguientes CSV del repositorio en ESCALE. Se verificó su checksum y cada valor expuesto por la API, incluidos numerador y denominador cuando existen:
+
+| Fuente documentada                                                                                                                  | Cobertura                                                                                 | Valores comprobados |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------: |
+| [Deserción SIAGIE por región](docs/desercion_por_region_siagie_2023_2024.md), [CSV](docs/desercion_por_region_siagie_2023_2024.csv) | 25 regiones y totales nacionales, primaria/secundaria, 2023–2024                          |                  52 |
+| [Tasa de deserción ESCALE](docs/reporte_desercion_escale.md), [CSV](docs/tasa_desercion_secundaria_escale.csv)                      | Secundaria, 2013–2014 a 2024–2025; total nacional, regiones y desagregaciones disponibles |                 396 |
+
+Son **448 valores oficiales contrastados con los archivos existentes**, no una actualización en línea ni datos escolares de 2026. El total SIAGIE de secundaria es 72 282 / 2 842 831 (2,5426 %) y el de primaria 64 463 / 3 721 852 (1,732 %). No confundir la serie ESCALE redondeada con la tasa calculada a partir de los conteos SIAGIE.
+
+La IE, cuentas, estudiantes, apoderados, matrícula y asistencia son **sintéticos**. Los indicadores diarios/mensuales calculados desde esos registros también son de demostración. No se cargaron expedientes reales de estudiantes o familias. Las tablas de notas, planes, reportes y visitas se completan mediante los flujos de la demo; pueden comenzar vacías.
+
+Con la demo ya en ejecución, comprobar servicios, diez cuentas y los dos datasets:
+
+```sh
+npm run demo:verify
+```
+
+Este comando no vacía tablas, no ejecuta seeds y no importa archivos faltantes. Crea sesiones temporales para verificar los accesos, las cierra al terminar y guarda evidencia sin secretos en `docs/testing/AAAA-MM-DD-demo-data.json`. Si falta un CSV, lo indica para importarlo desde **Fuentes** con la cuenta MINEDU. **No ejecutar las suites e2e ni `demo:stack` de nuevo mientras se está usando la demo**: limpian los mismos schemas `_test`.
+
+### Estado de la validación responsive
+
+La verificación de datos y cuentas está completada. La revisión visual del diseño actual sigue **pendiente**: el navegador de Codex bloqueó el origen local mediante un permiso guardado. El control de la propia app para cambiar sus permisos también está bloqueado por la herramienta. El responsable debe permitir `http://127.0.0.1:5173` en **Configuración → Navegador → Permisos del agente**. Los recorridos visuales históricos del proyecto no validan el rediseño tipográfico actual.
+
+Una vez permitido el origen, revisar login y los recorridos de las cuentas anteriores a 320, 390, 768 y 1440 píxeles, además de zoom al 200 %. Comprobar navegación móvil y menú Más, filtros, formularios, lista de asistencia, tablas de notas y reportes, planes, visitas y administración. La página debe permitir leer y operar los controles sin desplazamiento horizontal global; las tablas extensas pueden tener desplazamiento dentro de su contenedor. Registrar capturas y resultados antes de dar la revisión por aprobada.
 
 ### Amauti y recorrido de bienvenida
 
