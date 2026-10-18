@@ -1,8 +1,8 @@
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import { MascotFigure } from '@/features/mascot/MascotFigure';
 import { DROPOUTS_PER_DAY } from '@/features/landing/data';
 import { FAQ } from '@/features/landing/content';
 import { SectionHeading } from '@/features/landing/components/SectionHeading';
+import { WhatsAppQr } from '@/features/landing/components/WhatsAppQr';
 
 export function Closing() {
   return (
@@ -12,7 +12,7 @@ export function Closing() {
       aria-labelledby="cierre-title"
     >
       <div className="mx-auto max-w-[1440px] px-4 lg:px-8">
-        <div className="l-dark flex flex-col gap-8 overflow-hidden rounded-lg p-8 sm:p-12 md:flex-row md:items-end">
+        <div className="l-dark flex flex-col gap-8 overflow-hidden rounded-lg p-8 sm:p-12 md:flex-row md:items-center">
           <div className="flex-1">
             <h2
               id="cierre-title"
@@ -45,12 +45,7 @@ export function Closing() {
               </a>
             </div>
           </div>
-          <div
-            className="l-arch hidden shrink-0 items-end justify-center px-7 pt-10 md:flex"
-            aria-hidden
-          >
-            <MascotFigure pose="celebrating" className="h-44 w-32" />
-          </div>
+          <WhatsAppQr />
         </div>
 
         <div className="mt-16 grid gap-10 lg:grid-cols-12">

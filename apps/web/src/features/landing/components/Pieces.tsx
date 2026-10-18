@@ -10,6 +10,7 @@ import {
   STUDENTS_SECONDARY,
 } from '@/features/landing/data';
 import { SectionHeading } from '@/features/landing/components/SectionHeading';
+import { AMAUTI_WHATSAPP } from '@/features/landing/components/WhatsAppQr';
 
 const fmt = (n: number) => new Intl.NumberFormat('es-PE').format(n);
 const pct = (num: number, den: number) => ((100 * num) / den).toFixed(2);
@@ -207,6 +208,16 @@ export function Pieces() {
                 <span className="mt-1 block text-[0.875rem] text-[color:var(--l-ink-2)]">
                   {p.statText}
                 </span>
+                {p.stat === '10 seg' && (
+                  <a
+                    href={AMAUTI_WHATSAPP}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-block text-[0.875rem] font-semibold text-[color:var(--l-blue)] hover:underline"
+                  >
+                    Escríbele a Amauti por WhatsApp →
+                  </a>
+                )}
               </p>
             </article>
           ))}

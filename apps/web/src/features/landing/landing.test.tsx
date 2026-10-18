@@ -63,3 +63,17 @@ describe('BlindSpot', () => {
     );
   });
 });
+
+describe('WhatsAppQr', () => {
+  it('muestra el QR del contacto y un enlace directo para abrir WhatsApp', async () => {
+    const { WhatsAppQr } =
+      await import('@/features/landing/components/WhatsAppQr');
+    render(<WhatsAppQr />);
+    expect(
+      screen.getByRole('img', { name: /código qr del contacto de amauti/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /abrir whatsapp/i }),
+    ).toHaveAttribute('href', 'https://wa.me/qr/5VWAQAN76DUDO1');
+  });
+});
