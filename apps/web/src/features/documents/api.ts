@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, seg } from '@/shared/api/client';
 import { qs } from '@/shared/api/query-string';
-import type { DocumentStatus, GeneratedDocument } from './types';
+import type {
+  DocumentPreference,
+  DocumentStatus,
+  GeneratedDocument,
+  PreferencesResult,
+} from './types';
 
 // DOCUMENTOS (SIMON): papeleo generado desde WhatsApp y su revisión.
 export const useDocuments = (status?: DocumentStatus) =>
@@ -43,5 +48,39 @@ export function useDocumentCorrection() {
         },
       }),
     onSuccess: () => client.invalidateQueries({ queryKey: ['documents'] }),
+  });
+}
+
+// Preferencias para próximos documentos: siempre las del usuario de la sesión.
+export const useDocumentPreferences = () =>
+  useQuery({
+    queryKey: ['document-preferences'],
+    queryFn: () =>
+      apiFetch<PreferencesResult>('simon', '/documents/preferences'),
+  });
+
+export function useSaveDocumentPreference() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, instruction }: { id: string; instruction: string }) =>
+      apiFetch<DocumentPreference>(
+        'simon',
+        `/documents/${seg(id)}/preference`,
+        { method: 'POST', body: { instruction } },
+      ),
+    onSuccess: () =>
+      client.invalidateQueries({ queryKey: ['document-preferences'] }),
+  });
+}
+
+export function useForgetDocumentPreference() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiFetch<void>('simon', `/documents/preferences/${seg(id)}`, {
+        method: 'DELETE',
+      }),
+    onSuccess: () =>
+      client.invalidateQueries({ queryKey: ['document-preferences'] }),
   });
 }

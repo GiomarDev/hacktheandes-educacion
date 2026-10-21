@@ -19,14 +19,17 @@ import { VisitsService } from './visits.service.js';
 import {
   DocumentsController,
   DocumentsService,
+  InternalDocumentPreferencesController,
   InternalDocumentsController,
 } from './documents.js';
+import { DocumentPreferencesService } from './document-preferences.js';
 @Module({
   controllers: [
     HealthController,
     ApiController,
     DocumentsController,
     InternalDocumentsController,
+    InternalDocumentPreferencesController,
   ],
   providers: [
     PrismaService,
@@ -37,6 +40,7 @@ import {
     PlansService,
     VisitsService,
     DocumentsService,
+    DocumentPreferencesService,
     {
       provide: JwksKeyResolver,
       useFactory: () => new HttpJwksKeyResolver(requireEnv('AUTH_JWKS_URL')),
