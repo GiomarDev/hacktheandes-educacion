@@ -125,6 +125,24 @@ describe('Preferencias de documentos en Atomic Memory', () => {
     expect(memory.requests).toEqual([]);
   });
 
+  it('rechaza destinos inseguros o ambiguos sin enviar la llave', async () => {
+    const doc = await createDoc();
+    for (const url of [
+      'http://example.com',
+      'https://user:secret@example.com',
+      `${memory.url}?redirect=elsewhere`,
+      `${memory.url}#fragment`,
+      `${memory.url}/unexpected`,
+      'not-a-url',
+    ]) {
+      enable();
+      process.env.ATOMICMEMORY_API_URL = url;
+      expect(await listOf('teacher')).toEqual({ status: 'disabled' });
+      await save(doc.id, 'Pon las competencias al inicio').expect(503);
+    }
+    expect(memory.requests).toEqual([]);
+  });
+
   it('el docente guarda, corrige y borra lo que Amauti debe recordar; el agente lo recupera', async () => {
     enable();
     const doc = await createDoc();
@@ -241,12 +259,12 @@ describe('Preferencias de documentos en Atomic Memory', () => {
     expect(memory.requests).toEqual([]);
   });
 
-  it('si Atomic Memory falla o no responde, avisa que no se guardó y los documentos siguen', async () => {
+  it('si Atomic Memory falla o no responde, avisa que no se pudo confirmar y los documentos siguen', async () => {
     enable();
     const doc = await createDoc();
     memory.state.mode = 'fail';
     const failed = await save(doc.id, 'Usa letra Arial 12').expect(503);
-    expect(failed.body.message).toMatch(/no se guardó/);
+    expect(failed.body.message).toMatch(/No pudimos confirmar/);
     expect(await listOf('teacher')).toEqual({ status: 'unavailable' });
 
     memory.state.mode = 'hang';
@@ -273,7 +291,7 @@ describe('Preferencias de documentos en Atomic Memory', () => {
     for (const mode of ['empty', 'malformed'] as const) {
       memory.state.mode = mode;
       const { body } = await save(doc.id, 'Usa letra Arial 12').expect(503);
-      expect(body.message).toMatch(/no se guardó/);
+      expect(body.message).toMatch(/No pudimos confirmar/);
       expect(await listOf('teacher')).toEqual({ status: 'unavailable' });
     }
   });
@@ -320,13 +338,13 @@ describe('Preferencias de documentos en Atomic Memory', () => {
       .delete(`/documents/preferences/${first.id}`)
       .set(as('teacher'))
       .expect(503);
-    expect(rejected.body.message).toMatch(/no se borró/);
+    expect(rejected.body.message).toMatch(/No pudimos confirmar/);
     memory.state.mode = 'deleteEmpty';
     const empty = await request(simon.url)
       .delete(`/documents/preferences/${first.id}`)
       .set(as('teacher'))
       .expect(503);
-    expect(empty.body.message).toMatch(/no se borró/);
+    expect(empty.body.message).toMatch(/No pudimos confirmar/);
     memory.state.mode = 'delete204';
     await request(simon.url)
       .delete(`/documents/preferences/${first.id}`)

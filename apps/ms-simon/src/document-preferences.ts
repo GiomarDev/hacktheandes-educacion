@@ -42,15 +42,37 @@ class MemoryNotFound extends Error {}
 // Lee la configuración en cada uso: sin ATOMICMEMORY_ENABLED=true la función queda apagada.
 function memoryConfig(): MemoryConfig | null {
   if (process.env.ATOMICMEMORY_ENABLED !== 'true') return null;
-  const apiUrl = process.env.ATOMICMEMORY_API_URL?.replace(/\/+$/, '');
+  const configuredUrl = process.env.ATOMICMEMORY_API_URL;
   const apiKey = process.env.ATOMICMEMORY_API_KEY;
-  if (!apiUrl || !apiKey) return null;
+  if (!configuredUrl || !apiKey) return null;
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(configuredUrl);
+  } catch {
+    return null;
+  }
+  const loopback = ['localhost', '127.0.0.1', '[::1]'].includes(
+    parsedUrl.hostname,
+  );
+  if (
+    (parsedUrl.protocol !== 'https:' &&
+      !(parsedUrl.protocol === 'http:' && loopback)) ||
+    parsedUrl.username ||
+    parsedUrl.password ||
+    parsedUrl.search ||
+    parsedUrl.hash ||
+    parsedUrl.pathname !== '/'
+  )
+    return null;
+  const apiUrl = parsedUrl.origin;
   const timeout = Number(process.env.ATOMICMEMORY_TIMEOUT_MS);
   return {
     apiUrl,
     apiKey,
     timeoutMs:
-      Number.isInteger(timeout) && timeout > 0 ? timeout : DEFAULT_TIMEOUT_MS,
+      Number.isInteger(timeout) && timeout > 0 && timeout <= 5000
+        ? timeout
+        : DEFAULT_TIMEOUT_MS,
   };
 }
 
@@ -241,7 +263,7 @@ export class DocumentPreferencesService {
       });
     } catch {
       throw new ServiceUnavailableException(
-        'Atomic Memory no está disponible: la preferencia no se guardó',
+        'No pudimos confirmar que la preferencia se guardó. Intenta cargar tus recordatorios antes de volver a guardar.',
       );
     }
     // Solo cuenta como guardado si el recibo trae el ID creado o actualizado.
@@ -256,7 +278,7 @@ export class DocumentPreferencesService {
     );
     if (!id)
       throw new ServiceUnavailableException(
-        'Atomic Memory no confirmó el guardado: la preferencia no se guardó',
+        'No pudimos confirmar que la preferencia se guardó. Intenta cargar tus recordatorios antes de volver a guardar.',
       );
     return { id, category, instruction: text, savedAt: null };
   }
@@ -272,7 +294,7 @@ export class DocumentPreferencesService {
       owned = await this.fetchAll(config, userId);
     } catch {
       throw new ServiceUnavailableException(
-        'Atomic Memory no está disponible: la preferencia no se borró',
+        'No pudimos confirmar que la preferencia se borró. Vuelve a cargar tus recordatorios.',
       );
     }
     // Solo se borra lo que aparece en la memoria del propio docente.
@@ -290,13 +312,13 @@ export class DocumentPreferencesService {
       if (error instanceof MemoryNotFound)
         throw new NotFoundException('Preferencia no encontrada');
       throw new ServiceUnavailableException(
-        'Atomic Memory no está disponible: la preferencia no se borró',
+        'No pudimos confirmar que la preferencia se borró. Vuelve a cargar tus recordatorios.',
       );
     }
     // Solo un recibo afirmativo o el 204 documentado confirma el borrado.
     if (!isRecord(body) || body.success !== true)
       throw new ServiceUnavailableException(
-        'Atomic Memory no confirmó el borrado: la preferencia no se borró',
+        'No pudimos confirmar que la preferencia se borró. Vuelve a cargar tus recordatorios.',
       );
   }
 
