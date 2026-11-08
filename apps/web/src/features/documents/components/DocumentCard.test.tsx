@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DocumentCard } from '@/features/documents/components/DocumentCard';
 import type { GeneratedDocument } from '@/features/documents/types';
+import * as officeFiles from '@/features/documents/lib/officeFiles';
 
 const base: GeneratedDocument = {
   id: 'd1',
@@ -94,5 +95,41 @@ describe('DocumentCard', () => {
     expect(screen.queryByRole('button', { name: 'Aprobado' })).toBeNull();
     expect(screen.queryByRole('button', { name: /arrastra/i })).toBeNull();
     expect(screen.getByText('No aprobado')).toBeInTheDocument();
+  });
+
+  it('el recordatorio guardado se muestra al revisar y viaja en la plantilla descargada', async () => {
+    const reminder = 'Pon las competencias del CNEB al inicio';
+    const { unmount } = render(
+      <DocumentCard
+        doc={base}
+        canReview
+        reminder={reminder}
+        onReview={vi.fn()}
+        onCorrection={vi.fn()}
+      />,
+    );
+    expect(screen.getByText(reminder)).toBeInTheDocument();
+    expect(
+      screen.getByText(/no se aplicó al contenido generado/),
+    ).toBeInTheDocument();
+    unmount();
+
+    const download = vi
+      .spyOn(officeFiles, 'downloadBytes')
+      .mockImplementation(() => undefined);
+    render(
+      <DocumentCard
+        doc={{ ...base, status: 'REJECTED' }}
+        canReview
+        reminder={reminder}
+        onReview={vi.fn()}
+        onCorrection={vi.fn()}
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /\.doc$/ }));
+    const [bytes, name] = download.mock.calls[0];
+    expect(name).toBe('sesion-de-aprendizaje-fracciones.doc');
+    expect(new TextDecoder().decode(bytes)).toContain(reminder);
+    download.mockRestore();
   });
 });

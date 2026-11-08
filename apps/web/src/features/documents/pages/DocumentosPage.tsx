@@ -2,11 +2,16 @@ import { useState } from 'react';
 import { useSession } from '@/features/auth/AuthProvider';
 import {
   useDocumentCorrection,
+  useDocumentPreferences,
   useDocuments,
+  useForgetDocumentPreference,
   useReviewDocument,
+  useSaveDocumentPreference,
 } from '@/features/documents/api';
 import type { DocumentStatus } from '@/features/documents/types';
 import { DocumentCard } from '@/features/documents/components/DocumentCard';
+import { PreferenceMemory } from '@/features/documents/components/PreferenceMemory';
+import { RememberedPreferences } from '@/features/documents/components/RememberedPreferences';
 import {
   Card,
   cx,
@@ -30,6 +35,9 @@ export function DocumentosPage() {
   const all = useDocuments();
   const review = useReviewDocument();
   const correction = useDocumentCorrection();
+  const preferences = useDocumentPreferences();
+  const savePreference = useSaveDocumentPreference();
+  const forgetPreference = useForgetDocumentPreference();
   const docs = all.data ?? [];
   const shown = TABS[tab].status
     ? docs.filter((d) => d.status === TABS[tab].status)
@@ -112,6 +120,36 @@ export function DocumentosPage() {
                 }
                 onReview={(status) => review.mutate({ id: doc.id, status })}
                 onCorrection={(file) => correction.mutate({ id: doc.id, file })}
+                reminder={
+                  preferences.data?.status === 'available'
+                    ? preferences.data.preferences.find(
+                        (p) =>
+                          p.category === (doc.category?.trim() || 'Documento'),
+                      )?.instruction
+                    : undefined
+                }
+                memory={
+                  preferences.data ? (
+                    <PreferenceMemory
+                      category={doc.category?.trim() || 'Documento'}
+                      result={preferences.data}
+                      onSave={(instruction) =>
+                        savePreference.mutateAsync({ id: doc.id, instruction })
+                      }
+                      onForget={(id) => forgetPreference.mutate(id)}
+                      saving={
+                        savePreference.isPending &&
+                        savePreference.variables?.id === doc.id
+                      }
+                      forgetting={forgetPreference.isPending}
+                      error={
+                        savePreference.variables?.id === doc.id
+                          ? savePreference.error
+                          : null
+                      }
+                    />
+                  ) : null
+                }
               />
             ))}
           </ul>
@@ -119,6 +157,14 @@ export function DocumentosPage() {
         {review.error ? <ErrorNote error={review.error} /> : null}
         {correction.error ? <ErrorNote error={correction.error} /> : null}
       </Card>
+      {preferences.data ? (
+        <RememberedPreferences
+          result={preferences.data}
+          onForget={(id) => forgetPreference.mutate(id)}
+          forgetting={forgetPreference.isPending}
+          error={forgetPreference.error}
+        />
+      ) : null}
     </>
   );
 }

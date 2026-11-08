@@ -114,3 +114,28 @@ La plataforma prepara documentos (sesiones, informes, actas, registros) a partir
 En el frontend, un documento no aprobado ofrece la descarga en Word (`.docx` y `.doc`) o en Excel (`.xlsx`) y una casilla para arrastrar y soltar el documento corregido. Mientras no se almacenen los originales, la descarga es una plantilla generada en el navegador con los datos del registro.
 
 Migración `20261018060000_generated_documents`. `npm run simon:seed` crea 10 documentos de demo para los docentes sintéticos (los incluye `demo:stack`).
+
+### Recordatorios de revisión (Atomic Memory, opcional)
+
+Cuando el docente no aprueba un documento, puede guardar un recordatorio breve para revisar los próximos documentos del mismo tipo (por ejemplo, «verificar que las competencias del CNEB estén al inicio»). El recordatorio se guarda en [Atomic Memory](https://docs.atomicstrata.ai) y se usa en el flujo existente de **Documentos**:
+
+- aparece en las tarjetas de los documentos de ese tipo que están por revisar;
+- se agrega, rotulado como ayuda de revisión, a la plantilla de corrección que se descarga en Word (`.docx`, `.doc`) o Excel (`.xlsx`);
+- la lista «Tus recordatorios de revisión» permite verlos, corregirlos (volviendo a guardar en un documento del mismo tipo) u olvidarlos.
+
+**No cambia el contenido de los documentos que prepara Amauti.** El agente de WhatsApp no vive en este repositorio y todavía no consume los recordatorios; para eso queda una ruta interna opcional que un agente externo tendría que integrar.
+
+| Método y ruta | Cuerpo o resultado | Acceso |
+| --- | --- | --- |
+| `GET /documents/preferences` | `{ status: "disabled" }`, `{ status: "unavailable" }` o `{ status: "available", preferences: [{ id, category, instruction, savedAt }] }` | Autenticado; solo los del usuario del token |
+| `POST /documents/:id/preference` | `{ "instruction": "…" }` (3–280 caracteres) → recordatorio guardado para la categoría del documento | Solo el docente dueño del documento |
+| `DELETE /documents/preferences/:preferenceId` | `204` | Solo si el recordatorio está en la memoria del propio usuario |
+| `GET /internal/documents/preferences?ownerUserId=&category=&title=` | Igual que el `GET` anterior, por búsqueda semántica en la memoria del docente | Gancho opcional para un agente externo, con `x-internal-key`; sin consumidor en este repositorio |
+
+- **Apagado por defecto.** Solo se activa con `ATOMICMEMORY_ENABLED=true`, `ATOMICMEMORY_API_URL` (Cloud: `https://api.atomicstrata.ai`) y `ATOMICMEMORY_API_KEY` (llave de proyecto `amc_…`, solo en el servidor; nunca en `apps/web`). `ATOMICMEMORY_TIMEOUT_MS` es opcional (2500 por defecto). Sin ellas no se hace ninguna llamada y la interfaz no muestra nada nuevo.
+- **Aislamiento.** El sujeto de memoria es `amauti-docente:<id del usuario>`, tomado del JWT (o del `ownerUserId` de la ruta interna con llave); nunca de un campo del cliente web. No se envía `session_id` (en Cloud reemplaza al sujeto) ni `namespace` (solo filtra búsquedas). Todas las llamadas usan `source_site=amauti-documentos`, y las respuestas se vuelven a filtrar por sujeto, fuente y formato aunque el proveedor ignore algún filtro.
+- **Un recordatorio por tipo de documento.** Se guarda en modo literal (`/v1/memories/ingest/quick`, `skip_extraction`, `content_class: summary`) con `metadata.externalId`; volver a guardarlo para la misma categoría lo reemplaza.
+- **Confirmaciones.** Solo se informa «guardado» si el recibo trae el ID creado o actualizado; un 2xx vacío o que no es JSON responde `503`. El borrado acepta `200` o `204` sin cuerpo y rechaza un `success: false` explícito.
+- **Datos personales.** Los recordatorios son del docente, no de los estudiantes: se rechaza el texto con secuencias de 8 o más dígitos (DNI, teléfonos) y la interfaz pide no escribir nombres. Los logs solo registran método, ruta y estado, nunca el texto ni la llave.
+- **Fallos.** Si Atomic Memory falla o supera el tiempo límite, guardar o borrar responde `503` indicando que no se guardó/borró; las consultas responden `status: "unavailable"`. La revisión, las descargas y las correcciones no dependen de Atomic Memory.
+- **Pruebas.** `apps/ms-simon/test/document-preferences.e2e-spec.ts` usa un **fixture HTTP local** (`apps/ms-simon/test/atomic-memory-fixture.ts`) que imita las rutas documentadas; no es el servicio real.

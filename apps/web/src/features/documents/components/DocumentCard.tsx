@@ -1,4 +1,5 @@
 import {
+  BookmarkCheck,
   Check,
   Download,
   FileSpreadsheet,
@@ -6,15 +7,15 @@ import {
   MessageCircle,
   X,
 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import type { GeneratedDocument } from '@/features/documents/types';
 import { formatDate } from '@/shared/lib/format';
+import { downloadBytes, MIME } from '@/features/documents/lib/officeFiles';
 import {
-  buildDoc,
-  buildDocx,
-  buildXlsx,
-  downloadBytes,
-  MIME,
-} from '@/features/documents/lib/officeFiles';
+  buildTemplate,
+  reminderLabel,
+} from '@/features/documents/lib/template';
+import type { TemplateExt } from '@/features/documents/lib/template';
 import { Badge, Button, cx } from '@/shared/ui/kit';
 import type { Tone } from '@/shared/ui/kit';
 import { DropZone } from '@/features/documents/components/DropZone';
@@ -42,26 +43,16 @@ const slug = (s: string) =>
     .toLowerCase()
     .slice(0, 60);
 
-// Mientras no se almacena el archivo original, la descarga es una plantilla con los datos del registro.
-function download(doc: GeneratedDocument, ext: 'docx' | 'doc' | 'xlsx') {
-  const lines = [
-    `Tipo de documento: ${doc.category ?? 'Documento'}`,
-    `Generado por Amauti a partir de tus mensajes de WhatsApp el ${formatDate(doc.createdAt, true)}.`,
-    'Corrige o completa este documento y súbelo de nuevo en la plataforma.',
-  ];
-  const bytes =
-    ext === 'xlsx'
-      ? buildXlsx(doc.category ?? 'Documento', [
-          ['Campo', 'Valor'],
-          ['Documento', doc.title],
-          ['Tipo', doc.category ?? 'Documento'],
-          ['Generado', formatDate(doc.createdAt, true)],
-          ['Origen', 'WhatsApp'],
-        ])
-      : ext === 'docx'
-        ? buildDocx(doc.title, lines)
-        : buildDoc(doc.title, lines);
-  downloadBytes(bytes, `${slug(doc.title)}.${ext}`, MIME[ext]);
+function download(
+  doc: GeneratedDocument,
+  ext: TemplateExt,
+  reminder: string | undefined,
+) {
+  downloadBytes(
+    buildTemplate(doc, ext, reminder),
+    `${slug(doc.title)}.${ext}`,
+    MIME[ext],
+  );
 }
 
 export function DocumentCard({
@@ -70,12 +61,18 @@ export function DocumentCard({
   onReview,
   onCorrection,
   busy,
+  memory,
+  reminder,
 }: {
   doc: GeneratedDocument;
   canReview: boolean;
   onReview(status: 'APPROVED' | 'REJECTED'): void;
   onCorrection(file: File): void;
   busy?: boolean;
+  // Qué recordar para los próximos documentos de este tipo (solo para el dueño).
+  memory?: ReactNode;
+  // Recordatorio que el dueño guardó para este tipo de documento.
+  reminder?: string;
 }) {
   const word = doc.format === 'WORD';
   const Icon = word ? FileText : FileSpreadsheet;
@@ -107,6 +104,18 @@ export function DocumentCard({
               WhatsApp {formatDate(doc.createdAt, true)}
             </span>
           </p>
+          {canReview && reminder && doc.status === 'PENDING' && (
+            <p className="mt-2 flex items-start gap-2 rounded bg-gob-soft px-3 py-2 text-[0.875rem] text-ink">
+              <BookmarkCheck
+                className="mt-0.5 size-4 shrink-0 text-gob"
+                aria-hidden
+              />
+              <span>
+                {reminderLabel(doc.category ?? 'Documento')}:{' '}
+                <span className="font-medium">{reminder}</span>
+              </span>
+            </p>
+          )}
         </div>
         {canReview && (
           <div
@@ -142,15 +151,15 @@ export function DocumentCard({
             </span>
             {word ? (
               <>
-                <Button onClick={() => download(doc, 'docx')}>
+                <Button onClick={() => download(doc, 'docx', reminder)}>
                   <Download className="size-4" aria-hidden /> Word .docx
                 </Button>
-                <Button onClick={() => download(doc, 'doc')}>
+                <Button onClick={() => download(doc, 'doc', reminder)}>
                   <Download className="size-4" aria-hidden /> Word .doc
                 </Button>
               </>
             ) : (
-              <Button onClick={() => download(doc, 'xlsx')}>
+              <Button onClick={() => download(doc, 'xlsx', reminder)}>
                 <Download className="size-4" aria-hidden /> Excel .xlsx
               </Button>
             )}
@@ -175,6 +184,7 @@ export function DocumentCard({
             </p>
           )}
           {canReview && <DropZone onFile={onCorrection} disabled={busy} />}
+          {canReview && memory}
         </div>
       )}
     </li>

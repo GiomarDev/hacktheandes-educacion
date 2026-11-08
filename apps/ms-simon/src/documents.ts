@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   HttpCode,
@@ -27,6 +28,11 @@ import {
 import { CurrentUser, InternalKeyGuard, Public } from '@app/common';
 import type { AuthUser } from '@app/common';
 import { PrismaService } from './prisma.service.js';
+import {
+  categoryOf,
+  DocumentPreferencesService,
+  SavePreferenceDto,
+} from './document-preferences.js';
 
 // La corrección puede ser un documento de Office o un PDF de hasta 20 MB.
 export const CORRECTION_EXTENSIONS = /\.(docx|doc|xlsx|xls|pdf)$/i;
@@ -42,6 +48,11 @@ export class CreateDocumentDto {
 export class DocumentQuery {
   @IsOptional() @IsIn(['PENDING', 'APPROVED', 'REJECTED']) status?:
     'PENDING' | 'APPROVED' | 'REJECTED';
+}
+export class PreferenceRecallQuery {
+  @IsUUID() ownerUserId: string;
+  @IsOptional() @IsString() @Length(1, 80) category?: string;
+  @IsOptional() @IsString() @Length(1, 200) title?: string;
 }
 export class ReviewDocumentDto {
   @IsIn(['APPROVED', 'REJECTED']) status: 'APPROVED' | 'REJECTED';
@@ -59,7 +70,10 @@ export class CorrectionDto {
 
 @Injectable()
 export class DocumentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly preferences: DocumentPreferencesService,
+  ) {}
 
   create(dto: CreateDocumentDto) {
     return this.prisma.generatedDocument.create({ data: dto });
@@ -100,6 +114,16 @@ export class DocumentsService {
     });
   }
 
+  // El dueño del documento guarda un recordatorio para revisar los próximos de ese tipo.
+  async savePreference(user: AuthUser, id: string, dto: SavePreferenceDto) {
+    const doc = await this.owned(user, id);
+    return this.preferences.save(
+      user.id,
+      categoryOf(doc.category),
+      dto.instruction,
+    );
+  }
+
   // Aún no se guarda el archivo: solo su nombre, tipo y tamaño.
   async correction(user: AuthUser, id: string, dto: CorrectionDto) {
     const doc = await this.owned(user, id);
@@ -129,11 +153,46 @@ export class InternalDocumentsController {
   }
 }
 
+// Gancho opcional para un agente externo con la llave interna; ningún consumidor de este repo lo usa aún.
+@Public()
+@UseGuards(InternalKeyGuard)
+@Controller('internal/documents/preferences')
+export class InternalDocumentPreferencesController {
+  constructor(private readonly preferences: DocumentPreferencesService) {}
+  @Get() recall(@Query() q: PreferenceRecallQuery) {
+    return this.preferences.recall(
+      q.ownerUserId,
+      categoryOf(q.category ?? null),
+      q.title,
+    );
+  }
+}
+
 @Controller('documents')
 export class DocumentsController {
-  constructor(private readonly documents: DocumentsService) {}
+  constructor(
+    private readonly documents: DocumentsService,
+    private readonly preferences: DocumentPreferencesService,
+  ) {}
   @Get() list(@CurrentUser() u: AuthUser, @Query() q: DocumentQuery) {
     return this.documents.list(u, q);
+  }
+  // Siempre las del usuario del token: no se acepta otro ID.
+  @Get('preferences') listPreferences(@CurrentUser() u: AuthUser) {
+    return this.preferences.list(u.id);
+  }
+  @Delete('preferences/:preferenceId') @HttpCode(204) removePreference(
+    @CurrentUser() u: AuthUser,
+    @Param('preferenceId', ParseUUIDPipe) preferenceId: string,
+  ) {
+    return this.preferences.remove(u.id, preferenceId);
+  }
+  @Post(':id/preference') savePreference(
+    @CurrentUser() u: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: SavePreferenceDto,
+  ) {
+    return this.documents.savePreference(u, id, dto);
   }
   @Post(':id/review') @HttpCode(200) review(
     @CurrentUser() u: AuthUser,
